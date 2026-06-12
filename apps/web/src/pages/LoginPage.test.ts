@@ -28,6 +28,7 @@ describe('LoginPage', () => {
       id: 'u1',
       username: 'anton_dev',
       avatar_key: null,
+      avatar_url: null,
       role: 'user',
       created_at: '2026-03-01T00:00:00Z',
       email: 'anton@team.dev',

@@ -28,6 +28,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'DiffDuel — тренировка' },
   },
   {
+    path: '/training/run',
+    name: 'training-run',
+    component: () => import('@/pages/TrainingRunPage.vue'),
+    meta: { title: 'DiffDuel — тренировка' },
+  },
+  {
     path: '/duel',
     name: 'duel',
     component: () => import('@/pages/DuelPage.vue'),

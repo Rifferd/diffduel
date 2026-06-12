@@ -90,6 +90,40 @@ export interface paths {
         patch: operations["update_me_me_patch"];
         trace?: never;
     };
+    "/me/avatar/presign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Presign Avatar */
+        post: operations["presign_avatar_me_avatar_presign_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/avatar/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm Avatar */
+        post: operations["confirm_avatar_me_avatar_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/topics": {
         parameters: {
             query?: never;
@@ -101,6 +135,40 @@ export interface paths {
         get: operations["list_topics_topics_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tasks/training": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Training */
+        get: operations["training_tasks_training_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Answer */
+        post: operations["submit_answer_answers_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -131,6 +199,75 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AnswerPayload
+         * @description Полезная нагрузка ответа на quiz: индекс выбранной опции.
+         */
+        AnswerPayload: {
+            /** Selected */
+            selected: number;
+        };
+        /**
+         * AnswerResult
+         * @description Результат проверки ответа (соло-режим).
+         */
+        AnswerResult: {
+            /** Correct */
+            correct: boolean;
+            /** Correct Option */
+            correct_option: number;
+            /** Explanation */
+            explanation: string;
+            /** Already Solved */
+            already_solved: boolean;
+        };
+        /**
+         * AnswerSubmit
+         * @description POST /answers — ответ в соло-режиме.
+         */
+        AnswerSubmit: {
+            /**
+             * Task Id
+             * Format: uuid
+             */
+            task_id: string;
+            answer: components["schemas"]["AnswerPayload"];
+            /** Time Ms */
+            time_ms: number;
+        };
+        /**
+         * AvatarConfirmRequest
+         * @description POST /me/avatar/confirm — подтверждение загруженного объекта.
+         */
+        AvatarConfirmRequest: {
+            /** Key */
+            key: string;
+        };
+        /**
+         * AvatarPresignRequest
+         * @description POST /me/avatar/presign — параметры будущей загрузки.
+         */
+        AvatarPresignRequest: {
+            /**
+             * Content Type
+             * @enum {string}
+             */
+            content_type: "image/jpeg" | "image/png" | "image/webp";
+            /** Size Bytes */
+            size_bytes: number;
+        };
+        /**
+         * AvatarPresignResponse
+         * @description Ответ presign: куда и как грузить аватар напрямую в MinIO.
+         */
+        AvatarPresignResponse: {
+            /** Upload Url */
+            upload_url: string;
+            /** Key */
+            key: string;
+            /** Expires In */
+            expires_in: number;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -146,6 +283,22 @@ export interface components {
             /** Password */
             password: string;
         };
+        /**
+         * QuizBody
+         * @description body для type=quiz (включая код-вопросы: сниппет в code).
+         */
+        QuizBody: {
+            /** Question */
+            question: string;
+            /** Options */
+            options: string[];
+            /** Code */
+            code?: string | null;
+            /** Language */
+            language?: string | null;
+            /** Tags */
+            tags?: string[];
+        };
         /** RegisterRequest */
         RegisterRequest: {
             /**
@@ -158,6 +311,26 @@ export interface components {
             /** Password */
             password: string;
         };
+        /**
+         * TaskPublic
+         * @description Публичная задача для тренировки — без answer и explanation.
+         */
+        TaskPublic: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            type: components["schemas"]["TaskType"];
+            /** Difficulty */
+            difficulty: number;
+            body: components["schemas"]["QuizBody"];
+        };
+        /**
+         * TaskType
+         * @enum {string}
+         */
+        TaskType: "quiz" | "code_bug" | "sql" | "design";
         /**
          * TokenResponse
          * @description Access-токен отдаётся в JSON; refresh — в httpOnly cookie.
@@ -207,6 +380,11 @@ export interface components {
             created_at: string;
             /** Email */
             email: string;
+            /**
+             * Avatar Url
+             * @description Публичный URL аватара: S3_PUBLIC_BASE_URL/avatars/{key}.
+             */
+            readonly avatar_url: string | null;
         };
         /**
          * UserRole
@@ -400,6 +578,72 @@ export interface operations {
             };
         };
     };
+    presign_avatar_me_avatar_presign_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AvatarPresignRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvatarPresignResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_avatar_me_avatar_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AvatarConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserMe"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_topics_topics_get: {
         parameters: {
             query?: never;
@@ -416,6 +660,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TopicPublic"][];
+                };
+            };
+        };
+    };
+    training_tasks_training_get: {
+        parameters: {
+            query: {
+                topic: string;
+                difficulty?: number | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_answer_answers_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
