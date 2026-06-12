@@ -1,0 +1,14 @@
+{
+  "name": "diffduel",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "web:dev": "pnpm -C apps/web dev",
+    "web:build": "pnpm -C apps/web build",
+    "contracts:generate": "pnpm -C packages/contracts generate"
+  }
+}

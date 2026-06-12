@@ -1,0 +1,8 @@
+/* Глобальные стили — импорт из read-only дизайн-системы (@ds). Порядок важен. */
+@import '@ds/fonts.css';
+@import '@ds/tokens.css';
+@import '@ds/base.css';
+@import '@ds/components-base.css';
+@import '@ds/components-domain.css';
+@import '@ds/components-extended.css';
+@import '@ds/design/pages/_pageshell.css';

@@ -31,7 +31,27 @@
       "Bash(uv run *)",
       "Bash(git commit -q -m 'feat\\(infra\\): dev-стек compose, CI, конвенции монорепо *)",
       "Bash(git commit -q -m 'feat\\(api\\): Core API — модели ТЗ §5, Alembic, auth с ротацией refresh, rate limiting *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(uv lock *)",
+      "Bash(rm -rf .venv)",
+      "Bash(uv sync *)",
+      "Bash(pnpm -v)",
+      "Bash(corepack --version)",
+      "Bash(awk '/3\\\\.8/{f=1} f{print} /3\\\\.9|3\\\\.10/{if\\(f\\)exit}' base_/TZ_DiffDuel.md)",
+      "Bash(awk '/^## 13|^### 13|^# 13|## *13[^0-9]/{f=1} f{print} /^## 14|^# 14/{if\\(f\\)exit}' base_/TZ_DiffDuel.md)",
+      "Bash(curl -s -m 3 http://localhost:8000/healthz)",
+      "Bash(curl -s -X POST http://localhost:8000/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"x@x.com\",\"password\":\"wrong\"}')",
+      "Bash(corepack prepare *)",
+      "Bash(corepack pnpm *)",
+      "Bash(curl -s -m 3 http://localhost:5173/)",
+      "Bash(curl -s -m 3 -o /dev/null -w \"%{http_code}\" http://localhost:5173/src/main.ts)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(uv add *)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm -C apps/web lint)",
+      "Bash(pnpm -C apps/web typecheck)",
+      "Bash(git commit -q -m 'feat\\(api\\): соло-режим — тренировки, проверка ответов, сид 150 задач, presigned-аватары *)",
+      "Bash(git commit -q -m 'feat\\(web\\): фундамент SPA — auth, оболочка приложения, профиль \\(нарезка дизайн-кода\\) *)"
     ]
   }
 }
