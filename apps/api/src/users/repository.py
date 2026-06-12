@@ -45,3 +45,8 @@ class UserRepository:
         user.username = username
         await self._session.flush()
         return user
+
+    async def update_avatar_key(self, user: User, avatar_key: str) -> User:
+        user.avatar_key = avatar_key
+        await self._session.flush()
+        return user

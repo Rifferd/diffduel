@@ -11,6 +11,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # Заведомо известные dev-дефолты; прод с ними не стартует (см. валидатор ниже).
 _DEV_JWT_SECRET = "dev-insecure-secret-change-me-please-0123456789-0123456789-0123456789"  # noqa: S105
 _DEV_INTERNAL_TOKEN = "dev-internal-token-change-me"  # noqa: S105
+_DEV_S3_SECRET = "diffduel-dev-secret"  # noqa: S105
 
 
 class Settings(BaseSettings):
@@ -36,6 +37,15 @@ class Settings(BaseSettings):
 
     # Internal API.
     internal_api_token: str = _DEV_INTERNAL_TOKEN
+
+    # S3 / MinIO (presigned-аватары, см. ТЗ §3.7).
+    s3_endpoint: str = "http://localhost:9000"
+    s3_access_key: str = "diffduel"
+    s3_secret_key: str = _DEV_S3_SECRET
+    s3_region: str = "us-east-1"
+    # CDN-префикс для публичных URL; в проде — домен CDN.
+    s3_public_base_url: str = "http://localhost:9000"
+    s3_bucket_avatars: str = "avatars"
 
     # Доверять X-Forwarded-For (только когда API стоит за нашим прокси/Traefik).
     trust_proxy: bool = False
@@ -75,6 +85,8 @@ class Settings(BaseSettings):
             problems.append("INTERNAL_API_TOKEN: в проде обязателен случайный токен >=32 символов")
         if any(origin.startswith("http://") for origin in self.cors_origins):
             problems.append("CORS_ORIGINS: в проде допускаются только https-origin'ы")
+        if self.s3_secret_key == _DEV_S3_SECRET:
+            problems.append("S3_SECRET_KEY: в проде обязателен собственный секрет MinIO")
         if problems:
             raise ValueError("; ".join(problems))
         return self

@@ -1,0 +1,695 @@
+[
+  {
+    "id": "1c11d63f-2038-42ca-8db7-fb54aacadf18",
+    "difficulty": 1,
+    "body": {
+      "question": "Что выведет console.log(typeof null)?",
+      "options": ["\"null\"", "\"object\"", "\"undefined\"", "\"number\""],
+      "code": "console.log(typeof null);",
+      "language": "javascript",
+      "tags": ["types", "typeof"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "typeof null возвращает \"object\" — это историческая ошибка реализации JavaScript, сохранённая ради обратной совместимости. Для проверки на null сравнивают напрямую: value === null."
+  },
+  {
+    "id": "cbbaa5a7-1a57-468e-853b-3a8b81c93fc8",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["0 1 2", "3 3 3", "0 0 0", "undefined undefined undefined"],
+      "code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+      "language": "javascript",
+      "tags": ["closure", "var", "event-loop"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "var имеет функциональную область видимости — единственная переменная i делится всеми колбэками. Цикл завершится (i=3) до того, как сработают таймауты, поэтому все три выведут 3. С let каждая итерация получила бы свою привязку (0 1 2)."
+  },
+  {
+    "id": "8b05fd27-f373-4662-bb0c-5e0633937685",
+    "difficulty": 1,
+    "body": {
+      "question": "Чему равно 0.1 + 0.2 === 0.3?",
+      "options": ["true", "false", "Ошибка", "NaN"],
+      "code": "console.log(0.1 + 0.2 === 0.3);",
+      "language": "javascript",
+      "tags": ["number", "float"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Числа в JavaScript — это double по IEEE 754. 0.1 и 0.2 не представимы точно в двоичной плавающей точке, их сумма равна 0.30000000000000004, поэтому строгое сравнение с 0.3 даёт false. Сравнивают с допуском (Number.EPSILON)."
+  },
+  {
+    "id": "a4d1f77a-a7a9-44b6-8c47-eface73651bf",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет console.log(1 + '1' - 1)?",
+      "options": ["\"1\"", "10", "\"11\"", "NaN"],
+      "code": "console.log(1 + '1' - 1);",
+      "language": "javascript",
+      "tags": ["coercion", "operators"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Оператор + со строкой конкатенирует: 1 + '1' = '11'. Затем оператор - числовой, поэтому строка '11' приводится к числу 11, и 11 - 1 = 10."
+  },
+  {
+    "id": "16a90cab-7a7a-46a6-b0f5-8b439fabd5b4",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет этот код про event loop?",
+      "options": [
+        "A B C D",
+        "A D B C",
+        "A D C B",
+        "A B D C"
+      ],
+      "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+      "language": "javascript",
+      "tags": ["event-loop", "promise", "microtask"]
+    },
+    "answer": { "correct": 2 },
+    "explanation": "Сначала синхронный код: A, D. Затем перед макрозадачами (setTimeout) опустошается очередь микрозадач (промисы): C. И только потом макрозадача: B. Итог: A D C B."
+  },
+  {
+    "id": "8d2ab94e-7a9b-4553-a9be-b5f5ccb317ea",
+    "difficulty": 1,
+    "body": {
+      "question": "Какое значение у this при обычном вызове функции в strict mode?",
+      "options": ["window/globalThis", "undefined", "сама функция", "null"],
+      "code": "'use strict';\nfunction f() { return this; }\nconsole.log(f());",
+      "language": "javascript",
+      "tags": ["this", "strict-mode"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "В strict mode при простом вызове функции this не подставляется к глобальному объекту и равен undefined. В нестрогом режиме this был бы globalThis (window в браузере)."
+  },
+  {
+    "id": "d2b5f41c-8c15-4680-a292-f71cd406f7b2",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет obj.getThis()?",
+      "options": ["obj", "undefined", "globalThis", "Ошибка"],
+      "code": "const obj = {\n  value: 42,\n  getThis: () => this.value\n};\nconsole.log(obj.getThis());",
+      "language": "javascript",
+      "tags": ["this", "arrow-function"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Стрелочные функции не имеют собственного this — он берётся из окружающей лексической области (в модуле/верхнем уровне this не равно obj). Поэтому this.value не находит value у obj и даёт undefined. Для метода нужна обычная функция."
+  },
+  {
+    "id": "d3a81f35-68f0-43d3-9326-8691bf46d35c",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает оператор === по сравнению с ==?",
+      "options": [
+        "=== сравнивает с приведением типов, == без",
+        "=== сравнивает без приведения типов (строгое равенство)",
+        "Они идентичны",
+        "=== работает только с числами"
+      ],
+      "tags": ["equality", "coercion"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "=== (строгое равенство) сравнивает значение и тип без приведения. == выполняет приведение типов перед сравнением, что даёт неожиданные результаты (0 == '' → true). Рекомендуется всегда использовать ===."
+  },
+  {
+    "id": "bdbbaa36-34e2-4be0-a2dc-a3420ea25756",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код с замыканием?",
+      "options": ["1 2 3", "1 1 1", "3 3 3", "undefined"],
+      "code": "function counter() {\n  let c = 0;\n  return () => ++c;\n}\nconst inc = counter();\nconsole.log(inc(), inc(), inc());",
+      "language": "javascript",
+      "tags": ["closure"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Замыкание сохраняет ссылку на переменную c из области counter. Каждый вызов inc() увеличивает один и тот же c: 1, 2, 3. Состояние живёт между вызовами благодаря замыканию."
+  },
+  {
+    "id": "ce54d443-eeea-4892-8e34-92a4a996e870",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["1", "2", "1 затем 2", "Ошибка"],
+      "code": "async function f() {\n  console.log(1);\n  await null;\n  console.log(2);\n}\nf();\nconsole.log(3);",
+      "language": "javascript",
+      "tags": ["async", "await", "event-loop"]
+    },
+    "answer": { "correct": 2 },
+    "explanation": "Код до первого await выполняется синхронно: печатается 1. await null ставит продолжение в очередь микрозадач, управление возвращается, печатается 3. Затем микрозадача печатает 2. Итог: 1, 3, 2 — то есть «1 затем 2» (с 3 между ними)."
+  },
+  {
+    "id": "b55e316d-7684-4fb2-8bca-3a10c0da1f4c",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт Promise.resolve(5)?",
+      "options": [
+        "Число 5",
+        "Промис, уже выполненный значением 5",
+        "Отклонённый промис",
+        "undefined"
+      ],
+      "tags": ["promise"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Promise.resolve(x) создаёт уже разрешённый (fulfilled) промис со значением x. Получить значение можно через .then(v => ...) или await."
+  },
+  {
+    "id": "73a992f5-7a0b-4038-b37b-fbebb98f7e65",
+    "difficulty": 2,
+    "body": {
+      "question": "Что произойдёт с непойманным reject в промисе?",
+      "options": [
+        "Ничего",
+        "Возникнет unhandledRejection — необработанное отклонение",
+        "Программа сразу остановится без события",
+        "Промис автоматически разрешится"
+      ],
+      "code": "Promise.reject(new Error('boom'));",
+      "language": "javascript",
+      "tags": ["promise", "error"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Отклонённый промис без обработчика .catch генерирует событие unhandledRejection (в Node) / unhandledrejection (в браузере). Это частый источник «тихих» ошибок; каждый промис нужно либо обрабатывать, либо await с try/catch."
+  },
+  {
+    "id": "f8cbb565-5274-4b99-8db7-a72df32b69b1",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с прототипом?",
+      "options": ["true", "false", "undefined", "Ошибка"],
+      "code": "function Animal() {}\nAnimal.prototype.speak = function() {};\nconst a = new Animal();\nconsole.log(a.speak === Animal.prototype.speak);",
+      "language": "javascript",
+      "tags": ["prototype", "inheritance"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Метод speak определён не на самом объекте a, а на Animal.prototype. При доступе a.speak движок поднимается по цепочке прототипов и находит ту же функцию, поэтому a.speak === Animal.prototype.speak равно true."
+  },
+  {
+    "id": "758aa6b4-115f-45df-973b-fac496d9cc1b",
+    "difficulty": 2,
+    "body": {
+      "question": "Чему равно [] + []?",
+      "options": ["[]", "\"\" (пустая строка)", "0", "Ошибка"],
+      "code": "console.log([] + []);",
+      "language": "javascript",
+      "tags": ["coercion", "array"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Оператор + приводит операнды к примитивам. Массив через toString даёт пустую строку, поэтому '' + '' = '' (пустая строка). Это классический пример странностей приведения типов в JS."
+  },
+  {
+    "id": "ae051d8f-89dc-4a26-8ce3-88e6b2971851",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код с hoisting?",
+      "options": ["undefined", "5", "Ошибка ReferenceError", "null"],
+      "code": "console.log(x);\nvar x = 5;",
+      "language": "javascript",
+      "tags": ["hoisting", "var"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Объявление var x поднимается (hoisting) в начало области, но присваивание остаётся на месте. На момент console.log переменная объявлена, но ещё не инициализирована — её значение undefined. С let была бы ошибка из-за temporal dead zone."
+  },
+  {
+    "id": "6df963f9-ac58-40c7-bdcc-5c4ff4697a6b",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с let в блоке?",
+      "options": ["undefined", "ReferenceError (temporal dead zone)", "10", "null"],
+      "code": "{\n  console.log(y);\n  let y = 10;\n}",
+      "language": "javascript",
+      "tags": ["let", "tdz"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "let и const поднимаются, но находятся в «временной мёртвой зоне» (TDZ) от начала блока до строки объявления. Обращение до инициализации бросает ReferenceError, в отличие от var (undefined)."
+  },
+  {
+    "id": "ea159ace-4c29-4412-8b93-52d4abda8f72",
+    "difficulty": 1,
+    "body": {
+      "question": "Что такое NaN?",
+      "options": [
+        "Ноль",
+        "Специальное значение «не число», результат некорректной числовой операции",
+        "Строка",
+        "null"
+      ],
+      "tags": ["number", "nan"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "NaN (Not a Number) — особое числовое значение, возникающее при невозможной операции, например Number('abc') или 0/0. Уникальная особенность: NaN !== NaN, поэтому для проверки используют Number.isNaN()."
+  },
+  {
+    "id": "bdd68d7c-b2e3-418c-9839-69f076cf6a35",
+    "difficulty": 2,
+    "body": {
+      "question": "Чему равно NaN === NaN?",
+      "options": ["true", "false", "Ошибка", "undefined"],
+      "code": "console.log(NaN === NaN);",
+      "language": "javascript",
+      "tags": ["nan", "equality"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "NaN — единственное значение в JavaScript, не равное самому себе по спецификации IEEE 754. Поэтому NaN === NaN это false. Для проверки на NaN применяют Number.isNaN(x)."
+  },
+  {
+    "id": "87fecf7d-cf31-45a8-933c-68513ae92e63",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с bind?",
+      "options": ["10", "undefined", "globalThis.x", "Ошибка"],
+      "code": "const obj = { x: 10 };\nfunction get() { return this.x; }\nconst bound = get.bind(obj);\nconsole.log(bound());",
+      "language": "javascript",
+      "tags": ["this", "bind"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "bind создаёт новую функцию с жёстко привязанным this = obj. При вызове bound() this.x обращается к obj.x = 10. В отличие от call/apply, bind не вызывает функцию сразу, а возвращает связанную копию."
+  },
+  {
+    "id": "386be9be-2382-4024-917a-541b36f1e09a",
+    "difficulty": 2,
+    "body": {
+      "question": "В чём разница между call и apply?",
+      "options": [
+        "Нет разницы",
+        "call принимает аргументы списком, apply — массивом",
+        "apply нельзя задать this",
+        "call возвращает промис"
+      ],
+      "tags": ["this", "call-apply"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "И call, и apply вызывают функцию с заданным this немедленно. Разница в передаче аргументов: call(thisArg, a, b, c) — списком, apply(thisArg, [a, b, c]) — массивом."
+  },
+  {
+    "id": "be63747c-c576-42f8-8bc6-4bdcfdc54be7",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["[1, 2, 3, 4]", "[1, 2, [3, 4]]", "[1, 2]", "Ошибка"],
+      "code": "const a = [1, 2];\nconst b = [3, 4];\nconsole.log([...a, ...b]);",
+      "language": "javascript",
+      "tags": ["spread", "array"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Spread-оператор (...) разворачивает элементы массива. [...a, ...b] создаёт новый массив, объединяя элементы a и b: [1, 2, 3, 4]. Это поверхностное копирование."
+  },
+  {
+    "id": "f88bdd10-87e2-4b84-b9b3-9682d836ff56",
+    "difficulty": 2,
+    "body": {
+      "question": "Что вернёт [1, 2, 3].map(x => x * 2)?",
+      "options": ["[1, 2, 3]", "[2, 4, 6]", "6", "undefined"],
+      "tags": ["array", "map"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "map создаёт новый массив, применяя функцию к каждому элементу. [1,2,3].map(x => x*2) даёт [2, 4, 6]. Исходный массив не изменяется (метод иммутабельный)."
+  },
+  {
+    "id": "1538e130-d204-4ed4-b6c0-224e0fd29eda",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет reduce?",
+      "options": ["6", "[1, 2, 3]", "0", "undefined"],
+      "code": "console.log([1, 2, 3].reduce((acc, x) => acc + x, 0));",
+      "language": "javascript",
+      "tags": ["array", "reduce"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "reduce сворачивает массив в одно значение. Начиная с аккумулятора 0, прибавляет каждый элемент: 0+1+2+3 = 6. Второй аргумент — начальное значение аккумулятора."
+  },
+  {
+    "id": "591a1c81-b219-4e72-b8c0-ddb37ade592c",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт Boolean('')?",
+      "options": ["true", "false", "''", "undefined"],
+      "tags": ["coercion", "boolean"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Пустая строка — одно из falsy-значений JavaScript. Boolean('') возвращает false. Полный список falsy: false, 0, -0, 0n, '', null, undefined, NaN."
+  },
+  {
+    "id": "8b1fb4dc-aa14-4f11-abd7-9edb810fb9a8",
+    "difficulty": 2,
+    "body": {
+      "question": "Какие из значений являются falsy?",
+      "options": [
+        "0, '', null, undefined, NaN, false",
+        "Только false",
+        "0 и false",
+        "'0' и []"
+      ],
+      "tags": ["coercion", "boolean"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Falsy-значений ровно восемь: false, 0, -0, 0n, '', null, undefined, NaN. Всё остальное truthy, включая '0', 'false', [], {} — это распространённая ловушка."
+  },
+  {
+    "id": "b181747a-7526-4f11-af7b-18a377b8b9fc",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с объектом и ссылкой?",
+      "options": ["{ a: 1 }", "{ a: 2 }", "undefined", "Ошибка"],
+      "code": "const o1 = { a: 1 };\nconst o2 = o1;\no2.a = 2;\nconsole.log(o1);",
+      "language": "javascript",
+      "tags": ["reference", "object"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Объекты присваиваются по ссылке: o2 указывает на тот же объект, что и o1. Изменение o2.a меняет тот же объект, поэтому o1.a тоже становится 2. Для независимой копии нужен spread/structuredClone."
+  },
+  {
+    "id": "b7073079-b040-4654-8b20-6f9d532139cb",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает Object.freeze(obj)?",
+      "options": [
+        "Удаляет объект",
+        "Делает объект неизменяемым на верхнем уровне (нельзя добавлять/менять свойства)",
+        "Глубоко замораживает все вложенные объекты",
+        "Превращает объект в строку"
+      ],
+      "tags": ["object", "freeze"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Object.freeze делает поверхностно неизменяемым: нельзя добавлять, удалять или изменять собственные свойства. Вложенные объекты при этом остаются изменяемыми — для глубокой заморозки нужна рекурсия."
+  },
+  {
+    "id": "131affe3-414f-4175-83be-8299def95563",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с instanceof?",
+      "options": ["true", "false", "undefined", "Ошибка"],
+      "code": "class A {}\nclass B extends A {}\nconst b = new B();\nconsole.log(b instanceof A);",
+      "language": "javascript",
+      "tags": ["prototype", "instanceof", "class"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "instanceof проверяет, есть ли prototype конструктора в цепочке прототипов объекта. B наследует A, поэтому A.prototype присутствует в цепочке b, и b instanceof A равно true."
+  },
+  {
+    "id": "2cefd1dc-8e31-40df-81c7-96f3d45f5848",
+    "difficulty": 1,
+    "body": {
+      "question": "Чем отличается null от undefined?",
+      "options": [
+        "Это синонимы",
+        "undefined — переменная не инициализирована; null — явно заданное «пустое» значение",
+        "null — это число 0",
+        "undefined нельзя присвоить"
+      ],
+      "tags": ["null", "undefined"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "undefined — значение по умолчанию для необъявленных/неинициализированных переменных и отсутствующих свойств. null — явное «отсутствие значения», которое разработчик задаёт сам. При этом null == undefined (true), но null === undefined (false)."
+  },
+  {
+    "id": "0ed6feef-2132-49d6-bebd-aac55b1f303c",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код с деструктуризацией и значением по умолчанию?",
+      "options": ["5", "undefined", "0", "Ошибка"],
+      "code": "const { x = 5 } = {};\nconsole.log(x);",
+      "language": "javascript",
+      "tags": ["destructuring", "default"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "При деструктуризации значение по умолчанию срабатывает, если свойство отсутствует или равно undefined. Объект пуст, поэтому x получает значение по умолчанию 5."
+  },
+  {
+    "id": "8ee7a745-b09c-40c1-8ce5-2f6fd1829250",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с ?? (nullish coalescing)?",
+      "options": ["0", "10", "null", "undefined"],
+      "code": "const v = 0;\nconsole.log(v ?? 10);",
+      "language": "javascript",
+      "tags": ["operators", "nullish"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Оператор ?? возвращает правый операнд только если левый — null или undefined. 0 не nullish (хотя и falsy), поэтому результат — 0. С оператором || результат был бы 10, так как 0 falsy."
+  },
+  {
+    "id": "4dcc1b32-96b6-47d1-8985-b330d0b50d5c",
+    "difficulty": 2,
+    "body": {
+      "question": "Что вернёт JSON.stringify({ a: undefined, b: 1 })?",
+      "options": [
+        "'{\"a\":undefined,\"b\":1}'",
+        "'{\"b\":1}'",
+        "'{\"a\":null,\"b\":1}'",
+        "Ошибку"
+      ],
+      "tags": ["json"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "JSON.stringify опускает свойства со значением undefined (а также функции). Поэтому ключ a исчезает, результат '{\"b\":1}'. В массивах undefined превращается в null."
+  },
+  {
+    "id": "23aae71f-f0c9-43a1-8a45-a9cd2e105e57",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с Promise.all?",
+      "options": [
+        "[1, 2, 3]",
+        "Отклонение с ошибкой первого reject",
+        "[1, undefined, 3]",
+        "Зависнет"
+      ],
+      "code": "Promise.all([\n  Promise.resolve(1),\n  Promise.reject('err'),\n  Promise.resolve(3)\n]).then(console.log).catch(console.log);",
+      "language": "javascript",
+      "tags": ["promise", "all"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Promise.all отклоняется немедленно при первом reject и передаёт его ошибку в catch (здесь 'err'). Чтобы дождаться всех результатов независимо от ошибок, используют Promise.allSettled."
+  },
+  {
+    "id": "c6ea72dc-861c-49ab-88d5-a3add3e540d8",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает Array.isArray([])?",
+      "options": ["false", "true", "Ошибку", "0"],
+      "tags": ["array", "type-check"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Array.isArray надёжно определяет массив, в отличие от typeof (typeof [] === 'object'). Для пустого массива возвращает true."
+  },
+  {
+    "id": "7f2caaf4-7f5a-46fd-b6bf-9da44b4a094f",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["1 2 3", "3 2 1", "1 3 2", "2 1 3"],
+      "code": "console.log(1);\nqueueMicrotask(() => console.log(2));\nPromise.resolve().then(() => console.log(3));",
+      "language": "javascript",
+      "tags": ["event-loop", "microtask"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Синхронный код печатает 1. Затем микрозадачи выполняются в порядке добавления: queueMicrotask поставил колбэк 2 раньше, чем .then поставил 3. Итог: 1, 2, 3."
+  },
+  {
+    "id": "1cf0cab1-7018-4685-9470-43731cd4ff8f",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт 'abc'.length?",
+      "options": ["2", "3", "4", "undefined"],
+      "tags": ["string"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Свойство length строки возвращает количество кодовых единиц UTF-16. Для 'abc' это 3. Осторожно: эмодзи и суррогатные пары могут давать length больше, чем число видимых символов."
+  },
+  {
+    "id": "a7ca5eaa-3fc9-44b3-b0c6-a86a2c8b549e",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["true", "false", "Ошибка", "undefined"],
+      "code": "console.log('b' > 'a');",
+      "language": "javascript",
+      "tags": ["string", "comparison"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "Строки сравниваются лексикографически по кодам символов UTF-16. Код 'b' (98) больше кода 'a' (97), поэтому 'b' > 'a' равно true."
+  },
+  {
+    "id": "b22af8c0-353c-49ed-87fd-3bbddfad8a4f",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с замыканием в IIFE?",
+      "options": ["0 1 2", "3 3 3", "0 0 0", "1 2 3"],
+      "code": "for (var i = 0; i < 3; i++) {\n  ((j) => setTimeout(() => console.log(j), 0))(i);\n}",
+      "language": "javascript",
+      "tags": ["closure", "iife"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "IIFE захватывает текущее значение i в собственный параметр j на каждой итерации, создавая отдельное замыкание. Поэтому таймауты печатают 0, 1, 2 — классический способ обойти проблему var до появления let."
+  },
+  {
+    "id": "85ef6828-d7f1-4e19-87b8-c84903d70f75",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код с ===, сравнивая объекты?",
+      "options": ["true", "false", "undefined", "Ошибка"],
+      "code": "console.log({} === {});",
+      "language": "javascript",
+      "tags": ["equality", "reference"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Объекты сравниваются по ссылке, а не по содержимому. Два разных литерала {} — это два разных объекта в памяти, поэтому {} === {} равно false. Равны только ссылки на один и тот же объект."
+  },
+  {
+    "id": "7aa12704-afeb-4317-b175-32c53553a8fb",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["\"object\"", "\"function\"", "\"undefined\"", "Ошибка"],
+      "code": "console.log(typeof function(){});",
+      "language": "javascript",
+      "tags": ["typeof", "function"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Функции — особый вид объектов, но typeof для них возвращает \"function\". Это исключение в системе типов JS (для всех остальных объектов typeof даёт \"object\")."
+  },
+  {
+    "id": "f2161079-448f-4db3-9d9f-3b89fccf4fa7",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает метод Array.prototype.filter?",
+      "options": [
+        "Изменяет исходный массив",
+        "Возвращает новый массив только из элементов, для которых колбэк вернул true",
+        "Возвращает первый подходящий элемент",
+        "Сортирует массив"
+      ],
+      "tags": ["array", "filter"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "filter создаёт новый массив, оставляя только элементы, на которых предикат-колбэк вернул truthy-значение. Исходный массив не изменяется. Для одного элемента используют find."
+  },
+  {
+    "id": "d8d3fe67-75b7-4f6d-96b4-553f57a686e6",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с this в методе при потере контекста?",
+      "options": ["10", "undefined или ошибка", "globalThis", "Ошибка синтаксиса"],
+      "code": "const obj = { x: 10, get() { return this.x; } };\nconst fn = obj.get;\nconsole.log(fn());",
+      "language": "javascript",
+      "tags": ["this", "context"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "При присваивании метода в переменную теряется связь с obj. Вызов fn() — простой, поэтому this не равно obj (в strict mode undefined, и this.x бросит TypeError; в нестрогом — globalThis.x = undefined). Контекст сохраняют через bind."
+  },
+  {
+    "id": "22bc668f-c884-4c7f-9416-ea0b0edd0900",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт parseInt('08')?",
+      "options": ["0", "8", "NaN", "Ошибку"],
+      "tags": ["number", "parseint"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "parseInt('08') в современных движках (ES5+) трактует строку как десятичную и возвращает 8. Раньше ведущий 0 мог означать восьмеричную систему — поэтому хорошей практикой считается всегда указывать радикс: parseInt('08', 10)."
+  },
+  {
+    "id": "ba70b68a-7c61-4963-9618-5088c49f78b9",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает Array.prototype.find?",
+      "options": [
+        "Возвращает индекс элемента",
+        "Возвращает первый элемент, удовлетворяющий предикату, или undefined",
+        "Возвращает новый массив",
+        "Изменяет массив"
+      ],
+      "tags": ["array", "find"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "find возвращает первый элемент, для которого колбэк дал true, либо undefined, если такого нет. Для получения индекса используют findIndex."
+  },
+  {
+    "id": "4abb7baa-20a9-4627-8dfc-b2fb7e7b1564",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с генератором?",
+      "options": ["1", "{ value: 1, done: false }", "{ value: undefined, done: true }", "Ошибку"],
+      "code": "function* g() { yield 1; }\nconst it = g();\nconsole.log(it.next());",
+      "language": "javascript",
+      "tags": ["generator", "iterator"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Генератор возвращает итератор. it.next() выполняет код до первого yield и возвращает объект { value: 1, done: false }. Следующий вызов next() дойдёт до конца и вернёт { value: undefined, done: true }."
+  },
+  {
+    "id": "44be4693-d42f-4243-9ce7-e7c5bf38fd1d",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает оператор optional chaining (?.)?",
+      "options": [
+        "Бросает ошибку при null",
+        "Возвращает undefined вместо ошибки, если левая часть null/undefined",
+        "Приводит к числу",
+        "Создаёт копию объекта"
+      ],
+      "code": "const o = null;\nconsole.log(o?.a?.b);",
+      "language": "javascript",
+      "tags": ["operators", "optional-chaining"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "?. короткозамыкается: если левый операнд null или undefined, всё выражение возвращает undefined вместо TypeError. В примере o?.a?.b даёт undefined без падения."
+  },
+  {
+    "id": "e6bd2a1e-6c34-403b-8bc3-e47f3c9e93bb",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код?",
+      "options": ["[1, 2, 3]", "['1', '2', '3']", "[1, 2, 3] как строки конкатенированы", "NaN"],
+      "code": "console.log([1, 2, 3].map(String));",
+      "language": "javascript",
+      "tags": ["array", "map", "coercion"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "map(String) применяет функцию String к каждому элементу, превращая числа в строки: ['1', '2', '3']. Важно: map передаёт в колбэк (element, index, array), но String игнорирует лишние аргументы — а вот parseInt здесь дал бы баг."
+  },
+  {
+    "id": "3af0b65e-669f-47ec-9d18-65e4f2e06f4f",
+    "difficulty": 2,
+    "body": {
+      "question": "Чему равно typeof undefined?",
+      "options": ["\"undefined\"", "\"object\"", "\"null\"", "undefined"],
+      "tags": ["typeof", "undefined"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "typeof undefined возвращает строку \"undefined\". Это безопасный способ проверки необъявленных переменных, так как обращение к ним в typeof не бросает ReferenceError."
+  },
+  {
+    "id": "e9914b23-1ad3-4947-aaad-142aa330123f",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с async/await и try/catch?",
+      "options": ["\"caught\"", "Непойманная ошибка", "undefined", "\"ok\""],
+      "code": "async function f() {\n  try {\n    await Promise.reject('e');\n  } catch {\n    console.log('caught');\n  }\n}\nf();",
+      "language": "javascript",
+      "tags": ["async", "await", "error"]
+    },
+    "answer": { "correct": 0 },
+    "explanation": "await над отклонённым промисом выбрасывает исключение в текущей async-функции, и его можно поймать обычным try/catch. Здесь блок catch срабатывает и печатает 'caught'."
+  },
+  {
+    "id": "780d59d1-306e-4cc8-92ca-8d9ce46909e7",
+    "difficulty": 2,
+    "body": {
+      "question": "Что произойдёт при добавлении свойства в прототип после создания объекта?",
+      "options": [
+        "Объект не увидит новое свойство",
+        "Объект увидит новое свойство через цепочку прототипов",
+        "Возникнет ошибка",
+        "Объект будет пересоздан"
+      ],
+      "code": "function F() {}\nconst o = new F();\nF.prototype.greet = () => 'hi';\nconsole.log(o.greet());",
+      "language": "javascript",
+      "tags": ["prototype"]
+    },
+    "answer": { "correct": 1 },
+    "explanation": "Доступ к свойству идёт по живой цепочке прототипов в момент обращения. Свойство greet добавлено в F.prototype после создания o, но o.greet всё равно найдёт его — поэтому выводится 'hi'."
+  }
+]

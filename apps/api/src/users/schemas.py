@@ -5,12 +5,22 @@ from __future__ import annotations
 import re
 import uuid
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
+from src.core.config import get_settings
 from src.core.enums import UserRole
 
 _USERNAME_RE = re.compile(r"^[a-z0-9_-]{3,30}$")
+
+# Белый список content-type аватара → расширение ключа.
+AVATAR_CONTENT_TYPES: dict[str, str] = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+}
+MAX_AVATAR_SIZE_BYTES = 2_097_152  # 2 МБ
 
 
 def validate_username(value: str) -> str:
@@ -32,11 +42,42 @@ class UserPublic(BaseModel):
     role: UserRole
     created_at: datetime
 
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def avatar_url(self) -> str | None:
+        """Публичный URL аватара: S3_PUBLIC_BASE_URL/avatars/{key}."""
+        if not self.avatar_key:
+            return None
+        settings = get_settings()
+        base = settings.s3_public_base_url.rstrip("/")
+        return f"{base}/{settings.s3_bucket_avatars}/{self.avatar_key}"
+
 
 class UserMe(UserPublic):
     """Профиль для самого пользователя — добавляем email."""
 
     email: str
+
+
+class AvatarPresignRequest(BaseModel):
+    """POST /me/avatar/presign — параметры будущей загрузки."""
+
+    content_type: Literal["image/jpeg", "image/png", "image/webp"]
+    size_bytes: int = Field(gt=0, le=MAX_AVATAR_SIZE_BYTES)
+
+
+class AvatarPresignResponse(BaseModel):
+    """Ответ presign: куда и как грузить аватар напрямую в MinIO."""
+
+    upload_url: str
+    key: str
+    expires_in: int
+
+
+class AvatarConfirmRequest(BaseModel):
+    """POST /me/avatar/confirm — подтверждение загруженного объекта."""
+
+    key: str = Field(min_length=1, max_length=512)
 
 
 class UserUpdate(BaseModel):

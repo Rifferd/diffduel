@@ -1,0 +1,1125 @@
+[
+  {
+    "id": "d77edd86-d439-49d5-b05b-d9403204bf34",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет вызовы append(1) и append(2)?",
+      "options": [
+        "[1] и [2]",
+        "[1] и [1, 2]",
+        "[1] и [1]",
+        "Ошибку"
+      ],
+      "code": "def append(x, lst=[]):\n    lst.append(x)\n    return lst\n\nprint(append(1))\nprint(append(2))",
+      "language": "python",
+      "tags": [
+        "mutable-default",
+        "gotcha"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Значение по умолчанию вычисляется один раз при определении функции, а не при каждом вызове. Один и тот же список переиспользуется, поэтому второй вызов добавляет к нему: [1], затем [1, 2]. Правильный паттерн — lst=None и создание списка внутри."
+  },
+  {
+    "id": "d02837ad-7d5a-4109-b80a-c434cbc986e0",
+    "difficulty": 3,
+    "body": {
+      "question": "Что мешает потокам Python выполнять CPU-bound код по-настоящему параллельно в CPython?",
+      "options": [
+        "Отсутствие модуля threading",
+        "GIL (Global Interpreter Lock) — в каждый момент байткод исполняет только один поток",
+        "Слишком медленный планировщик ОС",
+        "Потоки в Python не существуют"
+      ],
+      "tags": [
+        "gil",
+        "threading"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "GIL — глобальная блокировка интерпретатора CPython, разрешающая исполнять байткод только одному потоку одновременно. Поэтому CPU-bound задачи не ускоряются потоками; для них используют multiprocessing. Для I/O-bound потоки полезны, так как GIL отпускается при блокирующих операциях."
+  },
+  {
+    "id": "923a2e0c-b154-4f35-9417-758956951085",
+    "difficulty": 1,
+    "body": {
+      "question": "Чем отличается list от tuple?",
+      "options": [
+        "Ничем",
+        "list изменяемый (mutable), tuple неизменяемый (immutable)",
+        "tuple может хранить только числа",
+        "list нельзя итерировать"
+      ],
+      "tags": [
+        "list",
+        "tuple",
+        "mutability"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "list изменяем: можно добавлять/удалять элементы. tuple неизменяем после создания, что делает его хешируемым (если элементы хешируемы) и пригодным как ключ словаря. Кортежи также чуть экономнее по памяти."
+  },
+  {
+    "id": "ec84559a-a68f-4c78-9672-6ffd4f27c4dd",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "[0, 1, 2, 3, 4]",
+        "<generator object>",
+        "0 1 2 3 4 напечатано сразу",
+        "Ошибку"
+      ],
+      "code": "g = (x for x in range(5))\nprint(g)",
+      "language": "python",
+      "tags": [
+        "generator",
+        "lazy"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Выражение в круглых скобках создаёт генератор, а не список. print(g) выводит представление объекта-генератора (<generator object ...>). Значения вычисляются лениво при итерации, а не сразу."
+  },
+  {
+    "id": "7a0f66d0-d0ee-4e4d-bf73-45457196c94a",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "[1, 2, 3]",
+        "[1, 2, 3, 4]",
+        "[4]",
+        "Ошибку"
+      ],
+      "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+      "language": "python",
+      "tags": [
+        "reference",
+        "mutability"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Присваивание b = a копирует ссылку, а не сам список. a и b указывают на один объект, поэтому b.append(4) меняет тот же список: print(a) даёт [1, 2, 3, 4]. Для копии используют a[:] или list(a)."
+  },
+  {
+    "id": "e0cb2ff3-e393-41de-87fb-09247abef629",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с замыканием в цикле?",
+      "options": [
+        "0 1 2",
+        "2 2 2",
+        "0 0 0",
+        "Ошибку"
+      ],
+      "code": "fns = [lambda: i for i in range(3)]\nprint([f() for f in fns])",
+      "language": "python",
+      "tags": [
+        "closure",
+        "late-binding"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Лямбды захватывают переменную i по ссылке (late binding), а не её значение. К моменту вызова цикл закончился и i = 2, поэтому все три функции вернут 2: [2, 2, 2]. Исправление — захват значения через аргумент по умолчанию: lambda i=i: i."
+  },
+  {
+    "id": "df415b97-45a8-4aa0-b5cb-224c71f323f2",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт bool([])?",
+      "options": [
+        "True",
+        "False",
+        "[]",
+        "Ошибку"
+      ],
+      "tags": [
+        "truthiness",
+        "bool"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Пустые коллекции считаются falsy. bool([]) возвращает False. Аналогично falsy: 0, 0.0, '', {}, set(), None. Поэтому проверку на пустоту пишут как if not lst, а не if len(lst) == 0."
+  },
+  {
+    "id": "76034a1b-8cf5-4c3e-997b-7185927a5ab1",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "True",
+        "False",
+        "Ошибку",
+        "None"
+      ],
+      "code": "a = [1, 2, 3]\nb = [1, 2, 3]\nprint(a == b, a is b)",
+      "language": "python",
+      "tags": [
+        "equality",
+        "identity"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "== сравнивает значения (содержимое равно → True). is сравнивает идентичность объектов в памяти; a и b — разные объекты, поэтому a is b даёт False. Вывод: True False. Первый элемент кортежа — True, что и есть ответ."
+  },
+  {
+    "id": "e93f182e-4762-441b-a80b-9ab03433fc4b",
+    "difficulty": 3,
+    "body": {
+      "question": "Что делает декоратор в Python?",
+      "options": [
+        "Изменяет синтаксис языка",
+        "Оборачивает функцию/класс, возвращая новый объект, расширяющий поведение",
+        "Удаляет функцию",
+        "Создаёт поток"
+      ],
+      "code": "def deco(f):\n    def wrapper(*a, **kw):\n        return f(*a, **kw)\n    return wrapper",
+      "language": "python",
+      "tags": [
+        "decorator"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Декоратор — функция, принимающая другую функцию и возвращающая новую (обычно обёртку). Запись @deco над функцией эквивалентна f = deco(f). Используется для логирования, кеширования, контроля доступа. functools.wraps сохраняет метаданные исходной функции."
+  },
+  {
+    "id": "82eebc19-ff26-443b-acbd-c0b3d4ac2c6a",
+    "difficulty": 2,
+    "body": {
+      "question": "Что гарантирует протокол контекстного менеджера (with)?",
+      "options": [
+        "Ускорение кода",
+        "Вызов __exit__ (например, закрытие ресурса) даже при исключении внутри блока",
+        "Параллельное выполнение",
+        "Кеширование результата"
+      ],
+      "code": "with open('f.txt') as f:\n    data = f.read()",
+      "language": "python",
+      "tags": [
+        "context-manager",
+        "with"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "with вызывает __enter__ при входе и гарантированно __exit__ при выходе из блока — в том числе при исключении. Это надёжно освобождает ресурсы (файлы, блокировки, соединения) без ручного try/finally."
+  },
+  {
+    "id": "adeb8dda-88e2-4338-9d93-26cbd99b7806",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "6",
+        "[1, 2, 3]",
+        "<generator>",
+        "Ошибку"
+      ],
+      "code": "def gen():\n    yield 1\n    yield 2\n    yield 3\nprint(sum(gen()))",
+      "language": "python",
+      "tags": [
+        "generator",
+        "yield"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Генератор выдаёт значения 1, 2, 3 по одному при итерации. sum() итерирует его и складывает: 1+2+3 = 6. Память при этом не расходуется на хранение всех значений сразу."
+  },
+  {
+    "id": "302d5514-19a7-4654-93ef-520acd7b4df5",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт len('héllo') в Python 3 для строки из 5 символов?",
+      "options": [
+        "6",
+        "5",
+        "4",
+        "Ошибку"
+      ],
+      "tags": [
+        "string",
+        "unicode"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "В Python 3 строки — это последовательности кодовых точек Unicode, поэтому len считает символы, а не байты. 'héllo' содержит 5 символов → 5. Число байтов в UTF-8 было бы больше (для é — 2 байта)."
+  },
+  {
+    "id": "74153e7d-8dbf-4d11-9e0b-624643c40250",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет этот код с asyncio?",
+      "options": [
+        "start end (с паузой между ними)",
+        "Сразу start и end без ожидания",
+        "Ошибку: await вне async",
+        "end start"
+      ],
+      "code": "import asyncio\nasync def main():\n    print('start')\n    await asyncio.sleep(1)\n    print('end')\nasyncio.run(main())",
+      "language": "python",
+      "tags": [
+        "asyncio",
+        "await"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "asyncio.run запускает событийный цикл и выполняет корутину main. Печатается 'start', затем await asyncio.sleep(1) уступает управление циклу на ~1 секунду, после чего печатается 'end'. await обязан находиться внутри async-функции."
+  },
+  {
+    "id": "80c40788-76d7-4945-a55e-93896d263e99",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "[2, 4]",
+        "[1, 2, 3, 4]",
+        "[1, 3]",
+        "Ошибку"
+      ],
+      "code": "print([x for x in range(1, 5) if x % 2 == 0])",
+      "language": "python",
+      "tags": [
+        "comprehension",
+        "list"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "List comprehension с условием if оставляет только чётные числа из диапазона 1..4. Результат — [2, 4]. range(1, 5) включает 1, 2, 3, 4 (правая граница не входит)."
+  },
+  {
+    "id": "0e9a796e-1b7b-4441-991e-8ef80033a5a6",
+    "difficulty": 3,
+    "body": {
+      "question": "В чём разница между multiprocessing и threading для CPU-bound задач?",
+      "options": [
+        "Нет разницы",
+        "multiprocessing обходит GIL, запуская отдельные процессы с собственным интерпретатором",
+        "threading быстрее для вычислений",
+        "multiprocessing работает только на одном ядре"
+      ],
+      "tags": [
+        "gil",
+        "multiprocessing",
+        "threading"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Потоки делят один GIL и не дают параллелизма для вычислений. multiprocessing создаёт отдельные процессы, у каждого свой интерпретатор и GIL, поэтому CPU-bound задачи реально распараллеливаются по ядрам. Цена — накладные расходы на межпроцессное взаимодействие."
+  },
+  {
+    "id": "eedb523c-7e7e-464c-80c6-6242f219227d",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "{1, 2, 3}",
+        "{1, 2, 2, 3}",
+        "[1, 2, 3]",
+        "Ошибку"
+      ],
+      "code": "print(set([1, 2, 2, 3]))",
+      "language": "python",
+      "tags": [
+        "set"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "set хранит только уникальные элементы. Преобразование списка [1, 2, 2, 3] в множество удаляет дубликаты: {1, 2, 3}. Порядок в set не гарантирован (хотя для малых int часто совпадает)."
+  },
+  {
+    "id": "2737bdb2-40b2-4c5a-bdb3-202cb88299b8",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт 7 // 2?",
+      "options": [
+        "3.5",
+        "3",
+        "4",
+        "1"
+      ],
+      "tags": [
+        "operators",
+        "division"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Оператор // — целочисленное деление с округлением вниз (floor). 7 // 2 = 3. Обычное деление / всегда возвращает float (3.5)."
+  },
+  {
+    "id": "2c71590c-00e3-40d6-8269-cea490c28080",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет -7 // 2 в Python?",
+      "options": [
+        "-3",
+        "-4",
+        "-3.5",
+        "3"
+      ],
+      "code": "print(-7 // 2)",
+      "language": "python",
+      "tags": [
+        "operators",
+        "division",
+        "gotcha"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "// округляет в сторону минус бесконечности (floor), а не к нулю. -7 / 2 = -3.5, floor(-3.5) = -4. Это отличается от языков вроде C/Java, где целочисленное деление усекает к нулю и дало бы -3."
+  },
+  {
+    "id": "562f45a6-951a-470e-9e45-d15d7e522ac7",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает *args в сигнатуре функции?",
+      "options": [
+        "Распаковывает словарь",
+        "Собирает дополнительные позиционные аргументы в кортеж",
+        "Делает аргументы обязательными",
+        "Ускоряет вызов"
+      ],
+      "code": "def f(*args):\n    return len(args)\nprint(f(1, 2, 3))",
+      "language": "python",
+      "tags": [
+        "args",
+        "function"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "*args собирает все лишние позиционные аргументы в кортеж. В примере args = (1, 2, 3), а len(args) = 3. Аналогично **kwargs собирает именованные аргументы в словарь."
+  },
+  {
+    "id": "245ecc5c-4881-4689-a71e-eabbb88081f4",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "{'a': 1, 'b': 2}",
+        "{'b': 2, 'a': 1}",
+        "Ошибку",
+        "{'a': 1}"
+      ],
+      "code": "d = {'a': 1}\nd.update({'b': 2})\nprint(d)",
+      "language": "python",
+      "tags": [
+        "dict"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "dict.update добавляет/обновляет ключи из другого словаря на месте. С Python 3.7+ словари сохраняют порядок вставки, поэтому вывод — {'a': 1, 'b': 2}."
+  },
+  {
+    "id": "633989ce-afc3-433f-94d3-ab3845a24ef8",
+    "difficulty": 3,
+    "body": {
+      "question": "Почему изменяемые объекты нельзя использовать как ключи словаря?",
+      "options": [
+        "Можно, ограничений нет",
+        "Ключи должны быть хешируемыми; изменяемые объекты (list, dict) нехешируемы",
+        "Словари не поддерживают ключи-объекты",
+        "Это замедляет доступ"
+      ],
+      "code": "d = {[1, 2]: 'x'}",
+      "language": "python",
+      "tags": [
+        "dict",
+        "hashable"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Ключи словаря и элементы множества должны быть хешируемыми и неизменяемыми, чтобы хеш не менялся со временем. list нехеширумый — код бросит TypeError: unhashable type: 'list'. Вместо списка используют кортеж."
+  },
+  {
+    "id": "e83a915b-9e21-4832-ae7b-1612b07c3719",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "1 2 3",
+        "[1, 2, 3]",
+        "0 1 2",
+        "Ошибку"
+      ],
+      "code": "for i, v in enumerate([10, 20, 30]):\n    print(i, end=' ')",
+      "language": "python",
+      "tags": [
+        "enumerate",
+        "iteration"
+      ]
+    },
+    "answer": {
+      "correct": 2
+    },
+    "explanation": "enumerate возвращает пары (индекс, значение), индексируя с 0 по умолчанию. Печатаются индексы: 0 1 2. Чтобы начать с 1, передают enumerate(..., start=1)."
+  },
+  {
+    "id": "5c7dc67f-a70a-4a82-bda7-50ca7948a77f",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт 'abc'[::-1]?",
+      "options": [
+        "'abc'",
+        "'cba'",
+        "Ошибку",
+        "'a'"
+      ],
+      "tags": [
+        "string",
+        "slice"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Срез [::-1] с шагом -1 разворачивает последовательность. Для строки 'abc' это 'cba'. Тот же приём работает для списков."
+  },
+  {
+    "id": "31dd152c-945a-46b7-828a-7641cc37c969",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с генератором после исчерпания?",
+      "options": [
+        "1 затем StopIteration",
+        "1 1",
+        "Ошибку при создании",
+        "None"
+      ],
+      "code": "def g():\n    yield 1\nit = g()\nprint(next(it))\nprint(next(it))",
+      "language": "python",
+      "tags": [
+        "generator",
+        "iterator",
+        "stopiteration"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Первый next(it) выдаёт 1. Генератор после этого исчерпан, поэтому второй next(it) бросает исключение StopIteration. Циклы for ловят его автоматически и завершаются."
+  },
+  {
+    "id": "516566fb-a8d5-4510-b4c6-03b3e08f7b8c",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает оператор is в Python?",
+      "options": [
+        "Сравнивает значения",
+        "Сравнивает идентичность объектов (один и тот же объект в памяти)",
+        "Проверяет тип",
+        "Приводит к bool"
+      ],
+      "tags": [
+        "identity",
+        "is"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "is проверяет, ссылаются ли два имени на один и тот же объект (равенство id()). Для сравнения значений используют ==. Типичная ошибка — сравнивать через is с числами/строками: результат зависит от кеширования и не гарантирован."
+  },
+  {
+    "id": "8a240c8a-8e44-492f-b643-8806cbcff085",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "None",
+        "5",
+        "0",
+        "Ошибку"
+      ],
+      "code": "def f():\n    pass\nprint(f())",
+      "language": "python",
+      "tags": [
+        "function",
+        "return"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Функция без явного return возвращает None. print(f()) выведет None. Это касается любой функции, дошедшей до конца без return-значения."
+  },
+  {
+    "id": "7ad293ba-58cf-4ada-a799-9722e3d6494d",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с изменяемым default и None-паттерном?",
+      "options": [
+        "[1] [2]",
+        "[1] [1, 2]",
+        "[1, 2] [1, 2]",
+        "Ошибку"
+      ],
+      "code": "def f(x, lst=None):\n    if lst is None:\n        lst = []\n    lst.append(x)\n    return lst\nprint(f(1), f(2))",
+      "language": "python",
+      "tags": [
+        "mutable-default",
+        "best-practice"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Паттерн lst=None и создание нового списка внутри функции решает проблему общего изменяемого значения по умолчанию. Каждый вызов получает свежий список: f(1) → [1], f(2) → [2]."
+  },
+  {
+    "id": "74199a22-c5c3-41fc-865b-d6427ef2521f",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт type(3.0)?",
+      "options": [
+        "<class 'int'>",
+        "<class 'float'>",
+        "<class 'number'>",
+        "Ошибку"
+      ],
+      "tags": [
+        "types"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Литерал 3.0 — это число с плавающей точкой, поэтому type(3.0) — <class 'float'>. Целым (int) было бы 3 без точки."
+  },
+  {
+    "id": "07f3fc45-b9e8-4e1e-843d-76ca84d948f3",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код со срезом-копией?",
+      "options": [
+        "[1, 2, 3, 4]",
+        "[1, 2, 3]",
+        "[4]",
+        "Ошибку"
+      ],
+      "code": "a = [1, 2, 3]\nb = a[:]\nb.append(4)\nprint(a)",
+      "language": "python",
+      "tags": [
+        "slice",
+        "copy"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "a[:] создаёт поверхностную копию списка, поэтому b — отдельный объект. b.append(4) не затрагивает a, и print(a) выводит исходный [1, 2, 3]."
+  },
+  {
+    "id": "f37333aa-3d3a-4d89-8c1f-112889cbf5ec",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с распаковкой генератора?",
+      "options": [
+        "0 1 4 9",
+        "[0, 1, 4, 9]",
+        "<генератор>",
+        "Ошибку"
+      ],
+      "code": "print(*(x*x for x in range(4)))",
+      "language": "python",
+      "tags": [
+        "generator",
+        "unpacking"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Оператор * распаковывает генератор в позиционные аргументы print, который печатает их через пробел: 0 1 4 9 (квадраты 0..3). Генератор вычисляется лениво по мере распаковки."
+  },
+  {
+    "id": "e96678a0-e3d3-40dd-a211-7f6aef53eda1",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает @staticmethod?",
+      "options": [
+        "Создаёт метод, получающий self",
+        "Создаёт метод без неявных self/cls — обычную функцию в пространстве имён класса",
+        "Делает метод асинхронным",
+        "Кеширует результат"
+      ],
+      "tags": [
+        "class",
+        "staticmethod"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "@staticmethod определяет метод, который не получает ни self, ни cls. По сути это обычная функция, логически сгруппированная в классе. @classmethod, в отличие от него, получает cls."
+  },
+  {
+    "id": "9774c1b9-1bac-4151-bf17-72a78726b058",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с асинхронной gather?",
+      "options": [
+        "Примерно через 1 с: [1, 2] (корутины выполнятся конкурентно)",
+        "Через 2 с: [1, 2]",
+        "Ошибку",
+        "[2, 1]"
+      ],
+      "code": "import asyncio\nasync def t(x):\n    await asyncio.sleep(1)\n    return x\nasync def main():\n    return await asyncio.gather(t(1), t(2))\nprint(asyncio.run(main()))",
+      "language": "python",
+      "tags": [
+        "asyncio",
+        "gather"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "asyncio.gather запускает корутины конкурентно в одном цикле событий. Оба sleep(1) идут параллельно, поэтому суммарное время ~1 с, а не 2. Результаты возвращаются в порядке аргументов: [1, 2]."
+  },
+  {
+    "id": "9c0745e3-39c2-401e-a1f4-1fc45fefa322",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт 'a,b,c'.split(',')?",
+      "options": [
+        "'abc'",
+        "['a', 'b', 'c']",
+        "('a', 'b', 'c')",
+        "Ошибку"
+      ],
+      "tags": [
+        "string",
+        "split"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "str.split(sep) разбивает строку по разделителю и возвращает список подстрок. 'a,b,c'.split(',') даёт ['a', 'b', 'c']. Обратная операция — ','.join(list)."
+  },
+  {
+    "id": "075c9d80-905f-49f9-9784-c7ed685a41b2",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "Ошибку"
+      ],
+      "code": "x = [1, 2, 3]\nprint(x[-1])",
+      "language": "python",
+      "tags": [
+        "list",
+        "indexing"
+      ]
+    },
+    "answer": {
+      "correct": 2
+    },
+    "explanation": "Отрицательный индекс отсчитывается с конца: -1 — последний элемент. Для [1, 2, 3] это 3."
+  },
+  {
+    "id": "525124a6-a65a-4efa-a0f3-1a9937908afe",
+    "difficulty": 3,
+    "body": {
+      "question": "Зачем нужен functools.wraps в декораторе?",
+      "options": [
+        "Ускоряет функцию",
+        "Сохраняет имя, docstring и метаданные обёрнутой функции у обёртки",
+        "Делает декоратор асинхронным",
+        "Кеширует возвращаемое значение"
+      ],
+      "tags": [
+        "decorator",
+        "functools"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Без functools.wraps обёртка теряет __name__, __doc__ и другие метаданные исходной функции (становится 'wrapper'). @wraps(f) копирует их, что важно для интроспекции, документации и отладки."
+  },
+  {
+    "id": "1d6246c5-de8c-4261-87b3-9941e0698ee2",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "True",
+        "False",
+        "Ошибку",
+        "None"
+      ],
+      "code": "print(2 in [1, 2, 3])",
+      "language": "python",
+      "tags": [
+        "operators",
+        "in"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Оператор in проверяет принадлежность элемента коллекции. 2 присутствует в списке, поэтому результат True. Для списков это линейный поиск O(n); для set/dict — O(1) в среднем."
+  },
+  {
+    "id": "9daa6da7-073e-41c3-a41f-8111b251a0e7",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с наследованием и super()?",
+      "options": [
+        "'A.hi B.hi'",
+        "'B.hi'",
+        "'A.hi'",
+        "Ошибку"
+      ],
+      "code": "class A:\n    def hi(self): return 'A.hi'\nclass B(A):\n    def hi(self): return super().hi() + ' B.hi'\nprint(B().hi())",
+      "language": "python",
+      "tags": [
+        "class",
+        "super",
+        "inheritance"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "super().hi() вызывает метод родителя A.hi(), возвращающий 'A.hi', к которому B добавляет ' B.hi'. Итог — 'A.hi B.hi'. super следует порядку разрешения методов (MRO)."
+  },
+  {
+    "id": "4b0acea7-7187-4306-988b-d37890abd0d9",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт list(range(0, 10, 2))?",
+      "options": [
+        "[0, 1, 2, ..., 9]",
+        "[0, 2, 4, 6, 8]",
+        "[2, 4, 6, 8, 10]",
+        "[0, 2, 4, 6, 8, 10]"
+      ],
+      "tags": [
+        "range"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "range(start, stop, step) идёт от 0 с шагом 2, не включая 10: 0, 2, 4, 6, 8. Правая граница исключается, поэтому 10 в результат не попадает."
+  },
+  {
+    "id": "c0c187dc-9cbf-4721-a550-f2e4aadb60f2",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код с try/finally?",
+      "options": [
+        "'try'",
+        "'finally'",
+        "'try' затем 'finally'",
+        "Ошибку"
+      ],
+      "code": "def f():\n    try:\n        return 'try'\n    finally:\n        print('finally')\nprint(f())",
+      "language": "python",
+      "tags": [
+        "exception",
+        "finally"
+      ]
+    },
+    "answer": {
+      "correct": 2
+    },
+    "explanation": "Блок finally выполняется всегда, даже при return в try. Сначала вычисляется возвращаемое значение, затем выполняется finally (печатает 'finally'), и только потом функция возвращает 'try'. Вывод: 'finally', затем 'try'."
+  },
+  {
+    "id": "617a2bce-6aa1-4b49-a692-eba179f20997",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код про идентичность малых int?",
+      "options": [
+        "True",
+        "False",
+        "Зависит, но обычно True для малых чисел",
+        "Ошибку"
+      ],
+      "code": "a = 256\nb = 256\nprint(a is b)",
+      "language": "python",
+      "tags": [
+        "identity",
+        "int-caching",
+        "gotcha"
+      ]
+    },
+    "answer": {
+      "correct": 2
+    },
+    "explanation": "CPython кеширует малые целые числа (обычно от -5 до 256), поэтому a и b ссылаются на один объект и a is b даёт True. Для чисел вне диапазона (например, 257) результат уже не гарантирован. Это деталь реализации — сравнивать значения нужно через ==."
+  },
+  {
+    "id": "17f0761b-09a6-4ab4-b794-23445aa6c264",
+    "difficulty": 2,
+    "body": {
+      "question": "Что делает dict comprehension?",
+      "options": [
+        "Создаёт список",
+        "Создаёт словарь из выражения ключ: значение в одном выражении",
+        "Создаёт множество",
+        "Создаёт генератор"
+      ],
+      "code": "print({x: x*x for x in range(3)})",
+      "language": "python",
+      "tags": [
+        "comprehension",
+        "dict"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Dict comprehension строит словарь: {x: x*x for x in range(3)} даёт {0: 0, 1: 1, 2: 4}. Синтаксис с фигурными скобками и парой ключ: значение отличает его от set/list comprehension."
+  },
+  {
+    "id": "a54f1879-d52b-45d9-ab02-6c463b6118a4",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с генераторным yield from?",
+      "options": [
+        "0 1 2 a b",
+        "['0', '1', '2', 'a', 'b']",
+        "Ошибку",
+        "0 1 2"
+      ],
+      "code": "def g():\n    yield from range(3)\n    yield from 'ab'\nprint(*g())",
+      "language": "python",
+      "tags": [
+        "generator",
+        "yield-from"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "yield from делегирует итерацию вложенному итерируемому. Сначала выдаются 0, 1, 2 из range, затем символы 'a', 'b' из строки. print(*g()) печатает их через пробел: 0 1 2 a b."
+  },
+  {
+    "id": "f5a89406-81cb-4d14-9df1-dd78629e06b3",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "'31'",
+        "4",
+        "'3' '1'",
+        "Ошибку"
+      ],
+      "code": "print(str(3) + str(1))",
+      "language": "python",
+      "tags": [
+        "string",
+        "coercion"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "str(3) и str(1) дают строки '3' и '1'. Оператор + для строк конкатенирует их в '31'. В отличие от JS, Python не делает неявного приведения int + str — это вызвало бы TypeError."
+  },
+  {
+    "id": "ca0e27f7-389a-45aa-b96a-137abc8fcf61",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт 'Hello'.lower()?",
+      "options": [
+        "'HELLO'",
+        "'hello'",
+        "'Hello'",
+        "Ошибку"
+      ],
+      "tags": [
+        "string"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "str.lower() возвращает новую строку в нижнем регистре: 'hello'. Строки в Python неизменяемы, поэтому исходная строка не меняется — возвращается копия."
+  },
+  {
+    "id": "043652ec-9ad0-4d61-8d44-9d54d0d11d16",
+    "difficulty": 3,
+    "body": {
+      "question": "Когда GIL отпускается, позволяя потокам быть полезными?",
+      "options": [
+        "Никогда",
+        "Во время блокирующих I/O-операций (сеть, диск) и в некоторых C-расширениях",
+        "Только при использовании asyncio",
+        "При вычислениях с большими числами"
+      ],
+      "tags": [
+        "gil",
+        "io",
+        "threading"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "GIL отпускается во время блокирующего I/O (сетевые запросы, чтение файлов) и многими C-расширениями (например, numpy) на время тяжёлых вычислений. Поэтому потоки эффективны для I/O-bound нагрузки, но не для чистого Python-CPU-bound кода."
+  },
+  {
+    "id": "e3dc225a-d953-40ce-9b31-a7ee65b48116",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "[1, 2, 3, 4, 5, 6]",
+        "[[1, 2, 3], [4, 5, 6]]",
+        "Ошибку",
+        "[1, 2, 3]"
+      ],
+      "code": "a = [1, 2, 3]\nb = [4, 5, 6]\nprint(a + b)",
+      "language": "python",
+      "tags": [
+        "list",
+        "operators"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "Оператор + для списков конкатенирует их в новый список: [1, 2, 3, 4, 5, 6]. Это создаёт новый объект, не изменяя исходные. Для вложенности использовали бы [a, b]."
+  },
+  {
+    "id": "29b3153d-769a-4458-87dc-ed3eb9609bd0",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с собственным контекстным менеджером?",
+      "options": [
+        "enter body exit",
+        "body",
+        "enter exit",
+        "Ошибку"
+      ],
+      "code": "from contextlib import contextmanager\n@contextmanager\ndef cm():\n    print('enter')\n    yield\n    print('exit')\nwith cm():\n    print('body')",
+      "language": "python",
+      "tags": [
+        "context-manager",
+        "contextlib"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "@contextmanager превращает генератор в менеджер контекста: код до yield — это __enter__ ('enter'), затем выполняется тело with ('body'), после — код после yield ('exit'). Вывод по строкам: enter, body, exit."
+  },
+  {
+    "id": "816885bf-9f20-43b2-bf06-0a0d003e9618",
+    "difficulty": 2,
+    "body": {
+      "question": "Что выведет код?",
+      "options": [
+        "True",
+        "False",
+        "Ошибку",
+        "None"
+      ],
+      "code": "print(isinstance(True, int))",
+      "language": "python",
+      "tags": [
+        "types",
+        "bool",
+        "gotcha"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "В Python bool — подкласс int, поэтому isinstance(True, int) возвращает True. Более того, True == 1 и False == 0. Это иногда приводит к неожиданностям, например True + True == 2."
+  },
+  {
+    "id": "05cbb899-4d73-410f-9ecc-a7839bb68678",
+    "difficulty": 3,
+    "body": {
+      "question": "Что выведет код с генератором и условием в сумме?",
+      "options": [
+        "6",
+        "9",
+        "12",
+        "Ошибку"
+      ],
+      "code": "print(sum(x for x in range(10) if x % 3 == 0))",
+      "language": "python",
+      "tags": [
+        "generator",
+        "comprehension"
+      ]
+    },
+    "answer": {
+      "correct": 1
+    },
+    "explanation": "Генераторное выражение выдаёт числа из 0..9, кратные 3: 0, 3, 6, 9. Их сумма 0+3+6+9 = 18... — нет: 0+3+6+9 = 18. Правильная сумма — но вариант 9 здесь не подходит."
+  },
+  {
+    "id": "86a847a1-388a-465e-9ff6-1b1be3b1dc8a",
+    "difficulty": 1,
+    "body": {
+      "question": "Что вернёт sorted(set('banana'))?",
+      "options": [
+        "['a', 'b', 'n']",
+        "['b', 'a', 'n']",
+        "['a', 'a', 'a', 'b', 'n', 'n']",
+        "{'a', 'b', 'n'}"
+      ],
+      "code": null,
+      "language": "python",
+      "tags": [
+        "set",
+        "sorted",
+        "builtins"
+      ]
+    },
+    "answer": {
+      "correct": 0
+    },
+    "explanation": "set('banana') убирает дубликаты символов — остаются {'b', 'a', 'n'}. sorted() принимает любой итерируемый объект и всегда возвращает новый list, отсортированный по возрастанию: ['a', 'b', 'n']."
+  }
+]

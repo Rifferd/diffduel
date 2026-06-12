@@ -18,6 +18,7 @@ from src.core.logging import configure_logging, get_logger
 from src.core.middleware import RequestContextMiddleware, SecurityHeadersMiddleware
 from src.core.redis import close_redis, get_redis
 from src.internal_api.router import router as internal_router
+from src.tasks.router import router as tasks_router
 from src.topics.router import router as topics_router
 from src.users.router import router as users_router
 
@@ -60,6 +61,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(users_router)
     app.include_router(topics_router)
+    app.include_router(tasks_router)
     app.include_router(internal_router)
 
     @app.get("/healthz", tags=["health"])

@@ -15,6 +15,7 @@ dependencies = [
     "pyjwt>=2.10",
     "redis>=5.2",
     "structlog>=24.4",
+    "aioboto3>=13.0",
 ]
 
 [dependency-groups]
@@ -24,6 +25,8 @@ dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
     "httpx>=0.28",
+    "types-aiobotocore-s3>=3.7.0",
+    "botocore-stubs>=1.43.14",
 ]
 
 [build-system]
@@ -60,9 +63,17 @@ plugins = []
 module = "migrations.*"
 ignore_errors = true
 
+[[tool.mypy.overrides]]
+# у aioboto3 нет стабов и py.typed; типизацию даёт types-aiobotocore-s3.
+module = "aioboto3.*"
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "s3: тесты против реального MinIO (S3); пропускаются, если эндпоинт недоступен",
+]

@@ -141,8 +141,24 @@ class TestProdConfigGuard:
             jwt_secret=self._GOOD_SECRET,
             internal_api_token=self._GOOD_INTERNAL,
             cors_origins=["https://diffduel.com"],
+            s3_secret_key="prod-grade-s3-secret-key",  # noqa: S106
         )
         assert settings.cookie_secure is True
+
+    def test_prod_rejects_dev_s3_secret(self) -> None:
+        import pytest
+        from pydantic import ValidationError
+
+        from src.core.config import _DEV_S3_SECRET, Settings
+
+        with pytest.raises(ValidationError, match="S3_SECRET_KEY"):
+            Settings(
+                app_env="prod",
+                jwt_secret=self._GOOD_SECRET,
+                internal_api_token=self._GOOD_INTERNAL,
+                cors_origins=["https://diffduel.com"],
+                s3_secret_key=_DEV_S3_SECRET,
+            )
 
     def test_dev_allows_defaults(self) -> None:
         from src.core.config import Settings
