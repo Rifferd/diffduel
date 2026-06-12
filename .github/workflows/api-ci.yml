@@ -1,0 +1,80 @@
+name: api-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-ci.yml"
+
+# Отменяем устаревшие прогоны на той же ветке/PR.
+concurrency:
+  group: api-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: diffduel
+          POSTGRES_PASSWORD: diffduel
+          POSTGRES_DB: diffduel
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U diffduel -d diffduel"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://diffduel:diffduel@localhost:5432/diffduel
+      REDIS_URL: redis://localhost:6379/0
+      APP_ENV: test
+      JWT_SECRET: ci-only-secret-ci-only-secret-ci-only-secret-ci-only-secret-0123456789
+      INTERNAL_API_TOKEN: ci-internal
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Ruff check
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: Mypy
+        run: uv run mypy src
+
+      - name: Pytest
+        run: uv run pytest
