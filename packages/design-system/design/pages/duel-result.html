@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — результат дуэли</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  .res { max-width: 960px; margin: 0 auto; padding: 28px 0 48px; }
+  .appbar { position: sticky; top: 0; z-index: var(--z-nav); background: rgb(238 241 245/.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .appbar__in { display: flex; align-items: center; gap: 20px; height: 56px; }
+  .appbar__link { color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 14px; }
+  .appbar__link:hover { color: var(--ink); }
+  .res__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+  .res-head { text-align: center; padding: 8px 0 6px; }
+  .res-head__title { font: 800 34px var(--font-display); font-stretch: 110%; }
+  .res-head__title--win  { color: var(--plus); }
+  .res-head__title--loss { color: var(--minus); }
+  .res-head__title--draw { color: var(--ink-soft); }
+  .res-head__delta { font: 700 15px var(--font-mono); font-variant-numeric: tabular-nums; margin-top: 2px; }
+
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+
+  .breakdown { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); overflow: hidden; }
+  .breakdown__hd { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .breakdown__hd h3 { font: 700 15px var(--font-display); font-stretch: 110%; }
+  .br-row { display: grid; grid-template-columns: 24px 1fr auto auto; gap: 12px; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .br-row:last-child { border-bottom: 0; }
+  .br-row__n { font: 700 12px var(--font-mono); color: var(--ink-soft); }
+  .br-row__t { font: 700 12px var(--font-mono); font-variant-numeric: tabular-nums; }
+  .br-row__sign { width: 18px; text-align: center; font: 700 13px var(--font-mono); }
+  .br-row.is-win  { background: rgb(31 157 85/.05); }
+  .br-row.is-lose { background: rgb(229 72 77/.05); }
+
+  /* result states strip */
+  .states { margin-top: 36px; }
+  .states__grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 14px; }
+  .state-card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); padding: 16px; }
+  .state-card .res-head { padding-top: 0; }
+  .state-card .res-head__title { font-size: 24px; }
+  .state-card .share { margin-top: 12px; }
+
+  .tabbar { display: none; position: sticky; bottom: 0; }
+  @media (max-width: 640px) {
+    .res__grid, .states__grid { grid-template-columns: 1fr; }
+    .res { padding: 20px 0 40px; }
+    .appbar { display: none; }
+    .tabbar { display: grid; }
+  }
+</style>
+</head>
+<body>
+<nav class="appbar">
+  <div class="wrap appbar__in">
+    <a class="nav__logo" href="app-home.html"><span class="vs">VS</span>DiffDuel</a>
+    <span class="nav__spacer"></span>
+    <a class="appbar__link" href="app-home.html">На главную</a>
+    <a class="appbar__link" href="leaderboard.html">Рейтинг</a>
+  </div>
+</nav>
+<main class="wrap res">
+
+  <div class="res__grid">
+    <!-- left: outcome -->
+    <div>
+      <div class="res-head">
+        <span class="eyebrow">// дуэль #84 213 завершена</span>
+        <h1 class="res-head__title res-head__title--win">ПОБЕДА</h1>
+        <div class="res-head__delta diff-plus">+24 Elo → 1 506</div>
+      </div>
+      <div class="share" style="margin:14px 0">
+        <div class="share__top"><span>DIFFDUEL · #84 213</span><span>SQL</span></div>
+        <div class="share__score">
+          <div><div class="share__s">4</div><div class="share__n">anton_dev</div><div class="share__d share__d--plus">+24</div></div>
+          <div class="share__colon">:</div>
+          <div><div class="share__s">2</div><div class="share__n">sql_ninja</div><div class="share__d share__d--minus">−18</div></div>
+        </div>
+        <div class="share__bottom"><span>лучшее время 6.2s</span><span>diffduel.com</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn--duel">Отправить вызов</button>
+        <button class="btn btn--ghost">Реванш</button>
+      </div>
+    </div>
+
+    <!-- right: breakdown + paywall -->
+    <div style="display:grid;gap:14px">
+      <div class="breakdown">
+        <div class="breakdown__hd"><h3>Разбор по задачам</h3><span class="eyebrow">вы · соперник</span></div>
+        <div class="br-row is-win"><span class="br-row__n">1</span><span>SQL · JOIN</span><span class="br-row__t">5.1s · 8.0s</span><span class="br-row__sign diff-plus">+</span></div>
+        <div class="br-row is-lose"><span class="br-row__n">2</span><span>SQL · LEFT JOIN</span><span class="br-row__t">12.4s · 6.9s</span><span class="br-row__sign diff-minus">−</span></div>
+        <div class="br-row is-win"><span class="br-row__n">3</span><span>JS · замыкание</span><span class="br-row__t">7.2s · 9.1s</span><span class="br-row__sign diff-plus">+</span></div>
+        <div class="br-row is-win"><span class="br-row__n">4</span><span>JS · async</span><span class="br-row__t">6.0s · 11.3s</span><span class="br-row__sign diff-plus">+</span></div>
+        <div class="br-row is-lose"><span class="br-row__n">5</span><span>конкурентность</span><span class="br-row__t">истёк · 14.0s</span><span class="br-row__sign diff-minus">−</span></div>
+      </div>
+
+      <div class="ai-up">
+        <span class="eyebrow eyebrow--accent">AI-разбор · Pro</span>
+        <div class="ai-up__row" style="margin-top:8px"><span class="ai-up__dot"></span><p><b>Задача 2 · SQL.</b> Вы выбрали LEFT JOIN, но условие в WHERE превратило его в INNER — строки без пары отфильтровались.</p></div>
+        <div class="ai-up__row"><span class="ai-up__dot"></span><p class="blur">Задача 5 · конкурентность. Гонка возникает из-за того, что чтение и запись счётчика не атомарны, и второй поток…</p></div>
+        <button class="btn btn--duel btn--block">Открыть разбор · 99 ₽ или Pro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- all three result states (§4: победа / поражение / ничья) -->
+  <div class="states">
+    <span class="eyebrow">// состояния результата</span>
+    <div class="states__grid">
+      <div class="state-card">
+        <div class="res-head"><div class="res-head__title res-head__title--win">ПОБЕДА</div><div class="res-head__delta diff-plus">+24 → 1 506</div></div>
+        <div class="share">
+          <div class="share__top"><span>DIFFDUEL</span><span>SQL</span></div>
+          <div class="share__score"><div><div class="share__s">4</div><div class="share__n">вы</div></div><div class="share__colon">:</div><div><div class="share__s">2</div><div class="share__n">соперник</div></div></div>
+          <div class="share__bottom"><span>+24 Elo</span><span>diffduel.com</span></div>
+        </div>
+      </div>
+      <div class="state-card">
+        <div class="res-head"><div class="res-head__title res-head__title--loss">ПОРАЖЕНИЕ</div><div class="res-head__delta diff-minus">−18 → 1 464</div></div>
+        <div class="share share--loss">
+          <div class="share__top"><span>DIFFDUEL</span><span>JS</span></div>
+          <div class="share__score"><div><div class="share__s">1</div><div class="share__n">вы</div></div><div class="share__colon">:</div><div><div class="share__s">4</div><div class="share__n">соперник</div></div></div>
+          <div class="share__bottom"><span>−18 Elo</span><span>diffduel.com</span></div>
+        </div>
+      </div>
+      <div class="state-card">
+        <div class="res-head"><div class="res-head__title res-head__title--draw">НИЧЬЯ</div><div class="res-head__delta diff--zero">0 → 1 482</div></div>
+        <div class="share share--draw">
+          <div class="share__top"><span>DIFFDUEL</span><span>PY</span></div>
+          <div class="share__score"><div><div class="share__s">3</div><div class="share__n">вы</div></div><div class="share__colon">:</div><div><div class="share__s">3</div><div class="share__n">соперник</div></div></div>
+          <div class="share__bottom"><span>0 Elo</span><span>diffduel.com</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="tabbar">
+  <a class="tabbar__tab" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+  <a class="tabbar__tab" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+  <a class="tabbar__tab" href="tournaments.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Турниры</a>
+  <a class="tabbar__tab" href="app-profile.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+</nav>
+</body>
+</html>

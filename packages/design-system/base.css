@@ -1,0 +1,102 @@
+/* ============================================================
+   DiffDuel — Base
+   Reset · typography · layout utilities (.wrap, .mono, .diff…)
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+/* ---------- headings ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-stretch: 110%;
+  letter-spacing: -.01em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+/* ---------- type-scale utilities (§2) ---------- */
+.t-display { font: 800 clamp(40px, 5vw, 62px)/1.02 var(--font-display); font-stretch: 110%; letter-spacing: -.02em; }
+.t-h2      { font: 800 32px var(--font-display); font-stretch: 110%; }
+.t-h3      { font: 700 17px var(--font-display); font-stretch: 110%; }
+.t-body    { font: 400 15px/1.55 var(--font-body); }
+.t-lead    { font: 400 17px/1.55 var(--font-body); color: var(--ink-soft); }
+.t-num     { font: 700 15px var(--font-mono); font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+  .t-h2 { font-size: 21px; }
+  .t-h3 { font-size: 16px; }
+  .t-body { font-size: 14px; }
+  .t-lead { font-size: 15px; }
+}
+
+/* ---------- mono & numbers: tabular so digits never jump ---------- */
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num  { font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ---------- eyebrow: "// label" mono uppercase ---------- */
+.eyebrow {
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.eyebrow--arena  { color: var(--arena-soft); }
+.eyebrow--accent { color: var(--plus); }
+@media (max-width: 640px) { .eyebrow { font-size: 9px; letter-spacing: .13em; } }
+
+/* ---------- diff helpers ---------- */
+.diff-plus  { color: var(--plus); }
+.diff-minus { color: var(--minus); }
+
+/* ---------- text-color utilities (замена inline-стилям, §7) ---------- */
+.t-soft       { color: var(--ink-soft); }
+.t-plus       { color: var(--plus); }
+.t-minus      { color: var(--minus); }
+.t-timer      { color: var(--timer); }
+.t-arena-ink  { color: var(--arena-ink); }
+.t-arena-soft { color: var(--arena-soft); }
+.t-plus-b     { color: var(--plus-bright); }
+.t-minus-b    { color: var(--minus-bright); }
+
+/* accent inline link (auth, legal, hints) */
+.link-plus { color: var(--plus); text-decoration: none; font-weight: 600; }
+.link-plus:hover { text-decoration: underline; }
+
+/* signature marker underline in headings */
+.u { box-shadow: inset 0 -14px var(--plus-bg); }
+
+/* ---------- focus ---------- */
+:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+
+/* ---------- accessibility: motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* visually-hidden but available to AT */
+.sr-only, .visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

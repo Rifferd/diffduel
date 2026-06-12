@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel Admin — обзор</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../../manifest.webmanifest">
+<link rel="stylesheet" href="../../../styles.css">
+<link rel="stylesheet" href="../_pageshell.css">
+</head>
+<body>
+<div class="adm">
+  <aside class="adm__side-wrap">
+    <nav class="adm-side">
+      <div class="adm-side__brand"><span class="vs">VS</span>Admin</div>
+      <div class="adm-side__sec">// аналитика</div>
+      <a class="adm-side__item is-on" href="shell.html">Обзор</a>
+      <a class="adm-side__item" href="dashboard.html">Дашборд</a>
+      <div class="adm-side__sec">// контент</div>
+      <a class="adm-side__item" href="tasks.html">Задачи</a>
+      <a class="adm-side__item" href="task-edit.html">Редактор задачи</a>
+      <div class="adm-side__sec">// люди</div>
+      <a class="adm-side__item" href="users.html">Пользователи</a>
+      <div class="adm-side__sec">// система</div>
+      <a class="adm-side__item" href="flags.html">Фиче-флаги</a>
+      <a class="adm-side__item" href="../landing.html">← К продукту</a>
+    </nav>
+  </aside>
+
+  <div class="adm__main">
+    <header class="adm__top">
+      <label class="field"><input type="search" placeholder="Поиск по задачам, игрокам, ID…"></label>
+      <span class="adm__sp" style="flex:1"></span>
+      <span class="mono t-soft" style="font-size:12px">admin@diffduel</span>
+      <span class="ava ava--3 ava--sm">AD</span>
+    </header>
+    <main class="adm__content">
+      <h1 style="font:800 24px var(--font-display);font-stretch:110%;margin-bottom:6px">Обзор</h1>
+      <p class="t-soft" style="font-size:14px;margin-bottom:18px">Каркас админки: сайдбар, топбар с поиском, контент-зона. Утилитарный стиль на тех же токенах — без VS-сплитов и display-шрифта в данных.</p>
+
+      <div class="grid-4" style="margin-bottom:18px">
+        <div class="stat" style="text-align:left"><span class="stat__num" style="font-size:22px">3 482</span><span class="stat__label">DAU</span></div>
+        <div class="stat" style="text-align:left"><span class="stat__num" style="font-size:22px">12 480</span><span class="stat__label">дуэлей / день</span></div>
+        <div class="stat" style="text-align:left"><span class="stat__num stat__num--plus" style="font-size:22px">186 400 ₽</span><span class="stat__label">выручка / мес</span></div>
+        <div class="stat" style="text-align:left"><span class="stat__num" style="font-size:22px">142 мс</span><span class="stat__label">p95 матчмейк</span></div>
+      </div>
+
+      <div class="surface" style="overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--line)"><strong style="font:700 14px var(--font-display);font-stretch:110%">Последние события</strong></div>
+        <table class="adm-table">
+          <thead><tr><th scope="col">Время</th><th scope="col">Событие</th><th scope="col">Объект</th><th scope="col">Статус</th></tr></thead>
+          <tbody>
+            <tr><td class="num">12:04</td><td>Задача опубликована</td><td class="num">#4821</td><td><span class="pill pill--soon">ok</span></td></tr>
+            <tr><td class="num">11:58</td><td>Жалоба на задачу</td><td class="num">#4791</td><td><span class="pill pill--down">review</span></td></tr>
+            <tr><td class="num">11:40</td><td>Бан игрока</td><td class="num">@spammer_42</td><td><span class="pill pill--down">banned</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

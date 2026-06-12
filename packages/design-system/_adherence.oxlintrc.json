@@ -1,0 +1,179 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": []
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Archivo|Inter|JetBrains Mono))/i]",
+        "message": "Font not provided by the design system. Available: Archivo, Inter, JetBrains Mono."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [
+      "--arena",
+      "--arena-2",
+      "--arena-ink",
+      "--arena-line",
+      "--arena-soft",
+      "--ava-1",
+      "--ava-2",
+      "--ava-3",
+      "--ava-4",
+      "--ava-5",
+      "--ava-6",
+      "--bg",
+      "--code-comment",
+      "--code-err-bg",
+      "--code-keyword",
+      "--code-string",
+      "--focus-ring",
+      "--font-body",
+      "--font-display",
+      "--font-mono",
+      "--frame",
+      "--ink",
+      "--ink-soft",
+      "--line",
+      "--minus",
+      "--minus-bg",
+      "--minus-bright",
+      "--plus",
+      "--plus-bg",
+      "--plus-bright",
+      "--plus-hover",
+      "--radius",
+      "--radius-lg",
+      "--radius-pill",
+      "--row-alt",
+      "--seg-bg",
+      "--shadow",
+      "--shadow-card",
+      "--shadow-cta",
+      "--share-draw-l",
+      "--share-draw-r",
+      "--share-minus",
+      "--share-plus",
+      "--skeleton-mid",
+      "--space",
+      "--space-1",
+      "--space-12",
+      "--space-16",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-6",
+      "--space-8",
+      "--split-angle",
+      "--split-skew",
+      "--surface",
+      "--timer",
+      "--timer-text",
+      "--z-modal",
+      "--z-nav",
+      "--z-toast"
+    ],
+    "tokenKinds": {
+      "--bg": "color",
+      "--surface": "color",
+      "--ink": "color",
+      "--ink-soft": "color",
+      "--line": "color",
+      "--plus": "color",
+      "--plus-bg": "color",
+      "--plus-hover": "color",
+      "--minus": "color",
+      "--minus-bg": "color",
+      "--timer": "color",
+      "--timer-text": "font",
+      "--arena": "color",
+      "--arena-2": "color",
+      "--arena-ink": "color",
+      "--arena-soft": "color",
+      "--arena-line": "color",
+      "--plus-bright": "color",
+      "--minus-bright": "color",
+      "--share-plus": "color",
+      "--share-minus": "color",
+      "--share-draw-l": "color",
+      "--share-draw-r": "color",
+      "--row-alt": "color",
+      "--seg-bg": "color",
+      "--frame": "color",
+      "--skeleton-mid": "color",
+      "--code-keyword": "color",
+      "--code-string": "color",
+      "--code-comment": "color",
+      "--code-err-bg": "color",
+      "--ava-1": "color",
+      "--ava-2": "color",
+      "--ava-3": "color",
+      "--ava-4": "color",
+      "--ava-5": "color",
+      "--ava-6": "color",
+      "--font-display": "font",
+      "--font-body": "font",
+      "--font-mono": "font",
+      "--radius": "radius",
+      "--radius-lg": "radius",
+      "--radius-pill": "radius",
+      "--space": "spacing",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-6": "spacing",
+      "--space-8": "spacing",
+      "--space-12": "spacing",
+      "--space-16": "spacing",
+      "--shadow": "shadow",
+      "--shadow-card": "shadow",
+      "--shadow-cta": "shadow",
+      "--focus-ring": "shadow",
+      "--split-angle": "other",
+      "--split-skew": "other",
+      "--z-nav": "other",
+      "--z-modal": "other",
+      "--z-toast": "other"
+    },
+    "fontFamilies": [
+      "Archivo",
+      "Inter",
+      "JetBrains Mono"
+    ]
+  }
+}

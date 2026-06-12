@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — тренировка</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .topic-card { display: grid; gap: 14px; padding: 20px; }
+  .topic-card__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .topic-card__name { font: 700 18px var(--font-display); font-stretch: 110%; }
+  .topic-card__lvl { font: 500 12px var(--font-mono); color: var(--ink-soft); }
+  .topic-card__meta { display: flex; justify-content: space-between; font: 500 12px var(--font-mono); color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link is-on" href="training.html">Тренировка</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <a class="appnav__link" href="app-profile.html">Профиль</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">// без рейтинга · в своём темпе</span>
+        <h1>Тренировка</h1>
+        <p>Отрабатывай слабые темы без давления Эло. Прогресс считается по доле верных ответов.</p>
+      </div>
+
+      <div class="section">
+        <div class="section__head"><h2>Сложность</h2>
+          <div class="seg" role="tablist" aria-label="Сложность">
+            <button class="seg__opt is-on" role="tab" aria-selected="true">1 · база</button>
+            <button class="seg__opt" role="tab" aria-selected="false">2 · средне</button>
+            <button class="seg__opt" role="tab" aria-selected="false">3 · хард</button>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="surface topic-card">
+            <div class="topic-card__top"><span class="topic-card__name">SQL</span><span class="ava ava--1 ava--sm">SQL</span></div>
+            <div class="tbar--topic"><i style="width:84%"></i></div>
+            <div class="topic-card__meta"><span>точность 84%</span><span>128 задач</span></div>
+            <a class="btn btn--duel btn--block" href="training-run.html">Тренироваться</a>
+          </div>
+          <div class="surface topic-card">
+            <div class="topic-card__top"><span class="topic-card__name">JavaScript</span><span class="ava ava--3 ava--sm">JS</span></div>
+            <div class="tbar--topic"><i style="width:62%"></i></div>
+            <div class="topic-card__meta"><span>точность 62%</span><span>96 задач</span></div>
+            <a class="btn btn--duel btn--block" href="training-run.html">Тренироваться</a>
+          </div>
+          <div class="surface topic-card">
+            <div class="topic-card__top"><span class="topic-card__name">Python</span><span class="ava ava--5 ava--sm">PY</span></div>
+            <div class="tbar--topic"><i style="width:71%"></i></div>
+            <div class="topic-card__meta"><span>точность 71%</span><span>74 задачи</span></div>
+            <a class="btn btn--duel btn--block" href="training-run.html">Тренироваться</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head"><h2>Слабые темы</h2><span class="eyebrow">// по истории дуэлей</span></div>
+        <div class="surface pad-lg">
+          <div class="topic-row"><span class="topic-row__name">LEFT JOIN</span><div class="tbar--topic"><i style="width:38%"></i></div><span class="topic-row__pct">38%</span></div>
+          <div class="topic-row"><span class="topic-row__name">Замыкания</span><div class="tbar--topic"><i style="width:45%"></i></div><span class="topic-row__pct">45%</span></div>
+          <div class="topic-row"><span class="topic-row__name">Конкурентность</span><div class="tbar--topic"><i style="width:29%"></i></div><span class="topic-row__pct">29%</span></div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__tab" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+    <a class="tabbar__tab is-on" href="training.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 20V10M6 20V4M18 20v-7"/></svg>Тренировка</a>
+    <a class="tabbar__tab" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+    <a class="tabbar__tab" href="app-profile.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+  </nav>
+</div>
+</body>
+</html>

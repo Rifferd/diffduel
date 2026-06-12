@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — вход</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+</head>
+<body>
+<main class="auth">
+  <div class="auth__card">
+    <a class="auth__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+    <h1 class="auth__title">Вход в арену</h1>
+    <p class="auth__sub">Докажи кодом, кто быстрее</p>
+
+    <a class="btn btn--github btn--block" href="app-home.html">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85l-.01 2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+      Войти через GitHub
+    </a>
+    <a class="btn btn--google btn--block" href="app-home.html">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.5 12.2c0-.7-.06-1.4-.18-2.06H12v3.9h5.9a5 5 0 0 1-2.2 3.3v2.7h3.56c2.08-1.92 3.24-4.74 3.24-7.84z"/><path fill="#34A853" d="M12 23c2.94 0 5.4-.97 7.2-2.63l-3.56-2.7c-.98.66-2.24 1.05-3.64 1.05-2.8 0-5.17-1.9-6.02-4.43H2.3v2.78A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.98 14.29a6.6 6.6 0 0 1 0-4.2V7.31H2.3a11 11 0 0 0 0 9.76z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.03.55 4.16 1.62l3.12-3.12A10.6 10.6 0 0 0 12 1 11 11 0 0 0 2.3 7.31l3.68 2.78C6.83 7.56 9.2 5.4 12 5.4z"/></svg>
+      Войти через Google
+    </a>
+
+    <div class="auth__divider">// или по почте</div>
+
+    <label class="field"><span class="field__label">Email</span><input type="email" placeholder="you@team.dev" value="anton@team.dev"></label>
+    <label class="field field--error"><span class="field__label">Пароль</span><input type="password" value="123"><span class="field__hint">Неверный пароль. Попробуйте ещё раз.</span></label>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <label class="check"><input type="checkbox" checked><span class="check__box"></span>Запомнить меня</label>
+      <a class="link-plus" href="#" style="font-size:13px">Забыли пароль?</a>
+    </div>
+    <button class="btn btn--duel btn--block">Войти</button>
+
+    <p class="auth__foot">Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/* ============================================================
+   DiffDuel Design System — entry stylesheet
+   Compiler reads this at project root and follows @import.
+   Consuming pages/cards can also just link this one file.
+   Order: tokens → fonts → base → components.
+   ============================================================ */
+
+@import url("tokens.css");
+@import url("fonts.css");
+@import url("base.css");
+@import url("components-base.css");
+@import url("components-domain.css");
+@import url("components-extended.css");

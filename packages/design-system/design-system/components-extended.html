@@ -1,0 +1,153 @@
+<!-- @dsCard group="Components" viewport="960x1700" name="Extended components" subtitle="FAQ · upload · charts · countdown · radar · admin · flags · tooltip" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Компоненты (расширенные)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 900px; margin: 0 auto; display: grid; gap: 26px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .blk { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); overflow: hidden; }
+  .blk__hd { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--row-alt); }
+  .blk__hd h2 { font: 700 14px var(--font-mono); }
+  .blk__body { padding: 20px 18px; display: grid; gap: 16px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+  .lbl { font: 700 9px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .on-arena { background: var(--arena); }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// стайлгайд · этапы 4–6</span>
+    <h1>Расширенные компоненты</h1>
+    <p>Паттерны для страниц этапов 4–6. Каждый — на токенах дизайн-системы, без нового цвета. Анимации отключаются по prefers-reduced-motion.</p>
+  </div>
+
+  <!-- ACCORDION -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.acc — FAQ (details, без JS)</h2></div>
+    <div class="blk__body">
+      <div class="acc">
+        <details class="acc__item" open><summary>Дуэли правда бесплатны?</summary><div class="acc__body">Да. Безлимитные дуэли, рейтинг и лидерборды — навсегда бесплатны. Pro добавляет AI-разбор ошибок и расширенную статистику.</div></details>
+        <details class="acc__item"><summary>Что если соперник не находится?</summary><div class="acc__body">После расширения окна поиска до ±300 Эло подключается «призрак» — записанная игра реального игрока вашего уровня.</div></details>
+        <details class="acc__item"><summary>Можно отменить Pro?</summary><div class="acc__body">В любой момент из настроек. Доступ сохранится до конца оплаченного периода.</div></details>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROP -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.drop — загрузка аватара · 5 состояний</h2></div>
+    <div class="blk__body" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="drop"><div class="drop__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></div><div class="drop__title">Перетащите фото</div><div class="drop__hint">PNG/JPG до 2 МБ</div></div>
+      <div class="drop drop--over"><div class="drop__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></div><div class="drop__title">Отпустите файл</div><div class="drop__hint">PNG/JPG до 2 МБ</div></div>
+      <div class="drop drop--uploading"><div class="drop__ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></div><div class="drop__title">Загружаем…</div><div class="drop__bar"><i style="width:64%"></i></div><div class="drop__pct">64%</div></div>
+      <div class="drop drop--error"><div class="drop__ic"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></div><div class="drop__title">Слишком большой файл</div><div class="drop__hint">Максимум 2 МБ</div></div>
+      <div class="drop drop--preview"><div class="drop__preview-row"><span class="ava ava--you" style="width:56px;height:56px;border-radius:10px;font-size:16px">ВЫ</span><div style="text-align:left"><div class="drop__title">avatar.png</div><div class="drop__hint">загружено · 128 КБ</div></div><button class="btn btn--ghost" style="margin-left:auto">Заменить</button></div></div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.chart · .spark — динамика Эло</h2></div>
+    <div class="blk__body two">
+      <div class="chart">
+        <svg viewBox="0 0 320 120" preserveAspectRatio="none" role="img" aria-label="Динамика Эло за 90 дней">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--plus)" stop-opacity=".22"/><stop offset="1" stop-color="var(--plus)" stop-opacity="0"/></linearGradient></defs>
+          <line class="chart__grid" x1="0" y1="30" x2="320" y2="30"/><line class="chart__grid" x1="0" y1="60" x2="320" y2="60"/><line class="chart__grid" x1="0" y1="90" x2="320" y2="90"/>
+          <path class="chart__area" fill="url(#g)" d="M0,92 L40,80 L80,86 L120,60 L160,66 L200,40 L240,48 L280,28 L320,34 L320,120 L0,120 Z"/>
+          <path class="chart__line" d="M0,92 L40,80 L80,86 L120,60 L160,66 L200,40 L240,48 L280,28 L320,34"/>
+          <circle class="chart__dot" cx="320" cy="34" r="3.5"/>
+        </svg>
+      </div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <div class="lbl">спарклайн 64×22</div>
+        <div><svg class="spark" viewBox="0 0 64 22"><path d="M0,18 L12,14 L24,16 L36,8 L48,10 L64,3"/></svg> <span class="num diff-plus">+58</span></div>
+        <div><svg class="spark spark--down" viewBox="0 0 64 22"><path d="M0,5 L12,9 L24,7 L36,14 L48,12 L64,19"/></svg> <span class="num diff-minus">−24</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC BARS + COUNTDOWN -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.tbar--topic · .cd</h2></div>
+    <div class="blk__body two">
+      <div>
+        <div class="topic-row"><span class="topic-row__name">SQL</span><div class="tbar--topic"><i style="width:84%"></i><b style="width:16%"></b></div><span class="topic-row__pct">84%</span></div>
+        <div class="topic-row"><span class="topic-row__name">JavaScript</span><div class="tbar--topic"><i style="width:62%"></i><b style="width:38%"></b></div><span class="topic-row__pct">62%</span></div>
+        <div class="topic-row"><span class="topic-row__name">Python</span><div class="tbar--topic"><i style="width:71%"></i><b style="width:29%"></b></div><span class="topic-row__pct">71%</span></div>
+      </div>
+      <div style="display:grid;gap:14px;align-content:start">
+        <div class="lbl">до конца задачи дня</div>
+        <div class="cd cd--lg"><span class="cd__num" role="timer">07:42:18</span></div>
+        <div class="cd"><span class="cd__num">3</span><span class="cd__lbl">старт через</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHIPS + RADAR -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.chip · .radar</h2></div>
+    <div class="blk__body two">
+      <div style="display:grid;gap:14px;align-content:start">
+        <div class="lbl">светлые · default / is-on / disabled</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="chip is-on">Все темы</button><button class="chip">SQL</button><button class="chip">JS</button><button class="chip" disabled>Rust · скоро</button></div>
+        <div class="lbl">на арене</div>
+        <span class="on-arena" style="padding:12px;border-radius:10px;display:flex;gap:8px"><button class="chip chip--arena is-on">SQL</button><button class="chip chip--arena">JS</button><button class="chip chip--arena">Python</button></span>
+      </div>
+      <div class="on-arena" style="border-radius:var(--radius-lg);padding:18px;display:grid;gap:10px;justify-items:center">
+        <div class="radar"><span class="radar__ring"></span><span class="radar__ring"></span><span class="radar__ring"></span><span class="radar__vs">VS</span></div>
+        <span class="eyebrow eyebrow--arena">// ±150 Эло → расширяем</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.adm-table · .adm-side · .flag</h2></div>
+    <div class="blk__body two">
+      <div style="border:1px solid var(--line);border-radius:var(--radius);overflow:hidden">
+        <table class="adm-table">
+          <thead><tr><th><input type="checkbox" aria-label="Выбрать все"></th><th>ID</th><th class="is-sort">Эло</th><th>Тема</th><th>Статус</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox" aria-label="Выбрать #4821" checked></td><td class="num">#4821</td><td class="num">1 998</td><td>SQL</td><td><span class="pill pill--soon">published</span></td></tr>
+            <tr><td><input type="checkbox" aria-label="Выбрать #4822"></td><td class="num">#4822</td><td class="num">1 482</td><td>JS</td><td><span class="pill pill--down">review</span></td></tr>
+            <tr><td><input type="checkbox" aria-label="Выбрать #4823"></td><td class="num">#4823</td><td class="num">1 204</td><td>PY</td><td><span class="pill pill--done">draft</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <div class="flag"><label class="toggle"><input type="checkbox" checked><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">AI-разбор v2</div><div class="flag__key">ai_review_v2</div></div><span class="flag__pct diff-plus">35%</span></div>
+        <div class="flag"><label class="toggle"><input type="checkbox"><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">Турниры команд</div><div class="flag__key">team_tournaments</div></div><span class="flag__pct">0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLTIP + CRUMBS + RADIO + DANGER -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.tip · .crumbs · .radio-card · .danger</h2></div>
+    <div class="blk__body two">
+      <div style="display:grid;gap:16px;align-content:start">
+        <div class="crumbs"><a href="#">Админка</a><span class="crumbs__sep">/</span><a href="#">Задачи</a><span class="crumbs__sep">/</span><b>#4822</b></div>
+        <p style="font-size:14px">Рейтинг по системе <span class="tip">Эло<span class="tip__pop">±32 за партию, K=32</span></span> пересчитывается после каждой дуэли.</p>
+        <label class="radio-card is-on"><input type="radio" name="pay" checked><div><div class="radio-card__label">ЮKassa</div><div class="radio-card__sub">карта · СБП</div></div></label>
+        <label class="radio-card"><input type="radio" name="pay"><div><div class="radio-card__label">Telegram Stars</div><div class="radio-card__sub">⭐ 150</div></div></label>
+      </div>
+      <div class="danger">
+        <h3>Удалить аккаунт</h3>
+        <p>Вся история дуэлей и рейтинг будут удалены без возможности восстановления.</p>
+        <button class="btn btn--danger">Удалить навсегда</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

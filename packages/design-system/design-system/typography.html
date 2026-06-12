@@ -1,0 +1,56 @@
+<!-- @dsCard group="Type" viewport="900x1100" name="Typography" subtitle="Archivo · Inter · JetBrains Mono — full scale" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Типографика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 840px; margin: 0 auto; display: grid; gap: 30px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .fam { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .fam__card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); padding: 20px; }
+  .fam__big { font-size: 40px; line-height: 1; margin-bottom: 10px; }
+  .fam__name { font: 700 13px var(--font-mono); }
+  .fam__use { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+  .scale { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); }
+  .row { display: grid; grid-template-columns: 130px 1fr; gap: 20px; align-items: baseline; padding: 16px 20px; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; }
+  .row__meta { font: 700 10px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .row__meta span { display: block; font-weight: 500; letter-spacing: 0; text-transform: none; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// дизайн-токены · §2</span>
+    <h1>Типографика</h1>
+    <p>Display — Archivo 800 со stretch 110%. Текст — Inter. Все числа (Эло, таймеры, счёт) — только JetBrains Mono с tabular-nums, чтобы цифры не прыгали при тике.</p>
+  </div>
+
+  <div class="fam">
+    <div class="fam__card"><div class="fam__big" style="font-family:var(--font-display);font-weight:800;font-stretch:110%">Aa</div><div class="fam__name">Archivo · --font-display</div><div class="fam__use">Заголовки, счёт, цена. wght 500–900, wdth 110.</div></div>
+    <div class="fam__card"><div class="fam__big" style="font-family:var(--font-body)">Aa</div><div class="fam__name">Inter · --font-body</div><div class="fam__use">Body, lead, кнопки. 400 / 500 / 600.</div></div>
+    <div class="fam__card"><div class="fam__big mono" style="font-weight:700">Aa</div><div class="fam__name">JetBrains Mono · --font-mono</div><div class="fam__use">Все числа, код, eyebrow, diff-метки. 500 / 700.</div></div>
+  </div>
+
+  <div class="scale">
+    <div class="row"><div class="row__meta">Display<span>Archivo 800 · clamp 40–62 / 1.02</span></div><div><span class="t-display">Докажи кодом.</span></div></div>
+    <div class="row"><div class="row__meta">H2 секции<span>Archivo 800 · 32 (моб 21)</span></div><div><span class="t-h2">Как проходит дуэль</span></div></div>
+    <div class="row"><div class="row__meta">H3 карточки<span>Archivo 700 · 17 (моб 16)</span></div><div><span class="t-h3">Лидерборд недели</span></div></div>
+    <div class="row"><div class="row__meta">Lead<span>Inter 400 · 17 (моб 15)</span></div><div><span class="t-lead">Одинаковые задачи двум игрокам в реальном времени.</span></div></div>
+    <div class="row"><div class="row__meta">Body<span>Inter 400 · 15 / 1.55</span></div><div><span class="t-body">Побеждает тот, кто думает быстрее. Рейтинг Эло, лидерборды, разбор ошибок от AI.</span></div></div>
+    <div class="row"><div class="row__meta">Кнопка<span>Inter 600 · 14</span></div><div><span style="font:600 14px var(--font-body)">Найти соперника</span></div></div>
+    <div class="row"><div class="row__meta">Крупное число<span>Mono/Archivo 800 · 30–44</span></div><div><span class="mono" style="font-weight:700;font-size:40px">1 506</span></div></div>
+    <div class="row"><div class="row__meta">Число в строке<span>Mono 700 · 13–17 · tabular</span></div><div><span class="diff diff--plus">+24 Elo</span> &nbsp; <span class="diff diff--minus">−18 Elo</span> &nbsp; <span class="diff diff--zero">0 Elo</span></div></div>
+    <div class="row"><div class="row__meta">Eyebrow / th<span>Mono 700 · .14em · upper · 10–11</span></div><div><span class="eyebrow">// арена для разработчиков</span></div></div>
+    <div class="row"><div class="row__meta">Код<span>Mono 500 / 1.6 · 13 (моб 11–12)</span></div><div><code class="mono" style="font-size:13px"><span class="k">for</span> (<span class="k">var</span> i = 0; i &lt; 3; i++)</code></div></div>
+  </div>
+</div>
+</body>
+</html>

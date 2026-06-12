@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -rnoE '#[0-9A-Fa-f]{3,8}\\\\b' --include='*.css' .)",
+      "Bash(grep -rnoE '#[0-9A-Fa-f]{3,8}\\\\b' design/pages/ index.html)",
+      "Bash(perl -pi -e 's/<div class=\"res-head\" style=\"padding-top:0\"><div class=\"res-head__title \\([a-z-]+\\)--\\(win|loss|draw\\)\" style=\"font-size:24px\">/<div class=\"res-head\"><div class=\"res-head__title $1--$2\">/g; s/<div class=\"share\\( share--[a-z]+\\)?\" style=\"margin-top:12px\">/<div class=\"share$1\">/g' design/pages/duel-result.html)",
+      "Bash(perl -pi -e 's/<button class=\"btn\" style=\"background:var\\\\\\(--minus\\\\\\);color:#fff\">/<button class=\"btn btn--danger\">/g; s/<div class=\"modal\" style=\"margin-top:8px;max-width:none\">/<div class=\"modal\" role=\"dialog\" aria-modal=\"true\" style=\"margin-top:8px;max-width:none\">/g' design/pages/settings.html design/pages/admin/users.html)",
+      "Bash(perl -pi -e 's/<button class=\"btn\" style=\"flex:1;padding:8px;background:var\\\\\\(--minus\\\\\\);color:#fff\">/<button class=\"btn btn--danger\" style=\"flex:1;padding:8px\">/g' design/pages/admin/users.html)",
+      "Bash(sed -i '' 's/background: var\\(--minus\\); display: inline-block; animation: dd-pulse/background: var\\(--timer\\); display: inline-block; animation: dd-pulse/' design/pages/tournaments.html)",
+      "Bash(sed -n '64,80p' design/pages/founder.html)",
+      "Bash(gh auth *)",
+      "Bash(git --version)",
+      "Bash(docker --version)",
+      "Bash(export SSHPASS='Hfcf%2WZwgHP')",
+      "Bash(sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 root@62.113.109.191 'uname -a; echo ---; docker ps --format \"table {{.Names}}\\\\t{{.Image}}\\\\t{{.Ports}}\" 2>/dev/null; echo ---; df -h / ; free -h; nproc; echo ---; ls /etc/nginx/sites-enabled 2>/dev/null; ls /opt 2>/dev/null; ls /root 2>/dev/null')",
+      "Bash(git add *)",
+      "Bash(git -c user.name=Rifferd -c user.email=neyttii@gmail.com commit -q -m 'chore: монорепо-фундамент — структура по ТЗ §12, дизайн-контракт, ADR-0001 *)",
+      "Bash(git config *)"
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — турниры</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .trn { padding: 20px; display: grid; gap: 14px; }
+  .trn__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .trn__name { font: 700 18px var(--font-display); font-stretch: 110%; }
+  .trn__meta { display: flex; gap: 20px; font: 500 12px var(--font-mono); color: var(--ink-soft); flex-wrap: wrap; }
+  .trn__meta b { display: block; font: 700 16px var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--timer); display: inline-block; animation: dd-pulse 1.2s infinite; }
+  @media (prefers-reduced-motion: reduce){ .live-dot { animation: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link is-on" href="tournaments.html">Турниры</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">// каждую неделю · бесплатные и призовые</span>
+        <h1>Турниры</h1>
+      </div>
+
+      <div class="section">
+        <div class="grid-2">
+          <div class="surface trn">
+            <div class="trn__top"><span class="trn__name">Пятничный блиц · SQL</span><span class="pill pill--live"><span class="live-dot"></span> live</span></div>
+            <div class="trn__meta"><span><b class="diff-plus">Раунд 3/5</b>сейчас</span><span><b>128</b>участников</span><span><b>0 ₽</b>взнос</span></div>
+            <a class="btn btn--duel btn--block" href="tournament.html">Смотреть сетку</a>
+          </div>
+          <div class="surface trn">
+            <div class="trn__top"><span class="trn__name">Кубок DiffDuel · all-lang</span><span class="pill pill--soon">upcoming</span></div>
+            <div class="trn__meta"><span><b class="t-timer">02:14:30</b>до старта</span><span><b>64</b>мест осталось 11</span><span><b>299 ₽</b>взнос</span></div>
+            <a class="btn btn--ghost btn--block" href="tournament.html">Записаться</a>
+          </div>
+          <div class="surface trn">
+            <div class="trn__top"><span class="trn__name">Ночной JS-марафон</span><span class="pill pill--done">finished</span></div>
+            <div class="trn__meta"><span><b>🏆 masha_pg</b>победитель</span><span><b>96</b>участников</span><span><b>10 000 ₽</b>фонд</span></div>
+            <a class="btn btn--ghost btn--block" href="tournament.html">Результаты</a>
+          </div>
+          <div class="surface trn">
+            <div class="trn__top"><span class="trn__name">Python новичкам</span><span class="pill pill--soon">upcoming</span></div>
+            <div class="trn__meta"><span><b class="t-timer">завтra 19:00</b>старт</span><span><b>32</b>места</span><span><b>0 ₽</b>взнос</span></div>
+            <a class="btn btn--ghost btn--block" href="tournament.html">Записаться</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <span class="eyebrow">// состояние: турниров нет</span>
+        <div class="surface" style="margin-top:8px">
+          <div class="empty">
+            <div class="empty__icon">⌛</div>
+            <div class="empty__title">Пока без турниров</div>
+            <div class="empty__text">Новые турниры публикуются по понедельникам. Включите уведомления, чтобы не пропустить.</div>
+            <button class="btn btn--ghost">Уведомить о старте</button>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__tab" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+    <a class="tabbar__tab" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+    <a class="tabbar__tab is-on" href="tournaments.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Турниры</a>
+    <a class="tabbar__tab" href="app-profile.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+  </nav>
+</div>
+</body>
+</html>

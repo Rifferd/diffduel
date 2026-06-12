@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel Admin — редактор задачи</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../../manifest.webmanifest">
+<link rel="stylesheet" href="../../../styles.css">
+<link rel="stylesheet" href="../_pageshell.css">
+<style>
+  .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 960px){ .edit-grid { grid-template-columns: 1fr; } }
+  .edit-form { display: grid; gap: 14px; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .preview { background: var(--arena); border-radius: var(--radius-lg); border: 1px solid var(--frame); padding: 18px; position: sticky; top: 70px; }
+  .preview__label { font: 700 10px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--arena-soft); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="adm">
+  <aside class="adm__side-wrap">
+    <nav class="adm-side">
+      <div class="adm-side__brand"><span class="vs">VS</span>Admin</div>
+      <div class="adm-side__sec">// контент</div>
+      <a class="adm-side__item" href="tasks.html">Задачи</a>
+      <a class="adm-side__item is-on" href="task-edit.html">Редактор задачи</a>
+      <div class="adm-side__sec">// люди</div>
+      <a class="adm-side__item" href="users.html">Пользователи</a>
+      <div class="adm-side__sec">// система</div>
+      <a class="adm-side__item" href="flags.html">Фиче-флаги</a>
+      <a class="adm-side__item" href="../landing.html">← К продукту</a>
+    </nav>
+  </aside>
+
+  <div class="adm__main">
+    <header class="adm__top">
+      <div class="crumbs"><a href="tasks.html">Задачи</a><span class="crumbs__sep">/</span><b>#4821</b></div>
+      <span style="flex:1"></span>
+      <button class="btn btn--ghost t-minus" style="padding:8px 14px">Отклонить</button>
+      <button class="btn btn--duel" style="padding:8px 14px">Опубликовать</button>
+    </header>
+    <main class="adm__content">
+      <h1 style="font:800 22px var(--font-display);font-stretch:110%;margin-bottom:14px">Редактор задачи #4821</h1>
+
+      <div class="edit-grid">
+        <form class="edit-form" onsubmit="return false">
+          <div class="row-2">
+            <label class="field"><span class="field__label">Тема</span><select><option>JavaScript</option><option>SQL</option><option>Python</option></select></label>
+            <label class="field"><span class="field__label">Сложность</span><select><option>1 · база</option><option>2 · средне</option><option selected>3 · хард</option></select></label>
+          </div>
+          <label class="field"><span class="field__label">Заголовок</span><input type="text" value="Замыкание в цикле for"></label>
+          <label class="field"><span class="field__label">Код задачи</span><textarea class="mono" style="min-height:120px">// Почему счётчик печатает 3, 3, 3?
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100);
+}</textarea></label>
+          <label class="field"><span class="field__label">Варианты (JSON)</span><textarea class="mono" style="min-height:110px">[
+  { "t": "var не блочная — нужна let", "ok": true },
+  { "t": "setTimeout всегда async", "ok": false },
+  { "t": "нужен await перед log", "ok": false }
+]</textarea></label>
+          <label class="field"><span class="field__label">Объяснение</span><textarea style="min-height:80px">var имеет функциональную область видимости...</textarea></label>
+        </form>
+
+        <div class="preview">
+          <div class="preview__label">// превью · как в дуэли</div>
+<pre class="code"><span class="c">// Почему счётчик печатает 3, 3, 3?</span>
+<span class="k">for</span> (<span class="err"><span class="k">var</span></span> i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 100);
+}</pre>
+          <div class="opts opts--stack" style="margin-top:12px">
+            <button class="opt is-correct">var не блочная — нужна let</button>
+            <button class="opt">setTimeout всегда async</button>
+            <button class="opt">нужен await перед log</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!-- @dsCard group="Spacing" viewport="900x900" name="Geometry & elevation" subtitle="Radii · spacing ×4 · shadows · signature VS-split" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Геометрия</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 840px; margin: 0 auto; display: grid; gap: 30px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .grp { display: grid; gap: 14px; }
+  .rad-row, .sh-row, .sp-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .rad { text-align: center; display: grid; gap: 8px; }
+  .rad__box { width: 90px; height: 64px; background: var(--surface); border: 1px solid var(--line); }
+  .rad__lbl { font: 700 11px var(--font-mono); }
+  .sh { display: grid; gap: 8px; text-align: center; }
+  .sh__box { width: 150px; height: 76px; background: var(--surface); border-radius: var(--radius); }
+  .sh__lbl { font: 700 11px var(--font-mono); }
+  .sp { display: grid; gap: 6px; justify-items: center; }
+  .sp__bar { background: var(--plus); height: 16px; border-radius: 3px; }
+  .sh__box--cta { background: var(--plus); }
+  .sp__lbl { font: 700 10px var(--font-mono); color: var(--ink-soft); }
+  .sig { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sig__demo { height: 120px; border-radius: var(--radius-lg); position: relative; overflow: hidden; border: 1px solid #000; }
+  .split-demo { background: linear-gradient(var(--split-angle), rgb(31 157 85/.85) 49.6%, rgb(229 72 77/.85) 50.4%); }
+  .skew-demo { background: var(--arena); }
+  .skew-demo::after { content: ""; position: absolute; inset: -30% -10% -30% 56%; background: linear-gradient(rgb(229 72 77/.4), transparent); transform: skewX(var(--split-skew)); }
+  .sig__cap { font: 700 11px var(--font-mono); margin-top: 8px; }
+  .sig__cap span { display: block; font-weight: 500; color: var(--ink-soft); margin-top: 3px; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// дизайн-токены · §2</span>
+    <h1>Геометрия и тени</h1>
+    <p>Шкала отступов ×4. Радиусы 10 / 16 / pill. Сигнатурные приёмы — диагональный VS-сплит (102°) и наклонные плашки (−12°).</p>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// радиусы</span>
+    <div class="rad-row">
+      <div class="rad"><div class="rad__box" style="border-radius:var(--radius)"></div><span class="rad__lbl">--radius · 10</span></div>
+      <div class="rad"><div class="rad__box" style="border-radius:var(--radius-lg)"></div><span class="rad__lbl">--radius-lg · 16</span></div>
+      <div class="rad"><div class="rad__box" style="border-radius:var(--radius-pill);width:64px;height:64px"></div><span class="rad__lbl">--radius-pill · 99</span></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// шкала отступов ×4 · --space</span>
+    <div class="sp-row">
+      <div class="sp"><div class="sp__bar" style="width:4px"></div><span class="sp__lbl">4</span></div>
+      <div class="sp"><div class="sp__bar" style="width:8px"></div><span class="sp__lbl">8</span></div>
+      <div class="sp"><div class="sp__bar" style="width:12px"></div><span class="sp__lbl">12</span></div>
+      <div class="sp"><div class="sp__bar" style="width:16px"></div><span class="sp__lbl">16</span></div>
+      <div class="sp"><div class="sp__bar" style="width:24px"></div><span class="sp__lbl">24</span></div>
+      <div class="sp"><div class="sp__bar" style="width:32px"></div><span class="sp__lbl">32</span></div>
+      <div class="sp"><div class="sp__bar" style="width:48px"></div><span class="sp__lbl">48</span></div>
+      <div class="sp"><div class="sp__bar" style="width:64px"></div><span class="sp__lbl">64</span></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// тени</span>
+    <div class="sh-row">
+      <div class="sh"><div class="sh__box" style="box-shadow:var(--shadow-card)"></div><span class="sh__lbl">--shadow-card</span></div>
+      <div class="sh"><div class="sh__box" style="box-shadow:var(--shadow)"></div><span class="sh__lbl">--shadow</span></div>
+      <div class="sh"><div class="sh__box sh__box--cta" style="box-shadow:var(--shadow-cta)"></div><span class="sh__lbl">--shadow-cta</span></div>
+      <div class="sh"><div class="sh__box" style="box-shadow:var(--focus-ring)"></div><span class="sh__lbl">--focus-ring</span></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow eyebrow--accent">// сигнатурная геометрия</span>
+    <div class="sig">
+      <div><div class="sig__demo split-demo"></div><div class="sig__cap">--split-angle · 102°<span>Жёсткий градиент-сплит 49.6 / 50.4 — hero, шапка дуэли, share, лого-бейдж.</span></div></div>
+      <div><div class="sig__demo skew-demo"></div><div class="sig__cap">--split-skew · −12°<span>Наклонные плашки skewX — big-CTA, founder-блок.</span></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

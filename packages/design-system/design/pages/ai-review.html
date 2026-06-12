@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — AI-разбор дуэли</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .rev { max-width: 640px; margin: 0 auto; padding: 8px 0 40px; display: grid; gap: 16px; }
+  .rev-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 16px 0 4px; }
+  .rev-card { padding: 22px; display: grid; gap: 14px; }
+  .rev-card__q { display: flex; align-items: center; gap: 10px; }
+  .rev-card__n { font: 700 12px var(--font-mono); width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+  .rev-card__n--wrong { background: var(--minus-bg); color: var(--minus); }
+  .diff-answer { display: grid; gap: 6px; font: 500 13px var(--font-mono); }
+  .diff-answer > div { padding: 8px 12px; border-radius: 8px; }
+  .diff-answer .mine { background: var(--minus-bg); color: var(--minus); }
+  .diff-answer .mine::before { content: "− "; font-weight: 700; }
+  .diff-answer .right { background: var(--plus-bg); color: var(--plus); }
+  .diff-answer .right::before { content: "+ "; font-weight: 700; }
+  .rev-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .rev-card code { font-family: var(--font-mono); background: var(--row-alt); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="duel-result.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="duel-result.html">← К результату</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap rev">
+      <div class="rev-head">
+        <div>
+          <span class="eyebrow eyebrow--accent">// AI-разбор · Pro</span>
+          <h1 style="font:800 26px var(--font-display);font-stretch:110%">Дуэль #84 213 · SQL</h1>
+        </div>
+        <div style="text-align:right"><div class="num diff-plus" style="font-size:22px">4 : 2</div><div class="mono t-soft" style="font-size:12px">2 ошибки разобраны</div></div>
+      </div>
+
+      <div class="surface rev-card">
+        <div class="rev-card__q"><span class="rev-card__n rev-card__n--wrong">2</span><strong style="font:700 15px var(--font-display);font-stretch:110%">SQL · LEFT JOIN</strong><span class="pill pill--down" style="margin-left:auto">12.4s</span></div>
+<pre class="code"><span class="c">-- orders: 5 строк, 2 без customer_id</span>
+<span class="k">SELECT</span> COUNT(*) <span class="k">FROM</span> orders o
+<span class="k">LEFT JOIN</span> customers c <span class="k">ON</span> o.customer_id = c.id
+<span class="err"><span class="k">WHERE</span> c.country = <span class="s">'RU'</span></span>;</pre>
+        <div class="diff-answer">
+          <div class="mine">ваш ответ: вернёт все 5 строк</div>
+          <div class="right">верно: только строки с клиентом из RU</div>
+        </div>
+        <p>Условие <code>WHERE c.country = 'RU'</code> отсеивает строки, где после LEFT JOIN <code>c</code> равен NULL — внешнее соединение фактически становится внутренним. Перенесите условие в <code>ON</code>, чтобы сохранить заказы без клиента.</p>
+      </div>
+
+      <div class="surface rev-card">
+        <div class="rev-card__q"><span class="rev-card__n rev-card__n--wrong">5</span><strong style="font:700 15px var(--font-display);font-stretch:110%">Конкурентность</strong><span class="pill pill--down" style="margin-left:auto">истёк</span></div>
+<pre class="code"><span class="c">// два потока инкрементируют counter</span>
+counter = counter + 1;</pre>
+        <div class="diff-answer">
+          <div class="mine">ваш ответ: всегда +2</div>
+          <div class="right">верно: возможна гонка, итог +1</div>
+        </div>
+        <p>Операция <code>counter + 1</code> не атомарна: чтение и запись разнесены. Если потоки прочитают одно значение до записи, один инкремент потеряется. Нужен атомарный счётчик или мьютекс.</p>
+      </div>
+
+      <div class="surface pad-lg" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="flex:1"><strong style="font:700 15px var(--font-display);font-stretch:110%">Слабая тема: LEFT JOIN</strong><div class="t-soft" style="font-size:13px">Закрепите в тренировке — 10 задач по теме.</div></div>
+        <a class="btn btn--duel" href="training-run.html">Тренировать LEFT JOIN</a>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

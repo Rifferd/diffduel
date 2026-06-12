@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — тренировка SQL</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .run { max-width: 680px; margin: 0 auto; padding: 8px 0 40px; }
+  .run__bar { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
+  .run__progress { flex: 1; height: 8px; border-radius: var(--radius-pill); background: var(--seg-bg); overflow: hidden; }
+  .run__progress > i { display: block; height: 100%; background: var(--plus); border-radius: var(--radius-pill); }
+  .run__count { font: 700 13px var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .qcard { padding: 22px; }
+  .qcard__label { font: 700 10px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; }
+  .explain { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .explain__tag { font: 700 10px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--plus); margin-bottom: 8px; }
+  .explain p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .explain code { font-family: var(--font-mono); background: var(--row-alt); padding: 1px 5px; border-radius: 4px; }
+  .summary { padding: 24px; text-align: center; display: grid; gap: 8px; justify-items: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="training.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="training.html">← Выйти из тренировки</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap run">
+      <h1 class="sr-only">Тренировка SQL — вопрос 4 из 10</h1>
+      <div class="run__bar">
+        <span class="chip is-on">SQL · база</span>
+        <div class="run__progress"><i style="width:40%"></i></div>
+        <span class="run__count">4 / 10</span>
+      </div>
+
+      <!-- исход 1: ответил верно -->
+      <span class="eyebrow">// исход: ответил верно</span>
+      <div class="surface qcard" style="margin-top:8px">
+        <div class="qcard__label">Вопрос 4 · что вернёт запрос?</div>
+<pre class="code code--light"><span class="c">-- orders: 5 строк, 2 без customer_id</span>
+<span class="k">SELECT</span> COUNT(*) <span class="k">FROM</span> orders o
+<span class="k">LEFT JOIN</span> customers c <span class="k">ON</span> o.customer_id = c.id
+<span class="k">WHERE</span> c.country = <span class="s">'RU'</span>;</pre>
+        <div class="opts opts--stack" style="margin-top:14px">
+          <button class="opt opt--light is-correct">Только строки с совпавшим клиентом из RU</button>
+          <button class="opt opt--light" disabled>Все 5 строк</button>
+          <button class="opt opt--light" disabled>3 строки</button>
+        </div>
+        <div class="explain">
+          <div class="explain__tag">// объяснение</div>
+          <p>Условие <code>WHERE c.country = 'RU'</code> отсеивает строки, где <code>c</code> пустой (NULL после LEFT JOIN), превращая внешнее соединение во внутреннее. Чтобы сохранить заказы без клиента, перенесите условие в <code>ON</code>.</p>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn--duel">Следующий вопрос →</button></div>
+      </div>
+
+      <!-- исход 2: ответил неверно, верный показан -->
+      <div style="margin-top:28px">
+        <span class="eyebrow">// исход: ответил неверно</span>
+        <div class="surface qcard" style="margin-top:8px">
+          <div class="qcard__label">Вопрос 4 · что вернёт запрос?</div>
+          <div class="opts opts--stack" style="margin-top:14px">
+            <button class="opt opt--light is-reveal">Только строки с совпавшим клиентом из RU</button>
+            <button class="opt opt--light is-wrong">Все 5 строк</button>
+            <button class="opt opt--light" disabled>3 строки</button>
+          </div>
+          <div class="explain">
+            <div class="explain__tag">// объяснение</div>
+            <p>LEFT JOIN сохраняет все заказы, но <code>WHERE</code> по колонке правой таблицы убирает строки с NULL — поэтому «все 5 строк» неверно.</p>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn--duel">Следующий вопрос →</button></div>
+        </div>
+      </div>
+
+      <!-- session summary (demo state) -->
+      <div style="margin-top:28px">
+        <span class="eyebrow">// состояние: итог сессии</span>
+        <div class="surface summary" style="margin-top:8px">
+          <span class="eyebrow eyebrow--accent">SQL · база · 10 вопросов</span>
+          <div style="font:800 34px var(--font-display);font-stretch:110%">8 / 10</div>
+          <div class="grid-3" style="width:100%;max-width:380px;margin-top:6px">
+            <div class="stat"><span class="stat__num stat__num--plus">80%</span><span class="stat__label">точность</span></div>
+            <div class="stat"><span class="stat__num">9.1s</span><span class="stat__label">среднее</span></div>
+            <div class="stat"><span class="stat__num stat__num--minus">LEFT JOIN</span><span class="stat__label">слабая тема</span></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:10px">
+            <a class="btn btn--duel" href="training-run.html">Ещё 10</a>
+            <a class="btn btn--ghost" href="training.html">К темам</a>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

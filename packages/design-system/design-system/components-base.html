@@ -1,0 +1,196 @@
+<!-- @dsCard group="Components" viewport="940x1500" name="Base components" subtitle="Buttons · pills · avatars · fields · toasts · modal — all states" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Компоненты (базовые)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 880px; margin: 0 auto; display: grid; gap: 26px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .blk { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); overflow: hidden; }
+  .blk__hd { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--row-alt); }
+  .blk__hd h2 { font: 700 14px var(--font-mono); }
+  .blk__body { padding: 20px 18px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .blk__body.col { flex-direction: column; align-items: stretch; }
+  .stk { display: grid; gap: 8px; max-width: 360px; }
+  .lbl { font: 700 9px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); width: 100%; }
+  .mini { border: 0; background: var(--ink); color: #fff; font: 600 11px var(--font-body); padding: 6px 11px; border-radius: 7px; cursor: pointer; }
+  .row3 { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .on-arena { background: var(--arena); }
+  .on-bg { background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// стайлгайд · §3.1</span>
+    <h1>Базовые компоненты</h1>
+    <p>Каждый компонент во всех состояниях. Переключатели демонстрируют состояния — это единственный JS в дизайн-системе; на страницах его нет.</p>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.btn</h2></div>
+    <div class="blk__body">
+      <button class="btn btn--duel">В бой</button>
+      <button class="btn btn--primary">Войти через GitHub</button>
+      <button class="btn btn--ghost">Тренировка</button>
+      <span class="on-arena" style="padding:10px;border-radius:10px"><button class="btn btn--dark-ghost">Отмена</button></span>
+      <button class="btn btn--duel" disabled>Disabled</button>
+      <button class="btn btn--duel btn--loading">Loading</button>
+    </div>
+    <div class="blk__body col">
+      <span class="lbl">full-width (mobile)</span>
+      <button class="btn btn--duel btn--block">Найти соперника · ~20 сек</button>
+    </div>
+  </div>
+
+  <!-- PILLS + EYEBROW -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.pill · .eyebrow</h2></div>
+    <div class="blk__body">
+      <span class="pill pill--up">+96</span>
+      <span class="pill pill--down">−12</span>
+      <span class="pill">W7</span>
+      <span class="pill pill--live">live</span>
+      <span class="pill pill--soon">upcoming</span>
+      <span class="pill pill--done">finished</span>
+      <span style="width:100%"></span>
+      <span class="eyebrow">// светлая</span>
+      <span class="eyebrow eyebrow--accent">// акцентная</span>
+      <span class="on-arena" style="padding:8px 10px;border-radius:8px"><span class="eyebrow eyebrow--arena">// на арене</span></span>
+    </div>
+  </div>
+
+  <!-- AVATARS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.ava</h2></div>
+    <div class="blk__body">
+      <span class="ava ava--you">ВЫ</span>
+      <span class="ava ava--rival">SN</span>
+      <span class="ava ava--3">MP</span>
+      <span class="ava ava--4 ava--md">KK</span>
+      <span class="ava ava--5 ava--sm">DB</span>
+      <span class="on-arena" style="padding:8px;border-radius:8px"><span class="ava ava--ghost ava--sm">G</span></span>
+      <span class="row3"><span class="ava ava--3">MP</span><span class="ava-badge ava-badge--founder">Founder</span><span class="ava-badge ava-badge--pro">Pro</span></span>
+    </div>
+  </div>
+
+  <!-- SEG + VS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.seg · .vs</h2></div>
+    <div class="blk__body">
+      <div class="seg" role="tablist">
+        <button class="seg__opt is-on" role="tab" aria-selected="true">Неделя</button>
+        <button class="seg__opt" role="tab" aria-selected="false">Всё время</button>
+      </div>
+      <div class="seg" role="tablist">
+        <button class="seg__opt is-on" role="tab" aria-selected="true">1</button>
+        <button class="seg__opt" role="tab" aria-selected="false">2</button>
+        <button class="seg__opt" role="tab" aria-selected="false">3</button>
+      </div>
+      <span class="vs">VS</span>
+    </div>
+  </div>
+
+  <!-- FIELDS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.field</h2><button class="mini" onclick="toggleErr()">toggle error</button></div>
+    <div class="blk__body">
+      <div class="stk">
+        <label class="field"><span class="field__label">Email</span><input type="email" placeholder="you@team.dev" value="anton@team.dev"></label>
+        <label class="field" id="fErr"><span class="field__label">Пароль</span><input type="password" value="123"><span class="field__hint">Минимум 8 символов</span></label>
+        <label class="field"><span class="field__label">Ник</span><input type="text" placeholder="username" disabled value="недоступно"></label>
+      </div>
+      <div class="stk">
+        <label class="field field--search"><span class="field__label">Поиск</span><span class="field__control t-soft" contenteditable="false">Поиск по игрокам…</span></label>
+        <label class="field"><span class="field__label">Тема</span><select><option>SQL</option><option>JavaScript</option><option>Python</option></select></label>
+        <label class="field"><span class="field__label">Объяснение</span><textarea placeholder="JSON-body задачи…"></textarea></label>
+        <label class="field is-focus"><span class="field__label">Ник · focus-состояние</span><input type="text" value="anton_dev"><span class="field__hint field__hint--ok">✓ ник свободен</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECK + TOGGLE -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.check · .toggle</h2></div>
+    <div class="blk__body">
+      <label class="check"><input type="checkbox" checked><span class="check__box"></span>Запомнить меня</label>
+      <label class="check"><input type="checkbox"><span class="check__box"></span>Получать вызовы</label>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle__track"></span>Звук в дуэли</label>
+      <label class="toggle"><input type="checkbox"><span class="toggle__track"></span>Только рейтинговые</label>
+    </div>
+  </div>
+
+  <!-- TOASTS + BANNERS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.toast · .banner</h2></div>
+    <div class="blk__body col">
+      <div class="row3">
+        <div class="toast toast--success"><span class="toast__mark">+</span><div>Вызов отправлен в Telegram-чат команды.</div></div>
+        <div class="toast toast--error"><span class="toast__mark">−</span><div>Не удалось подключиться к дуэли.</div></div>
+        <div class="toast toast--info"><span class="toast__mark">›</span><div>Соперник присоединился к очереди.</div></div>
+      </div>
+      <div class="banner banner--warn"><span class="banner__mark">!</span> Переподключаемся к серверу дуэли…</div>
+      <div class="banner banner--error"><span class="banner__mark">−</span> Нет соединения. Дуэль приостановлена.</div>
+    </div>
+  </div>
+
+  <!-- SKELETON + EMPTY -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.skeleton · .empty</h2></div>
+    <div class="blk__body" style="align-items:flex-start">
+      <div class="stk" style="gap:10px;flex:1">
+        <div class="row3"><span class="skeleton skeleton--ava"></span><div style="display:grid;gap:6px;flex:1"><span class="skeleton skeleton--line" style="width:60%"></span><span class="skeleton skeleton--line" style="width:40%"></span></div></div>
+        <span class="skeleton skeleton--card"></span>
+        <div class="skeleton--table"><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span></div>
+      </div>
+      <div class="empty" style="flex:1;min-width:260px">
+        <div class="empty__icon">∅</div>
+        <div class="empty__title">Пока нет дуэлей</div>
+        <div class="empty__text">Сыграй первую дуэль — здесь появится история и серия побед.</div>
+        <button class="btn btn--duel">В бой</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: confirm / form / paywall -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.modal — confirm · форма · paywall</h2></div>
+    <div class="blk__body on-bg" style="flex-wrap:wrap">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-confirm" style="margin:0 auto">
+        <div class="modal__head"><h3 class="modal__title" id="m-confirm">Удалить аккаунт?</h3><button class="modal__close" aria-label="Закрыть">×</button></div>
+        <div class="modal__body">Это действие необратимо. Вся история дуэлей и рейтинг Эло будут удалены.</div>
+        <div class="modal__foot"><button class="btn btn--ghost">Отмена</button><button class="btn btn--danger">Удалить</button></div>
+      </div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-form" style="margin:0 auto">
+        <div class="modal__head"><h3 class="modal__title" id="m-form">Вызвать на дуэль</h3><button class="modal__close" aria-label="Закрыть">×</button></div>
+        <div class="modal__body" style="display:grid;gap:12px">
+          <label class="field"><span class="field__label">Ник соперника</span><input type="text" placeholder="sql_ninja"></label>
+          <label class="field"><span class="field__label">Тема</span><select><option>SQL</option><option>JavaScript</option><option>Python</option></select></label>
+        </div>
+        <div class="modal__foot"><button class="btn btn--ghost">Отмена</button><button class="btn btn--duel">Отправить вызов</button></div>
+      </div>
+      <div class="modal modal--paywall" role="dialog" aria-modal="true" aria-labelledby="m-pay" style="margin:0 auto">
+        <div class="modal__head"><h3 class="modal__title" id="m-pay">AI-разбор дуэли · Pro</h3><button class="modal__close" aria-label="Закрыть">×</button></div>
+        <div class="modal__body">
+          <p style="margin-bottom:8px"><b>Задача 2 · SQL.</b> Вы выбрали LEFT JOIN, но условие в WHERE превратило его в INNER…</p>
+          <p class="blur">Задача 5 · конкурентность. Гонка возникает из-за того, что чтение и запись счётчика не атомарны…</p>
+        </div>
+        <div class="modal__foot"><button class="btn btn--ghost">Позже</button><button class="btn btn--duel">Открыть · 99 ₽ или Pro</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleErr(){ document.getElementById('fErr').classList.toggle('field--error'); }
+</script>
+</body>
+</html>

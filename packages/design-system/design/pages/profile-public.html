@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — профиль sql_ninja</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .prof-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 640px) { .prof-grid { grid-template-columns: 1fr; } }
+  .prof__not-found { background: var(--arena); border: 1px solid var(--frame); border-radius: var(--radius-lg); margin-top: 8px; }
+  .prof__empty-icon { background: var(--arena-2); border-color: var(--arena-line); color: var(--arena-soft); }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <a class="btn btn--duel" href="queue.html">В бой</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="phead">
+        <span class="ava ava--rival phead__ava">SN</span>
+        <div>
+          <h1 class="phead__name">sql_ninja <span class="ava-badge ava-badge--pro">Pro</span></h1>
+          <div class="phead__sub">PostgreSQL · с января 2026 · #2 за неделю</div>
+        </div>
+        <div class="phead__elo"><b>1 998</b><span>Elo</span></div>
+      </div>
+      <div style="margin:4px 0 8px"><a class="btn btn--duel" href="queue.html">Вызвать на дуэль</a> <a class="btn btn--ghost" href="#">Смотреть игры</a></div>
+
+      <div class="section prof-grid">
+        <div style="display:grid;gap:14px">
+          <div class="surface pad-lg">
+            <div class="section__head" style="margin:0 0 12px"><h2 style="font-size:16px">Динамика Эло</h2></div>
+            <div class="chart" style="border:0;padding:0">
+              <svg viewBox="0 0 640 160" preserveAspectRatio="none" role="img" aria-label="Динамика Эло">
+                <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--plus)" stop-opacity=".2"/><stop offset="1" stop-color="var(--plus)" stop-opacity="0"/></linearGradient></defs>
+                <line class="chart__grid" x1="0" y1="40" x2="640" y2="40"/><line class="chart__grid" x1="0" y1="80" x2="640" y2="80"/><line class="chart__grid" x1="0" y1="120" x2="640" y2="120"/>
+                <path class="chart__area" fill="url(#g2)" d="M0,120 L80,100 L160,108 L240,72 L320,84 L400,58 L480,40 L560,52 L640,30 L640,160 L0,160 Z"/>
+                <path class="chart__line" d="M0,120 L80,100 L160,108 L240,72 L320,84 L400,58 L480,40 L560,52 L640,30"/>
+                <circle class="chart__dot" cx="640" cy="30" r="4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="surface pad-lg">
+            <div class="section__head" style="margin:0 0 10px"><h2 style="font-size:15px">Последние дуэли</h2></div>
+            <div class="duel-row" style="border-top:0"><span class="ava ava--you ava--sm">ВЫ</span><div><b>anton_dev</b><span class="mono t-soft" style="display:block;font-size:11px">SQL · 2:4 · 2 мин</span></div><span class="diff-minus mono" style="margin-left:auto;font-weight:700">−21</span></div>
+            <div class="duel-row"><span class="ava ava--3 ava--sm">MP</span><div><b>masha_pg</b><span class="mono t-soft" style="display:block;font-size:11px">SQL · 3:3 · вчера</span></div><span class="diff--zero mono" style="margin-left:auto;font-weight:700">0</span></div>
+            <div class="duel-row"><span class="ava ava--4 ava--sm">KK</span><div><b>kotlin_kid</b><span class="mono t-soft" style="display:block;font-size:11px">JS · 4:1 · вчера</span></div><span class="diff-plus mono" style="margin-left:auto;font-weight:700">+19</span></div>
+          </div>
+        </div>
+        <div style="display:grid;gap:14px">
+          <div class="grid-2" style="gap:10px">
+            <div class="stat"><span class="stat__num">1 998</span><span class="stat__label">пик Эло</span></div>
+            <div class="stat"><span class="stat__num stat__num--plus">84%</span><span class="stat__label">точность</span></div>
+            <div class="stat"><span class="stat__num">W3</span><span class="stat__label">серия</span></div>
+            <div class="stat"><span class="stat__num">512</span><span class="stat__label">дуэлей</span></div>
+          </div>
+          <div class="surface pad-lg">
+            <div class="section__head" style="margin:0 0 10px"><h2 style="font-size:15px">По темам</h2></div>
+            <div class="topic-row"><span class="topic-row__name">SQL</span><div class="tbar--topic"><i style="width:91%"></i></div><span class="topic-row__pct">91%</span></div>
+            <div class="topic-row"><span class="topic-row__name">JavaScript</span><div class="tbar--topic"><i style="width:73%"></i></div><span class="topic-row__pct">73%</span></div>
+            <div class="topic-row"><span class="topic-row__name">Python</span><div class="tbar--topic"><i style="width:68%"></i></div><span class="topic-row__pct">68%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- demo state: profile not found -->
+      <div class="section">
+        <span class="eyebrow">// состояние: профиль не найден</span>
+        <div class="prof__not-found">
+          <div class="empty">
+            <div class="empty__icon prof__empty-icon">404</div>
+            <div class="empty__title t-arena-ink">Игрок не найден</div>
+            <div class="empty__text t-arena-soft">Возможно, ник изменён или аккаунт удалён.</div>
+            <a class="btn btn--dark-ghost" href="leaderboard.html">К лидерборду</a>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

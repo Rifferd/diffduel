@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — оплата Pro</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .co { max-width: 560px; margin: 0 auto; padding: 8px 0 40px; display: grid; gap: 16px; }
+  .co-card { padding: 22px; display: grid; gap: 14px; }
+  .co-card h2 { font: 700 16px var(--font-display); font-stretch: 110%; }
+  .sum-row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; }
+  .sum-row.total { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; font: 700 16px var(--font-body); }
+  .sum-row .mono { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="pro.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="pro.html">← Назад к тарифам</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap co">
+      <div class="page-head" style="padding-bottom:0"><h1>Оформление Pro</h1></div>
+
+      <div class="surface co-card">
+        <h2>Заказ</h2>
+        <div class="sum-row"><span>DiffDuel Pro · месяц</span><span class="mono">299 ₽</span></div>
+        <div class="sum-row"><span>Промокод <b class="mono t-plus">FIRST10</b></span><span class="mono diff-minus">−30 ₽</span></div>
+        <div class="sum-row total"><span>К оплате сегодня</span><span class="mono">269 ₽</span></div>
+        <p class="mono t-soft" style="font-size:11px">Далее 299 ₽/мес. Отмена в любой момент.</p>
+      </div>
+
+      <div class="surface co-card">
+        <h2>Способ оплаты</h2>
+        <label class="radio-card is-on"><input type="radio" name="pay" checked>
+          <div style="flex:1"><div class="radio-card__label">ЮKassa</div><div class="radio-card__sub">карта · СБП · ЮMoney</div></div>
+          <span class="mono t-soft" style="font-size:11px">мгновенно</span></label>
+        <label class="radio-card"><input type="radio" name="pay">
+          <div style="flex:1"><div class="radio-card__label">Telegram Stars</div><div class="radio-card__sub">⭐ 150 звёзд</div></div>
+          <span class="mono t-soft" style="font-size:11px">из бота</span></label>
+      </div>
+
+      <button class="btn btn--duel btn--block" style="padding:14px">Оплатить 269 ₽</button>
+      <p class="t-soft" style="text-align:center;font-size:12px">Нажимая «Оплатить», вы принимаете <a href="legal.html" class="link-plus">оферту</a>.</p>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!-- @dsCard group="Components" viewport="960x1900" name="Domain components" subtitle="VS-split · code · options · timer · leaderboard · share — all states" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Компоненты (доменные)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 900px; margin: 0 auto; display: grid; gap: 26px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .blk { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); overflow: hidden; }
+  .blk__hd { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: var(--row-alt); }
+  .blk__hd h2 { font: 700 14px var(--font-mono); }
+  .blk__body { padding: 20px 18px; display: grid; gap: 16px; }
+  .blk__body.arena { background: var(--arena); }
+  .lbl { font: 700 9px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .arena .lbl { color: var(--arena-soft); }
+  .mini { border: 0; background: var(--ink); color: #fff; font: 600 11px var(--font-body); padding: 6px 11px; border-radius: 7px; cursor: pointer; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px){ .two { grid-template-columns: 1fr; } }
+  .arena-card { background: var(--arena); border: 1px solid #000; border-radius: var(--radius-lg); overflow: hidden; }
+  .on-bg { background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// стайлгайд · §3.2</span>
+    <h1>Доменные компоненты</h1>
+    <p>Сигнатурные приёмы DiffDuel. Тёмные блоки — зоны арены. Достроенные состояния (.opt correct/wrong/reveal, таймер «последние 5 сек») помечены.</p>
+  </div>
+
+  <!-- DIFF + DIFFLOG -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.diff · .difflog</h2></div>
+    <div class="blk__body">
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        <span class="diff diff--plus">+24 Elo</span>
+        <span class="diff diff--minus">−18 Elo</span>
+        <span class="diff diff--zero">0 Elo</span>
+      </div>
+      <div class="difflog">
+        <div class="difflog__row"><div class="difflog__gut diff-plus">+ 0:00</div><div class="difflog__body"><h3>Матчмейкинг</h3><p>Подбираем соперника вашего уровня (±150 Эло).</p></div></div>
+        <div class="difflog__row"><div class="difflog__gut diff-plus">+ 0:20</div><div class="difflog__body"><h3>5 задач × 30 секунд</h3><p>Вы видите темп соперника, но не его ответы.</p></div></div>
+        <div class="difflog__row"><div class="difflog__gut diff-minus">− 2:50</div><div class="difflog__body"><h3>Результат и Эло</h3><p>Победа +24, поражение −18.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE -->
+  <div class="blk">
+    <div class="blk__hd"><h2>pre.code</h2></div>
+    <div class="blk__body two">
+      <div><div class="lbl" style="margin-bottom:8px">арена (дуэль)</div>
+<pre class="code"><span class="c">// Почему счётчик печатает 3, 3, 3?</span>
+<span class="k">for</span> (<span class="err"><span class="k">var</span></span> i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 100);
+}</pre></div>
+      <div><div class="lbl" style="margin-bottom:8px">.code--light (тренировка)</div>
+<pre class="code code--light"><span class="c">-- топ-3 игрока по Эло</span>
+<span class="k">SELECT</span> name, elo <span class="k">FROM</span> players
+<span class="k">ORDER BY</span> elo <span class="k">DESC LIMIT</span> 3;</pre></div>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.opt — варианты ответа</h2><button class="mini" onclick="cycleOpts()">cycle states</button></div>
+    <div class="blk__body arena">
+      <div class="lbl">default · hover · selected · correct · wrong · reveal · disabled</div>
+      <div class="opts" id="optDemo">
+        <button class="opt">var не блочная — нужна let</button>
+        <button class="opt is-selected">setTimeout всегда async</button>
+        <button class="opt is-correct">var не блочная — нужна let</button>
+        <button class="opt is-wrong">нужен await перед log</button>
+        <button class="opt is-reveal">замыкание тут невозможно</button>
+        <button class="opt" disabled>disabled после ответа</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.duel-timer</h2><button class="mini" onclick="cycleTimer()">cycle states</button></div>
+    <div class="blk__body arena">
+      <div class="lbl">бег · последние 5 сек (пульс) · пауза · истёк</div>
+      <div class="duel-timer" id="tDemo">
+        <span class="duel-timer__num">0:17</span>
+        <div class="tbar"><i></i></div>
+        <span class="duel-timer__step">3/5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUEL HEAD + FEED -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.duel-head · .feed</h2></div>
+    <div class="blk__body" style="padding:0">
+      <div class="arena-card" style="border-radius:0;border-left:0;border-right:0">
+        <div class="duel-head">
+          <div class="duel-head__player"><span class="ava ava--you ava--md">ВЫ</span><div><div class="duel-head__nm duel-head__nm--you">anton_dev</div><div class="duel-head__elo">1 482 Elo</div></div></div>
+          <span class="duel-head__vs">VS</span>
+          <div class="duel-head__player duel-head__player--right"><div><div class="duel-head__nm duel-head__nm--rival">sql_ninja</div><div class="duel-head__elo">1 507 Elo</div></div><span class="ava ava--rival ava--md">SN</span></div>
+        </div>
+        <div style="padding:0 18px"><div class="feed">› sql_ninja ответил за <b class="m">7.4s</b> · вы лидируете <b class="p">2:1</b></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.board · .lb</h2></div>
+    <div class="blk__body two" style="align-items:start">
+      <div class="board"><table>
+        <thead><tr><th>#</th><th>Игрок</th><th>Эло</th><th>Серия</th></tr></thead>
+        <tbody>
+          <tr class="is-top"><td class="num">1</td><td>masha_pg</td><td class="num">2 104</td><td><span class="pill pill--up">+96</span></td></tr>
+          <tr><td class="num">2</td><td>sql_ninja</td><td class="num">1 998</td><td><span class="pill pill--up">+41</span></td></tr>
+          <tr class="is-me"><td class="num">47</td><td><b>anton_dev — вы</b></td><td class="num">1 482</td><td><span class="pill pill--up">+58</span></td></tr>
+        </tbody>
+      </table></div>
+      <div>
+        <div class="lb"><span class="lb__pos">1</span><span class="ava ava--3 ava--sm">MP</span><div class="lb__name"><b>masha_pg</b><span>W7 · точность 89%</span></div><span class="lb__elo">2 104</span></div>
+        <div class="lb"><span class="lb__pos">2</span><span class="ava ava--rival ava--sm">SN</span><div class="lb__name"><b>sql_ninja</b><span>W3 · точность 84%</span></div><span class="lb__elo">1 998</span></div>
+        <div class="lb is-me"><span class="lb__pos">47</span><span class="ava ava--you ava--sm">ВЫ</span><div class="lb__name"><b>anton_dev</b><span class="diff-plus">+58 за неделю</span></div><span class="lb__elo">1 482</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.share — победа · поражение · ничья</h2></div>
+    <div class="blk__body" style="grid-template-columns:repeat(3,1fr)">
+      <div class="share">
+        <div class="share__top"><span>DIFFDUEL · #84 213</span><span>SQL</span></div>
+        <div class="share__score"><div><div class="share__s">4</div><div class="share__n">anton_dev</div><div class="share__d share__d--plus">+24</div></div><div class="share__colon">:</div><div><div class="share__s">2</div><div class="share__n">sql_ninja</div><div class="share__d share__d--minus">−18</div></div></div>
+        <div class="share__bottom"><span>лучшее 6.2s</span><span>diffduel.com</span></div>
+      </div>
+      <div class="share share--loss">
+        <div class="share__top"><span>DIFFDUEL · #84 214</span><span>JS</span></div>
+        <div class="share__score"><div><div class="share__s">1</div><div class="share__n">anton_dev</div><div class="share__d share__d--minus">−18</div></div><div class="share__colon">:</div><div><div class="share__s">4</div><div class="share__n">masha_pg</div><div class="share__d share__d--plus">+22</div></div></div>
+        <div class="share__bottom"><span>лучшее 8.0s</span><span>diffduel.com</span></div>
+      </div>
+      <div class="share share--draw">
+        <div class="share__top"><span>DIFFDUEL · #84 215</span><span>PY</span></div>
+        <div class="share__score"><div><div class="share__s">3</div><div class="share__n">anton_dev</div><div class="share__d">0</div></div><div class="share__colon">:</div><div><div class="share__s">3</div><div class="share__n">kotlin_kid</div><div class="share__d">0</div></div></div>
+        <div class="share__bottom"><span>ничья</span><span>diffduel.com</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT + PLAN -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.stat · .plan</h2></div>
+    <div class="blk__body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px">
+        <div class="stat"><span class="stat__num stat__num--plus">+58</span><span class="stat__label">Эло за неделю</span></div>
+        <div class="stat"><span class="stat__num">W2</span><span class="stat__label">серия побед</span></div>
+        <div class="stat"><span class="stat__num stat__num--minus">71%</span><span class="stat__label">точность</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:520px">
+        <div class="plan"><h3>Free</h3><div class="plan__price">0 ₽</div><div class="plan__per">навсегда</div><ul><li>Безлимитные дуэли</li><li>Рейтинг и лидерборды</li></ul><button class="btn btn--ghost btn--block">Начать</button></div>
+        <div class="plan plan--pro"><h3>Pro</h3><div class="plan__price">299 ₽</div><div class="plan__per">в месяц</div><ul><li>AI-разбор ошибок</li><li>Статистика 90 дней</li></ul><button class="btn btn--duel btn--block">Оформить</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI-UP + BIG CTA -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.ai-up (paywall) · .big-cta</h2></div>
+    <div class="blk__body two" style="align-items:start">
+      <div class="ai-up">
+        <span class="eyebrow eyebrow--accent">AI-разбор · Pro</span>
+        <div class="ai-up__row" style="margin-top:8px"><span class="ai-up__dot"></span><p><b>Задача 2 · SQL.</b> Вы выбрали LEFT JOIN, но условие в WHERE превратило его в INNER…</p></div>
+        <div class="ai-up__row"><span class="ai-up__dot"></span><p class="blur">Задача 5 · конкурентность. Гонка возникает из-за того, что чтение и запись счётчика…</p></div>
+        <button class="btn btn--duel btn--block">Открыть разбор · 99 ₽ или Pro</button>
+      </div>
+      <div class="big-cta">
+        <span class="eyebrow eyebrow--arena">// 638 игроков онлайн</span>
+        <h2>Дуэль 1×1</h2>
+        <p>Соперник найдётся примерно за 20 секунд</p>
+        <button class="btn btn--duel btn--block">В бой · SQL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABBAR -->
+  <div class="blk">
+    <div class="blk__hd"><h2>.tabbar</h2></div>
+    <div class="blk__body on-bg">
+      <div class="tabbar" style="max-width:340px;margin:0 auto;border-radius:var(--radius-lg);border:1px solid var(--line)">
+        <a class="tabbar__tab is-on"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+        <a class="tabbar__tab"><svg viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+        <a class="tabbar__tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Турниры</a>
+        <a class="tabbar__tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // .opt — cycle through built-out states on the first button
+  const optStates = ['', 'is-selected', 'is-correct', 'is-wrong', 'is-reveal'];
+  let optI = 0;
+  function cycleOpts(){
+    const first = document.querySelector('#optDemo .opt');
+    optStates.forEach(s => s && first.classList.remove(s));
+    optI = (optI + 1) % optStates.length;
+    if (optStates[optI]) first.classList.add(optStates[optI]);
+  }
+  // .duel-timer — cycle run / urgent / paused / expired
+  const tStates = ['', 'duel-timer--urgent', 'duel-timer--paused', 'duel-timer--expired'];
+  let tI = 0;
+  function cycleTimer(){
+    const t = document.getElementById('tDemo');
+    const bar = t.querySelector('.tbar');
+    tStates.forEach(s => s && t.classList.remove(s));
+    tI = (tI + 1) % tStates.length;
+    if (tStates[tI]) t.classList.add(tStates[tI]);
+    bar.classList.toggle('tbar--run', tStates[tI] === '');
+    const num = t.querySelector('.duel-timer__num');
+    num.textContent = tStates[tI] === 'duel-timer--expired' ? '0:00'
+      : tStates[tI] === 'duel-timer--urgent' ? '0:04' : '0:17';
+  }
+</script>
+</body>
+</html>

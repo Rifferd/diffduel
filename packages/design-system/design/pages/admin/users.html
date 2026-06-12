@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel Admin — пользователи</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../../manifest.webmanifest">
+<link rel="stylesheet" href="../../../styles.css">
+<link rel="stylesheet" href="../_pageshell.css">
+<style>
+  .users-grid { display: grid; grid-template-columns: 1fr 320px; gap: 18px; align-items: start; }
+  @media (max-width: 1000px){ .users-grid { grid-template-columns: 1fr; } }
+  .ucard { padding: 18px; display: grid; gap: 12px; position: sticky; top: 70px; }
+  .ucard__head { display: flex; align-items: center; gap: 12px; }
+  .ucard__row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-top: 1px solid var(--line); }
+  .ucard__row .mono { font-variant-numeric: tabular-nums; }
+  .adm-table__row--alt { background: var(--row-alt); }
+</style>
+</head>
+<body>
+<div class="adm">
+  <aside class="adm__side-wrap">
+    <nav class="adm-side">
+      <div class="adm-side__brand"><span class="vs">VS</span>Admin</div>
+      <div class="adm-side__sec">// контент</div>
+      <a class="adm-side__item" href="tasks.html">Задачи</a>
+      <a class="adm-side__item" href="task-edit.html">Редактор задачи</a>
+      <div class="adm-side__sec">// люди</div>
+      <a class="adm-side__item is-on" href="users.html">Пользователи</a>
+      <div class="adm-side__sec">// система</div>
+      <a class="adm-side__item" href="flags.html">Фиче-флаги</a>
+      <a class="adm-side__item" href="../landing.html">← К продукту</a>
+    </nav>
+  </aside>
+
+  <div class="adm__main">
+    <header class="adm__top">
+      <label class="field"><input type="search" placeholder="Поиск по нику, email, ID…"></label>
+      <span style="flex:1"></span>
+      <span class="ava ava--3 ava--sm">AD</span>
+    </header>
+    <main class="adm__content">
+      <h1 style="font:800 24px var(--font-display);font-stretch:110%;margin-bottom:14px">Пользователи · 48 210</h1>
+
+      <div class="users-grid">
+        <div class="surface" style="overflow:hidden">
+          <table class="adm-table">
+            <thead><tr><th scope="col">Ник</th><th scope="col">Эло</th><th scope="col" class="is-sort">Дуэлей</th><th scope="col">План</th><th scope="col">Статус</th></tr></thead>
+            <tbody>
+              <tr class="adm-table__row--alt"><td><b>anton_dev</b></td><td class="num">1 482</td><td class="num">342</td><td><span class="pill pill--up">Pro</span></td><td><span class="pill pill--soon">active</span></td></tr>
+              <tr><td>sql_ninja</td><td class="num">1 998</td><td class="num">512</td><td><span class="pill">Free</span></td><td><span class="pill pill--soon">active</span></td></tr>
+              <tr><td>masha_pg</td><td class="num">2 104</td><td class="num">880</td><td><span class="pill pill--up">Pro</span></td><td><span class="pill pill--soon">active</span></td></tr>
+              <tr><td>spammer_42</td><td class="num">412</td><td class="num">9</td><td><span class="pill">Free</span></td><td><span class="pill pill--down">banned</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- slide-out user card shown open (demo) -->
+        <div class="surface ucard">
+          <div class="ucard__head"><span class="ava ava--you">ВЫ</span><div><div style="font:700 16px var(--font-display);font-stretch:110%">anton_dev <span class="ava-badge ava-badge--pro">Pro</span></div><div class="mono t-soft" style="font-size:11px">id 84213 · anton@team.dev</div></div></div>
+          <div>
+            <div class="ucard__row"><span class="t-soft">Эло</span><span class="mono">1 482</span></div>
+            <div class="ucard__row"><span class="t-soft">Дуэлей</span><span class="mono">342</span></div>
+            <div class="ucard__row"><span class="t-soft">Регистрация</span><span class="mono">12.03.2026</span></div>
+            <div class="ucard__row"><span class="t-soft">Жалоб</span><span class="mono">0</span></div>
+          </div>
+          <div style="display:flex;gap:8px"><a class="btn btn--ghost" href="../profile-public.html" style="flex:1;padding:8px">Профиль</a><button class="btn btn--danger" style="flex:1;padding:8px">Забанить</button></div>
+        </div>
+      </div>
+
+      <!-- ban modal shown open (demo) -->
+      <div style="margin-top:20px;max-width:440px">
+        <span class="eyebrow">// состояние: бан</span>
+        <div class="modal" role="dialog" aria-modal="true" style="margin-top:8px;max-width:none">
+          <div class="modal__head"><h2 class="modal__title">Забанить spammer_42?</h2><button class="modal__close" aria-label="Закрыть">×</button></div>
+          <div class="modal__body">Игрок потеряет доступ к рейтинговым дуэлям. Укажите причину — она попадёт в журнал модерации.</div>
+          <div style="padding:0 22px"><input class="field" type="text" placeholder="Причина: накрутка рейтинга" style="width:100%"></div>
+          <div class="modal__foot"><button class="btn btn--ghost">Отмена</button><button class="btn btn--danger">Забанить</button></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

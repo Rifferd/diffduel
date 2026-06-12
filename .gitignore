@@ -1,0 +1,41 @@
+# --- secrets / env: never committed ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+dist/
+
+# --- node ---
+node_modules/
+*.tsbuildinfo
+.eslintcache
+coverage/
+
+# --- build artifacts ---
+apps/web/dist/
+apps/admin/dist/
+apps/realtime/dist/
+
+# --- os / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --- local infra state ---
+infra/compose/volumes/
+*.log

@@ -1,0 +1,113 @@
+<!-- @dsCard group="Colors" viewport="940x1180" name="Color tokens" subtitle="Semantic palette · arena · share · contrast pairs" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiffDuel · Цвета</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 32px; }
+  .doc { max-width: 880px; margin: 0 auto; display: grid; gap: 30px; }
+  .doc__head h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .doc__head p { color: var(--ink-soft); margin-top: 6px; font-size: 14px; }
+  .grp { display: grid; gap: 12px; }
+  .grp > .eyebrow { margin-bottom: 2px; }
+  .sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  .sw__chip { height: 64px; border-bottom: 1px solid var(--line); }
+  .sw__meta { padding: 8px 10px; display: grid; gap: 2px; }
+  .sw__var { font: 700 11px var(--font-mono); }
+  .sw__hex { font: 500 11px var(--font-mono); color: var(--ink-soft); text-transform: uppercase; }
+  .pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .pair { border-radius: var(--radius); padding: 16px; border: 1px solid var(--line); }
+  .pair b { font: 700 15px var(--font-mono); display: block; }
+  .pair span { font: 500 12px var(--font-mono); opacity: .8; }
+  .pair .pass { font: 700 10px var(--font-mono); letter-spacing: .1em; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="doc__head">
+    <span class="eyebrow">// дизайн-токены · §2</span>
+    <h1>Цвета</h1>
+    <p>Семантика жёсткая: зелёный = вы / победа, красный = соперник / ошибка, оранжевый = только таймер. Декоративное использование запрещено.</p>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// базовая палитра</span>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw__chip" style="background:var(--bg)"></div><div class="sw__meta"><span class="sw__var">--bg</span><span class="sw__hex">#EEF1F5</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--surface)"></div><div class="sw__meta"><span class="sw__var">--surface</span><span class="sw__hex">#FFFFFF</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ink)"></div><div class="sw__meta"><span class="sw__var">--ink</span><span class="sw__hex">#10141A</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ink-soft)"></div><div class="sw__meta"><span class="sw__var">--ink-soft</span><span class="sw__hex">#5A6472</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--line)"></div><div class="sw__meta"><span class="sw__var">--line</span><span class="sw__hex">#D8DEE6</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--row-alt)"></div><div class="sw__meta"><span class="sw__var">--row-alt</span><span class="sw__hex">#F7F9FB</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--seg-bg)"></div><div class="sw__meta"><span class="sw__var">--seg-bg</span><span class="sw__hex">#E2E7EE</span></div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow eyebrow--accent">// семантика</span>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw__chip" style="background:var(--plus)"></div><div class="sw__meta"><span class="sw__var">--plus</span><span class="sw__hex">#1F9D55 · вы/победа</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--plus-bg)"></div><div class="sw__meta"><span class="sw__var">--plus-bg</span><span class="sw__hex">#E3F5EB</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--minus)"></div><div class="sw__meta"><span class="sw__var">--minus</span><span class="sw__hex">#E5484D · соперник</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--minus-bg)"></div><div class="sw__meta"><span class="sw__var">--minus-bg</span><span class="sw__hex">#FDE9EA</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--timer)"></div><div class="sw__meta"><span class="sw__var">--timer</span><span class="sw__hex">#F5A623 · таймер</span></div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow eyebrow--arena">// арена (тёмные зоны: код + live-дуэль)</span>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw__chip" style="background:var(--arena)"></div><div class="sw__meta"><span class="sw__var">--arena</span><span class="sw__hex">#161B22</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--arena-2)"></div><div class="sw__meta"><span class="sw__var">--arena-2</span><span class="sw__hex">#1F2630</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--arena-line)"></div><div class="sw__meta"><span class="sw__var">--arena-line</span><span class="sw__hex">#2A323D</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--arena-ink)"></div><div class="sw__meta"><span class="sw__var">--arena-ink</span><span class="sw__hex">#E6EDF3</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--arena-soft)"></div><div class="sw__meta"><span class="sw__var">--arena-soft</span><span class="sw__hex">#8B98A9</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--plus-bright)"></div><div class="sw__meta"><span class="sw__var">--plus-bright</span><span class="sw__hex">#4FCB82 · вы на тёмном</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--minus-bright)"></div><div class="sw__meta"><span class="sw__var">--minus-bright</span><span class="sw__hex">#FF7B81 · соперник</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--frame)"></div><div class="sw__meta"><span class="sw__var">--frame</span><span class="sw__hex">#0B0E12</span></div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow eyebrow--arena">// синтаксис · share-карточка</span>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw__chip" style="background:var(--code-keyword)"></div><div class="sw__meta"><span class="sw__var">--code-keyword</span><span class="sw__hex">#79B8FF</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--code-string)"></div><div class="sw__meta"><span class="sw__var">--code-string</span><span class="sw__hex">#9ECBFF</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--code-comment)"></div><div class="sw__meta"><span class="sw__var">--code-comment</span><span class="sw__hex">#6A737D</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--share-plus)"></div><div class="sw__meta"><span class="sw__var">--share-plus</span><span class="sw__hex">#15301F</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--share-minus)"></div><div class="sw__meta"><span class="sw__var">--share-minus</span><span class="sw__hex">#371B1D</span></div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// палитра аватаров · детерминированно по hash(username)</span>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-1)"></div><div class="sw__meta"><span class="sw__var">--ava-1</span><span class="sw__hex">#1F9D55</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-2)"></div><div class="sw__meta"><span class="sw__var">--ava-2</span><span class="sw__hex">#E5484D</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-3)"></div><div class="sw__meta"><span class="sw__var">--ava-3</span><span class="sw__hex">#7C5CFC</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-4)"></div><div class="sw__meta"><span class="sw__var">--ava-4</span><span class="sw__hex">#2D7FF9</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-5)"></div><div class="sw__meta"><span class="sw__var">--ava-5</span><span class="sw__hex">#F5A623</span></div></div>
+      <div class="sw"><div class="sw__chip" style="background:var(--ava-6)"></div><div class="sw__meta"><span class="sw__var">--ava-6</span><span class="sw__hex">#14B8A6</span></div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="eyebrow">// проверка контраста · AA</span>
+    <div class="pairs">
+      <div class="pair" style="background:var(--plus);color:#fff"><b>Aa</b><span>#fff на --plus</span><div class="pass">4.0:1 · AA large / UI</div></div>
+      <div class="pair" style="background:var(--arena-2);color:var(--arena-soft)"><b>Aa</b><span>--arena-soft на --arena-2</span><div class="pass">4.6:1 · AA</div></div>
+      <div class="pair" style="background:var(--arena);color:var(--timer)"><b>Aa</b><span>--timer на --arena</span><div class="pass">8.1:1 · AAA</div></div>
+      <div class="pair" style="background:var(--surface);color:var(--ink-soft)"><b>Aa</b><span>--ink-soft на --surface</span><div class="pass">5.3:1 · AA</div></div>
+      <div class="pair" style="background:var(--arena);color:var(--plus-bright)"><b>Aa</b><span>--plus-bright на --arena</span><div class="pass">7.2:1 · AAA</div></div>
+      <div class="pair" style="background:var(--arena);color:var(--minus-bright)"><b>Aa</b><span>--minus-bright на --arena</span><div class="pass">6.4:1 · AAA</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

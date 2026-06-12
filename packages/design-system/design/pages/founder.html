@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — вызови основателя</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .f-hero { background: var(--arena); color: var(--arena-ink); border-radius: var(--radius-lg); border: 1px solid var(--frame); position: relative; overflow: hidden; padding: 32px; margin-top: 8px; }
+  .f-hero::after { content: ""; position: absolute; inset: -30% -8% -30% 60%; background: linear-gradient(rgb(229 72 77/.2), transparent); transform: skewX(var(--split-skew)); pointer-events: none; }
+  .f-hero__in { position: relative; z-index: 1; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .f-hero h1 { font: 800 28px var(--font-display); font-stretch: 110%; }
+  .f-hero__stats { display: flex; gap: 24px; margin-left: auto; flex-wrap: wrap; }
+  .f-hero__stats b { display: block; font: 800 22px var(--font-mono); font-variant-numeric: tabular-nums; }
+  .f-hero__stats span { font: 600 11px var(--font-mono); color: var(--arena-soft); text-transform: uppercase; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <a class="appnav__link" href="tournaments.html">Турниры</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="f-hero">
+        <div class="f-hero__in">
+          <span class="ava ava--3" style="width:72px;height:72px;border-radius:18px;font-size:22px">RF</span>
+          <div>
+            <span class="eyebrow eyebrow--arena">// основатель · собрал DiffDuel AI-only</span>
+            <h1>Rifferd <span class="ava-badge ava-badge--founder">Founder</span></h1>
+            <div class="mono t-arena-soft" style="font-size:13px;margin-top:4px">1 718 Elo · принимает дуэли по пятницам</div>
+          </div>
+          <div class="f-hero__stats">
+            <div><b>134:41</b><span>против сообщества</span></div>
+            <div><b class="t-plus-b">41</b><span>в зале славы</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section__head"><h2>Как устроен вызов</h2><span class="eyebrow">// пятница · 19:00 МСК</span></div>
+        <div class="difflog">
+          <div class="difflog__row"><div class="difflog__gut diff-plus">+ 18:55</div><div class="difflog__body"><h3>Очередь открывается</h3><p>Встаньте в очередь заранее — соперники подбираются по порядку записи.</p></div></div>
+          <div class="difflog__row"><div class="difflog__gut diff-plus">+ 19:00</div><div class="difflog__body"><h3>Серия дуэлей 5 задач</h3><p>Те же правила, что и в обычной дуэли. Rifferd играет без призраков.</p></div></div>
+          <div class="difflog__row"><div class="difflog__gut diff-minus">− 21:00</div><div class="difflog__body"><h3>Награда победителям</h3><p>Победил основателя — навсегда в зале славы <b>+ месяц Pro</b>.</p></div></div>
+        </div>
+        <div style="margin-top:16px"><a class="btn btn--duel" href="queue.html">Встать в очередь на пятницу</a></div>
+      </div>
+
+      <div class="section">
+        <div class="section__head"><h2>Зал славы</h2><span class="eyebrow">// победили Rifferd</span></div>
+        <div class="board"><table>
+          <thead><tr><th scope="col">#</th><th scope="col">Игрок</th><th scope="col">Счёт</th><th scope="col">Тема</th><th scope="col">Дата</th></tr></thead>
+          <tbody>
+            <tr class="is-top"><td class="num">1</td><td>masha_pg</td><td class="num diff-plus">4:1</td><td>SQL</td><td class="mono">06 июн</td></tr>
+            <tr><td class="num">2</td><td>kotlin_kid</td><td class="num diff-plus">3:2</td><td>JS</td><td class="mono">30 май</td></tr>
+            <tr><td class="num">3</td><td>db_whisperer</td><td class="num diff-plus">3:2</td><td>Python</td><td class="mono">23 май</td></tr>
+            <tr><td class="num">4</td><td>type_theorist</td><td class="num diff-plus">3:2</td><td>JS</td><td class="mono">16 май</td></tr>
+            <tr><td class="num">5</td><td>go_gopher</td><td class="num diff-plus">4:3</td><td>SQL</td><td class="mono">09 май</td></tr>
+            <tr><td class="num">6</td><td>rust_crab</td><td class="num diff-plus">3:2</td><td>SQL</td><td class="mono">02 май</td></tr>
+            <tr><td class="num">7</td><td>async_andrei</td><td class="num diff-plus">4:3</td><td>JS</td><td class="mono">25 апр</td></tr>
+            <tr><td class="num">8</td><td>pep8_polina</td><td class="num diff-plus">3:1</td><td>Python</td><td class="mono">18 апр</td></tr>
+            <tr><td class="num">9</td><td>join_master</td><td class="num diff-plus">3:2</td><td>SQL</td><td class="mono">11 апр</td></tr>
+            <tr><td class="num">10</td><td>vue_vera</td><td class="num diff-plus">4:2</td><td>JS</td><td class="mono">04 апр</td></tr>
+          </tbody>
+        </table></div>
+        <div style="display:flex;justify-content:center;margin-top:12px"><button class="btn btn--ghost">Показать ещё · всего 41</button></div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

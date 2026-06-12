@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — результат оплаты</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .bill { max-width: 880px; margin: 0 auto; padding: 16px 0 40px; }
+  .bill-card { padding: 32px; text-align: center; display: grid; gap: 12px; justify-items: center; }
+  .bill-mark { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font: 700 30px var(--font-mono); }
+  .bill-mark--ok { background: var(--plus-bg); color: var(--plus); }
+  .bill-mark--err { background: var(--minus-bg); color: var(--minus); }
+  .bill-card h2 { font: 800 24px var(--font-display); font-stretch: 110%; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="app-home.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">На главную</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap bill">
+      <h1 class="sr-only">Результат оплаты</h1>
+      <div class="grid-2">
+        <!-- success -->
+        <div>
+          <span class="eyebrow">// состояние: оплата прошла</span>
+          <div class="surface bill-card" style="margin-top:8px">
+            <div class="bill-mark bill-mark--ok">+</div>
+            <h2>Pro активирован</h2>
+            <p class="t-soft" style="font-size:14px;max-width:36ch">Оплата 269 ₽ прошла успешно. AI-разбор и статистика 90 дней уже доступны. Чек отправлен на почту.</p>
+            <div class="mono t-soft" style="font-size:12px">платёж #PM-84213 · ЮKassa</div>
+            <a class="btn btn--duel" href="app-home.html">Перейти к дуэлям</a>
+          </div>
+        </div>
+        <!-- declined -->
+        <div>
+          <span class="eyebrow">// состояние: платёж отклонён</span>
+          <div class="surface bill-card" style="margin-top:8px">
+            <div class="bill-mark bill-mark--err">−</div>
+            <h2>Платёж отклонён</h2>
+            <p class="t-soft" style="font-size:14px;max-width:36ch">Банк отклонил операцию. Деньги не списаны. Попробуйте другую карту или способ оплаты.</p>
+            <div class="mono t-minus" style="font-size:12px">код 05 · do_not_honor</div>
+            <div style="display:flex;gap:10px"><a class="btn btn--duel" href="checkout.html">Повторить оплату</a><a class="btn btn--ghost" href="pro.html">К тарифам</a></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

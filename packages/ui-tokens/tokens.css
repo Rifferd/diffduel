@@ -1,0 +1,80 @@
+/* ============================================================
+   DiffDuel — Design Tokens (§2)
+   Single source of truth. No hardcoded colors/radii/shadows
+   anywhere in component or page CSS — reference these only.
+   ============================================================ */
+
+:root {
+  /* — base palette (light "code-review" UI) — */
+  --bg: #EEF1F5;            --surface: #FFFFFF;
+  --ink: #10141A;          --ink-soft: #5A6472;
+  --line: #D8DEE6;
+
+  /* semantic — hard meaning, decorative use forbidden */
+  --plus: #1F9D55;         --plus-bg: #E3F5EB;   /* you / win / correct / up   */
+  --plus-hover: #1C8C4C;                         /* .btn--duel hover           */
+  --minus: #E5484D;        --minus-bg: #FDE9EA;  /* rival / loss / error / down */
+  --timer: #F5A623;                              /* timer & urgency only        */
+  --timer-text: #8A5A00;                         /* .banner--warn body text     */
+
+  /* — arena (the only dark zones: code + live duel) — */
+  --arena: #161B22;        --arena-2: #1F2630;   /* nested panels in arena      */
+  --arena-ink: #E6EDF3;    --arena-soft: #8B98A9;/* secondary text on arena     */
+  --arena-line: #2A323D;   /* every border inside the arena */
+  --plus-bright: #4FCB82;  /* "you" on dark — readable --plus   */
+  --minus-bright: #FF7B81; /* "rival" on dark — readable --minus */
+
+  /* — share-card split halves & misc surfaces — */
+  --share-plus: #15301F;   --share-minus: #371B1D;
+  --share-draw-l: #25303B; --share-draw-r: #2C2530; /* draw: neutral split */
+  --row-alt: #F7F9FB;      /* table th + diff-log gutter */
+  --seg-bg: #E2E7EE;       /* segmented-control track */
+  --frame: #0B0E12;        /* device notch / darkest tone / arena-card border */
+  --skeleton-mid: #ECEFF3; /* shimmer midpoint */
+
+  /* — syntax highlight (GitHub-dark compatible) — */
+  --code-keyword: #79B8FF; --code-string: #9ECBFF;
+  --code-comment: #6A737D; --code-err-bg: rgb(229 72 77 / .22);
+
+  /* — avatar palette (deterministic by hash(username)) — */
+  --ava-1: #1F9D55; --ava-2: #E5484D; --ava-3: #7C5CFC;
+  --ava-4: #2D7FF9; --ava-5: #F5A623; --ava-6: #14B8A6;
+
+  /* — typography — */
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* — geometry — */
+  --radius: 10px; --radius-lg: 16px; --radius-pill: 99px;
+  --space: 4px;                       /* ×4 scale: 4/8/12/16/24/32/48/64 */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
+
+  /* — elevation — */
+  --shadow: 0 1px 2px rgb(16 20 26/.06), 0 8px 24px rgb(16 20 26/.07);
+  --shadow-card: 0 1px 2px rgb(16 20 26/.05);
+  --shadow-cta: 0 6px 18px rgb(31 157 85/.35);   /* "В бой" CTA glow */
+  --focus-ring: 0 0 0 3px rgb(31 157 85 / .4);
+
+  /* — signature geometry — */
+  --split-angle: 102deg;   /* @kind other */ /* gradient VS split */
+  --split-skew: -12deg;    /* @kind other */ /* skewed plates */
+
+  /* — layers — */
+  --z-nav: 100;  /* @kind other */
+  --z-modal: 200; /* @kind other */
+  --z-toast: 300; /* @kind other */
+}
+
+/* Type scale reference (fixed as utilities in base.css):
+   Display h1   Archivo 800 110%  clamp(40,5vw,62) /1.02   · mobile 32
+   H2 section   Archivo 800       30–32              · mobile 20–21
+   H3 card      Archivo 700–800   16–18              · mobile 15–16
+   Body         Inter 400         15 /1.55           · mobile 14
+   Lead         Inter 400         17                 · mobile 15
+   Button       Inter 600         14
+   Big number   Mono/Archivo 800  30–44              · mobile 26–30
+   Row number   Mono 700          13–17              · mobile 12–18
+   Eyebrow/th   Mono 700 .12–.14em uppercase 10–11   · mobile 9
+   Code         Mono 500 /1.6     13                 · mobile 11–12  */

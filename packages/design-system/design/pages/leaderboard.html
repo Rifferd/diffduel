@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — лидерборд</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  .app { min-height: 100dvh; display: flex; flex-direction: column; }
+  .app__main { flex: 1; }
+
+  .appnav { position: sticky; top: 0; z-index: var(--z-nav); background: rgb(238 241 245/.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .appnav__in { display: flex; align-items: center; gap: 26px; height: 56px; }
+  .appnav__link { color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 14px; }
+  .appnav__link.is-on { color: var(--ink); }
+  .appnav__link:hover { color: var(--ink); }
+
+  .lead-head { padding: 24px 0 8px; }
+  .lead-head h1 { font: 800 30px var(--font-display); font-stretch: 110%; }
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0 18px; }
+  .filter { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .fchip { border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); border-radius: var(--radius-pill); padding: 6px 13px; font: 600 12px var(--font-body); cursor: pointer; }
+  .fchip.is-on { border-color: var(--plus); color: var(--plus); background: var(--plus-bg); }
+
+  /* desktop table view */
+  .lb-table { display: block; }
+  .lb-cards { display: none; }
+  .board td .player { display: flex; align-items: center; gap: 10px; }
+  .board td .player span.sub { display: block; font: 500 11px var(--font-mono); color: var(--ink-soft); }
+
+  .pinned { margin-top: 14px; }
+  .pinned .eyebrow { display: block; margin-bottom: 8px; }
+  .showmore { display: flex; justify-content: center; margin: 20px 0; }
+
+  @media (max-width: 640px) {
+    .appnav { display: none; }
+    .lb-table { display: none; }
+    .lb-cards { display: block; }
+    .lead-head h1 { font-size: 22px; }
+    .filter { margin-left: 0; width: 100%; }
+  }
+  .tabbar { display: none; position: sticky; bottom: 0; }
+  @media (max-width: 640px) { .tabbar { display: grid; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="nav__spacer"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link is-on" href="leaderboard.html">Рейтинг</a>
+      <a class="appnav__link" href="#">Турниры</a>
+      <a class="appnav__link" href="#">Профиль</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="lead-head">
+        <span class="eyebrow">// рейтинг</span>
+        <h1>Лидерборд</h1>
+      </div>
+
+      <div class="controls">
+        <div class="seg" role="tablist">
+          <button class="seg__opt is-on" role="tab" aria-selected="true">Неделя</button>
+          <button class="seg__opt" role="tab" aria-selected="false">Всё время</button>
+        </div>
+        <div class="filter">
+          <button class="fchip is-on">Все темы</button>
+          <button class="fchip">SQL</button>
+          <button class="fchip">JS</button>
+          <button class="fchip">Python</button>
+        </div>
+      </div>
+
+      <!-- DESKTOP TABLE -->
+      <div class="lb-table">
+        <div class="board"><table>
+          <thead><tr><th scope="col">#</th><th scope="col">Игрок</th><th scope="col">Эло</th><th scope="col">За неделю</th><th scope="col">Серия</th><th scope="col">Точность</th></tr></thead>
+          <tbody>
+            <tr class="is-top"><td class="num">1</td><td><div class="player"><span class="ava ava--3 ava--sm">MP</span><div><b>masha_pg</b><span class="sub">PostgreSQL · 89%</span></div></div></td><td class="num">2 104</td><td><span class="pill pill--up">+96</span></td><td class="num">W7</td><td class="num">89%</td></tr>
+            <tr class="is-top"><td class="num">2</td><td><div class="player"><span class="ava ava--rival ava--sm">SN</span><div><b>sql_ninja</b><span class="sub">SQL · 84%</span></div></div></td><td class="num">1 998</td><td><span class="pill pill--up">+41</span></td><td class="num">W3</td><td class="num">84%</td></tr>
+            <tr class="is-top"><td class="num">3</td><td><div class="player"><span class="ava ava--4 ava--sm">KK</span><div><b>kotlin_kid</b><span class="sub">JS · 82%</span></div></div></td><td class="num">1 951</td><td><span class="pill pill--down">−12</span></td><td class="num">L1</td><td class="num">82%</td></tr>
+            <tr><td class="num">4</td><td><div class="player"><span class="ava ava--5 ava--sm">DB</span><div><b>db_whisperer</b><span class="sub">Python · 80%</span></div></div></td><td class="num">1 907</td><td><span class="pill pill--up">+18</span></td><td class="num">W1</td><td class="num">80%</td></tr>
+            <tr><td class="num">5</td><td><div class="player"><span class="ava ava--6 ava--sm">TT</span><div><b>type_theorist</b><span class="sub">JS · 78%</span></div></div></td><td class="num">1 884</td><td><span class="pill pill--up">+33</span></td><td class="num">W4</td><td class="num">78%</td></tr>
+            <tr><td class="num">6</td><td><div class="player"><span class="ava ava--1 ava--sm">GG</span><div><b>go_gopher</b><span class="sub">SQL · 76%</span></div></div></td><td class="num">1 850</td><td><span class="pill pill--down">−7</span></td><td class="num">L2</td><td class="num">76%</td></tr>
+            <tr><td class="num">7</td><td><div class="player"><span class="ava ava--2 ava--sm">RX</span><div><b>regex_raptor</b><span class="sub">Python · 74%</span></div></div></td><td class="num">1 822</td><td><span class="pill pill--up">+12</span></td><td class="num">W1</td><td class="num">74%</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="lb-cards">
+        <div class="lb"><span class="lb__pos">1</span><span class="ava ava--3 ava--sm">MP</span><div class="lb__name"><b>masha_pg</b><span>W7 · точность 89%</span></div><span class="lb__elo">2 104</span></div>
+        <div class="lb"><span class="lb__pos">2</span><span class="ava ava--rival ava--sm">SN</span><div class="lb__name"><b>sql_ninja</b><span>W3 · точность 84%</span></div><span class="lb__elo">1 998</span></div>
+        <div class="lb"><span class="lb__pos">3</span><span class="ava ava--4 ava--sm">KK</span><div class="lb__name"><b>kotlin_kid</b><span>L1 · точность 82%</span></div><span class="lb__elo">1 951</span></div>
+        <div class="lb"><span class="lb__pos">4</span><span class="ava ava--5 ava--sm">DB</span><div class="lb__name"><b>db_whisperer</b><span>W1 · точность 80%</span></div><span class="lb__elo">1 907</span></div>
+        <div class="lb"><span class="lb__pos">5</span><span class="ava ava--6 ava--sm">TT</span><div class="lb__name"><b>type_theorist</b><span>W4 · точность 78%</span></div><span class="lb__elo">1 884</span></div>
+      </div>
+
+      <!-- pinned me -->
+      <div class="pinned">
+        <span class="eyebrow">// ваша позиция</span>
+        <div class="lb is-me"><span class="lb__pos">47</span><span class="ava ava--you ava--sm">ВЫ</span><div class="lb__name"><b>anton_dev</b><span class="diff-plus">+58 за неделю · точность 71%</span></div><span class="lb__elo">1 482</span></div>
+      </div>
+
+      <div class="showmore">
+        <button class="btn btn--ghost">Показать ещё 20</button>
+      </div>
+
+      <!-- демо-состояние: пустая тема -->
+      <div style="margin-top:28px">
+        <span class="eyebrow">// состояние: в теме пока нет игроков</span>
+        <div class="empty" style="margin-top:8px">
+          <div class="empty__icon">∅</div>
+          <div class="empty__title">Пусто в этой теме</div>
+          <div class="empty__text">По Python за эту неделю ещё не сыграно ни одной рейтинговой дуэли. Будь первым.</div>
+          <a class="btn btn--duel" href="duel.html">Сыграть по Python</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__tab" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+    <a class="tabbar__tab is-on" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+    <a class="tabbar__tab" href="#"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Турниры</a>
+    <a class="tabbar__tab" href="#"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+  </nav>
+</div>
+</body>
+</html>

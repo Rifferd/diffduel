@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — главная</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body { padding-bottom: 0; }
+  .app { min-height: 100dvh; display: flex; flex-direction: column; }
+  .app__main { flex: 1; }
+
+  /* greeting header */
+  .hi { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0 18px; }
+  .hi__who h1 { font: 800 22px var(--font-display); font-stretch: 110%; display: block; }
+  .hi__who span { font: 500 12px var(--font-mono); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+  /* desktop two-column */
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .col { display: grid; gap: 12px; }
+
+  /* topic chips */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1; margin-bottom: 12px; }
+  .chip { border: 1px solid var(--arena-line); background: transparent; color: var(--arena-soft); border-radius: var(--radius-pill); padding: 6px 14px; font: 600 12px var(--font-body); cursor: pointer; transition: .12s; }
+  .chip.is-on { background: rgb(31 157 85/.16); border-color: var(--plus); color: var(--plus-bright); }
+  .chip:hover { color: var(--arena-ink); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-card); }
+  .card__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .card__head h3 { font: 700 16px var(--font-display); font-stretch: 110%; }
+
+  .stat3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+
+  .daily { display: flex; gap: 12px; align-items: center; }
+  .daily__ic { width: 42px; height: 42px; border-radius: var(--radius); background: var(--plus-bg); display: grid; place-items: center; font: 700 15px var(--font-mono); color: var(--plus); flex: none; }
+  .daily b { font-size: 14px; } .daily span { display: block; font-size: 12px; color: var(--ink-soft); }
+  .daily__go { margin-left: auto; font: 700 13px var(--font-mono); color: var(--plus); text-decoration: none; }
+
+  .duel-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .duel-row:first-of-type { border-top: 0; }
+  .duel-row__res { margin-left: auto; font: 700 13px var(--font-mono); font-variant-numeric: tabular-nums; }
+  .duel-row span.sub { display: block; font: 500 11px var(--font-mono); color: var(--ink-soft); }
+
+  /* app top nav (desktop) */
+  .appnav { position: sticky; top: 0; z-index: var(--z-nav); background: rgb(238 241 245/.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .appnav__in { display: flex; align-items: center; gap: 26px; height: 56px; }
+  .appnav__link { color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 14px; }
+  .appnav__link.is-on { color: var(--ink); }
+  .appnav__link:hover { color: var(--ink); }
+
+  .tabbar { display: none; position: sticky; bottom: 0; }
+
+  @media (max-width: 640px) {
+    .home-grid { grid-template-columns: 1fr; }
+    .appnav { display: none; }
+    .tabbar { display: grid; }
+    .hi__who h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="nav__spacer"></span>
+      <a class="appnav__link is-on" href="app-home.html">Дуэль</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <a class="appnav__link" href="#">Турниры</a>
+      <a class="appnav__link" href="#">Профиль</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="hi">
+        <div class="hi__who"><h1>Привет, anton_dev</h1><span>1 482 Elo · #47 за неделю · серия W2</span></div>
+        <span class="ava ava--you">ВЫ</span>
+      </div>
+
+      <div class="home-grid">
+        <!-- left: CTA + stats -->
+        <div class="col">
+          <div class="big-cta">
+            <span class="eyebrow eyebrow--arena">// 638 игроков онлайн</span>
+            <h2 style="margin-top:6px">Дуэль 1×1</h2>
+            <p>Соперник найдётся примерно за 20 секунд</p>
+            <div class="chips">
+              <button class="chip is-on">SQL</button>
+              <button class="chip">JavaScript</button>
+              <button class="chip">Python</button>
+            </div>
+            <a class="btn btn--duel btn--block" href="duel.html">В бой · SQL</a>
+          </div>
+
+          <div class="stat3">
+            <div class="stat"><span class="stat__num stat__num--plus">+58</span><span class="stat__label">Эло за неделю</span></div>
+            <div class="stat"><span class="stat__num">W2</span><span class="stat__label">серия побед</span></div>
+            <div class="stat"><span class="stat__num">71%</span><span class="stat__label">точность</span></div>
+          </div>
+
+          <a class="btn btn--ghost btn--block" href="#" style="text-decoration:none">Тренировка без рейтинга</a>
+        </div>
+
+        <!-- right: daily + recent -->
+        <div class="col">
+          <div class="card daily">
+            <div class="daily__ic">!</div>
+            <div><b>Задача дня · JS</b><span>4 218 уже решили · до 23:59</span></div>
+            <a class="daily__go" href="#">Решить →</a>
+          </div>
+
+          <div class="card">
+            <div class="card__head"><h3>Последние дуэли</h3><a class="eyebrow eyebrow--accent" href="#" style="text-decoration:none">все →</a></div>
+            <div class="duel-row"><span class="ava ava--rival ava--sm">SN</span><div><b>sql_ninja</b><span class="sub">SQL · 4:2 · 2 мин назад</span></div><span class="duel-row__res diff-plus">+24</span></div>
+            <div class="duel-row"><span class="ava ava--3 ava--sm">MP</span><div><b>masha_pg</b><span class="sub">JS · 1:4 · вчера</span></div><span class="duel-row__res diff-minus">−18</span></div>
+            <div class="duel-row"><span class="ava ava--4 ava--sm">KK</span><div><b>kotlin_kid</b><span class="sub">Python · 3:3 · вчера</span></div><span class="duel-row__res diff--zero">0</span></div>
+            <div class="duel-row"><span class="ava ava--5 ava--sm">DB</span><div><b>db_whisperer</b><span class="sub">SQL · 5:1 · 2 дня назад</span></div><span class="duel-row__res diff-plus">+21</span></div>
+          </div>
+
+          <!-- демо-состояния блока (в SPA видно по одному) -->
+          <div class="card">
+            <div class="card__head"><h3>Последние дуэли</h3><span class="eyebrow">// состояние: загрузка</span></div>
+            <div class="duel-row"><span class="skeleton skeleton--ava"></span><div style="flex:1;display:grid;gap:6px"><span class="skeleton skeleton--line" style="width:45%"></span><span class="skeleton skeleton--line" style="width:70%"></span></div></div>
+            <div class="duel-row"><span class="skeleton skeleton--ava"></span><div style="flex:1;display:grid;gap:6px"><span class="skeleton skeleton--line" style="width:38%"></span><span class="skeleton skeleton--line" style="width:62%"></span></div></div>
+          </div>
+          <div class="card">
+            <div class="card__head"><h3>Последние дуэли</h3><span class="eyebrow">// состояние: пусто</span></div>
+            <div class="empty">
+              <div class="empty__icon">∅</div>
+              <div class="empty__title">Дуэлей пока нет</div>
+              <div class="empty__text">Сыграйте первую — соперник найдётся примерно за 20 секунд.</div>
+              <a class="btn btn--duel" href="duel.html">В бой</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__tab is-on" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+    <a class="tabbar__tab" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+    <a class="tabbar__tab" href="#"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Турниры</a>
+    <a class="tabbar__tab" href="#"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+  </nav>
+</div>
+</body>
+</html>

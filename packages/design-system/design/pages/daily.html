@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — задача дня</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .daily-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 16px; align-items: start; }
+  @media (max-width: 640px) { .daily-grid { grid-template-columns: 1fr; } }
+  .qcard { padding: 22px; }
+  .qcard__label { font: 700 10px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px; }
+  .cd-card { padding: 20px; text-align: center; display: grid; gap: 6px; justify-items: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="landing.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="app-home.html">Дуэль</a>
+      <a class="appnav__link" href="training.html">Тренировка</a>
+      <a class="appnav__link is-on" href="daily.html">Задача дня</a>
+      <a class="appnav__link" href="leaderboard.html">Рейтинг</a>
+      <span class="ava ava--you ava--md">ВЫ</span>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">// одна задача · одна попытка · общий рейтинг</span>
+        <h1>Задача дня · JavaScript</h1>
+      </div>
+
+      <div class="section daily-grid">
+        <div class="surface qcard">
+          <div class="qcard__label">12 июня · решили 4 218 человек</div>
+<pre class="code"><span class="c">// что выведет код?</span>
+<span class="k">const</span> a = [1, 2, 3];
+<span class="k">const</span> b = a.map(<span class="k">async</span> x =&gt; x * 2);
+console.log(b[0]);</pre>
+          <div class="opts" style="margin-top:14px">
+            <button class="opt">2</button>
+            <button class="opt is-selected">Promise { 2 }</button>
+            <button class="opt">[2, 4, 6]</button>
+            <button class="opt">undefined</button>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn--duel">Ответить</button></div>
+        </div>
+
+        <div style="display:grid;gap:14px">
+          <div class="surface cd-card">
+            <span class="eyebrow">// до новой задачи</span>
+            <div class="cd cd--lg"><span class="cd__num" role="timer">07:42:18</span></div>
+            <span class="t-soft" style="font-size:12px">сброс в 00:00 МСК</span>
+          </div>
+          <div class="surface pad">
+            <div class="section__head" style="margin:0 0 10px"><h2 style="font-size:15px">Топ дня</h2></div>
+            <div class="lb"><span class="lb__pos">1</span><span class="ava ava--3 ava--sm">MP</span><div class="lb__name"><b>masha_pg</b><span>3.1s</span></div><span class="lb__elo diff-plus">✓</span></div>
+            <div class="lb"><span class="lb__pos">2</span><span class="ava ava--rival ava--sm">SN</span><div class="lb__name"><b>sql_ninja</b><span>4.0s</span></div><span class="lb__elo diff-plus">✓</span></div>
+            <div class="lb"><span class="lb__pos">3</span><span class="ava ava--4 ava--sm">KK</span><div class="lb__name"><b>kotlin_kid</b><span>5.2s</span></div><span class="lb__elo diff-plus">✓</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+
+  <nav class="tabbar">
+    <a class="tabbar__tab" href="app-home.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Дуэль</a>
+    <a class="tabbar__tab is-on" href="daily.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>День</a>
+    <a class="tabbar__tab" href="leaderboard.html"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7"/></svg>Рейтинг</a>
+    <a class="tabbar__tab" href="app-profile.html"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5 8-5s6.5 1 8 5"/></svg>Профиль</a>
+  </nav>
+</div>
+</body>
+</html>

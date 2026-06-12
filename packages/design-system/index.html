@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — дизайн-код</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .hero { position: relative; overflow: hidden; padding: 64px 0 40px; }
+  .hero::before, .hero::after { content: ""; position: absolute; top: -20%; bottom: -20%; width: 60%; pointer-events: none; }
+  .hero::before { left: -14%; background: linear-gradient(rgb(31 157 85/.08), rgb(31 157 85/.02)); transform: skewX(var(--split-skew)); }
+  .hero::after  { right: -14%; background: linear-gradient(rgb(229 72 77/.07), rgb(229 72 77/.02)); transform: skewX(var(--split-skew)); }
+  .hero__in { position: relative; }
+  .hero h1 { font: 800 clamp(34px,5vw,52px)/1.04 var(--font-display); font-stretch: 110%; letter-spacing: -.02em; margin: 14px 0 14px; }
+  .hero p { color: var(--ink-soft); font-size: 16px; max-width: 60ch; }
+  .hero .meta { display: flex; gap: 24px; margin-top: 22px; flex-wrap: wrap; }
+  .hero .meta b { font: 700 17px var(--font-mono); display: block; font-variant-numeric: tabular-nums; }
+  .hero .meta span { font-size: 12px; color: var(--ink-soft); }
+
+  section { padding: 14px 0 40px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 28px 0 16px; }
+  .sec-head h2 { font: 800 22px var(--font-display); font-stretch: 110%; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 14px; }
+  .tile { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); padding: 18px; box-shadow: var(--shadow-card); transition: border-color .12s, transform .12s, box-shadow .12s; }
+  .tile:hover { border-color: var(--plus); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .tile__code { font: 700 11px var(--font-mono); color: var(--plus); letter-spacing: .08em; }
+  .tile__name { font: 700 16px var(--font-display); font-stretch: 110%; }
+  .tile__desc { font-size: 13px; color: var(--ink-soft); }
+  .tile__tag { margin-top: 6px; font: 700 9px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .tile--arena { background: var(--arena); color: var(--arena-ink); border-color: #000; }
+  .tile--arena .tile__name { color: var(--arena-ink); }
+  .tile--arena .tile__desc { color: var(--arena-soft); }
+  .tile--soon { opacity: .55; pointer-events: none; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--ink-soft); font-size: 13px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero__in">
+    <a class="nav__logo" href="#" style="font-size:20px"><span class="vs">VS</span>DiffDuel</a>
+    <h1>Дизайн-код<br>и верстка продукта</h1>
+    <p>Формализованная дизайн-система в CSS и статическая адаптивная верстка. Дуэль = git diff: светлый code-review интерфейс, тёмные панели арены, жёсткая семантика цвета, моноширинные числа.</p>
+    <div class="meta">
+      <span><b>61</b><span>токен</span></span>
+      <span><b class="diff-plus">6</b><span>групп компонентов</span></span>
+      <span><b>27</b><span>страниц · A–D</span></span>
+    </div>
+  </div>
+</header>
+
+<main>
+<section><div class="wrap">
+
+  <div class="sec-head"><h2>Фундамент</h2><span class="eyebrow">// этап 1–2 · дизайн-система</span></div>
+  <div class="grid">
+    <a class="tile" href="design-system/colors.html"><span class="tile__code">// tokens</span><span class="tile__name">Цвета</span><span class="tile__desc">Семантическая палитра, арена, share, контраст AA.</span><span class="tile__tag">Colors</span></a>
+    <a class="tile" href="design-system/typography.html"><span class="tile__code">// tokens</span><span class="tile__name">Типографика</span><span class="tile__desc">Archivo · Inter · JetBrains Mono. Полная шкала.</span><span class="tile__tag">Type</span></a>
+    <a class="tile" href="design-system/geometry.html"><span class="tile__code">// tokens</span><span class="tile__name">Геометрия</span><span class="tile__desc">Радиусы, отступы ×4, тени, VS-сплит.</span><span class="tile__tag">Spacing</span></a>
+    <a class="tile" href="design-system/components-base.html"><span class="tile__code">// §3.1</span><span class="tile__name">Базовые компоненты</span><span class="tile__desc">Кнопки, пилюли, аватары, поля, тосты, модалка.</span><span class="tile__tag">Components</span></a>
+    <a class="tile tile--arena" href="design-system/components-domain.html"><span class="tile__code t-plus-b">// §3.2</span><span class="tile__name">Доменные компоненты</span><span class="tile__desc">Diff, код, варианты, таймер, лидерборд, share.</span><span class="tile__tag">Components</span></a>
+    <a class="tile" href="design-system/components-extended.html"><span class="tile__code">// 4–6</span><span class="tile__name">Расширенные компоненты</span><span class="tile__desc">FAQ, загрузка, графики, радар, админка, флаги.</span><span class="tile__tag">Components</span></a>
+  </div>
+
+  <div class="sec-head"><h2>Блок A · публичные</h2><span class="eyebrow">// лендинг, вход, профили, турниры</span></div>
+  <div class="grid">
+    <a class="tile" href="design/pages/landing.html"><span class="tile__code">A1</span><span class="tile__name">Лендинг</span><span class="tile__desc">Hero, difflog, лидерборд, founder, тарифы.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/login.html"><span class="tile__code">A2</span><span class="tile__name">Вход</span><span class="tile__desc">OAuth GitHub/Google, email с ошибкой.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/register.html"><span class="tile__code">A2</span><span class="tile__name">Регистрация</span><span class="tile__desc">Ник с проверкой, оферта.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/profile-public.html"><span class="tile__code">A3</span><span class="tile__name">Публичный профиль</span><span class="tile__desc">График Эло, темы, история, not-found.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/leaderboard.html"><span class="tile__code">A4</span><span class="tile__name">Лидерборд</span><span class="tile__desc">Таблица / строки, сегменты, фильтр.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/tournaments.html"><span class="tile__code">A5</span><span class="tile__name">Турниры</span><span class="tile__desc">upcoming / live / finished, пустое.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/founder.html"><span class="tile__code">A6</span><span class="tile__name">Вызови основателя</span><span class="tile__desc">Профиль Rifferd, правила, зал славы.</span><span class="tile__tag">Public</span></a>
+    <a class="tile" href="design/pages/legal.html"><span class="tile__code">A7</span><span class="tile__name">Оферта / данные</span><span class="tile__desc">Текстовый шаблон, якоря-оглавление.</span><span class="tile__tag">Public</span></a>
+    <a class="tile tile--arena" href="design/pages/error.html"><span class="tile__code t-minus-b">A8</span><span class="tile__name">404 / 500</span><span class="tile__desc">Арена-фон, mono-код ошибки.</span><span class="tile__tag">Public</span></a>
+    <a class="tile tile--arena" href="design/pages/offline.html"><span class="tile__code t-plus-b">A8</span><span class="tile__name">Офлайн</span><span class="tile__desc">PWA-фолбэк, баннер реконнекта.</span><span class="tile__tag">Public</span></a>
+  </div>
+
+  <div class="sec-head"><h2>Блок B · приложение</h2><span class="eyebrow">// дуэльный поток + кабинет</span></div>
+  <div class="grid">
+    <a class="tile" href="design/pages/app-home.html"><span class="tile__code">B1</span><span class="tile__name">Главная</span><span class="tile__desc">Big-CTA, статы, задача дня, история.</span><span class="tile__tag">App</span></a>
+    <a class="tile tile--arena" href="design/pages/queue.html"><span class="tile__code t-plus-b">B2</span><span class="tile__name">Матчмейкинг</span><span class="tile__desc">Радар, расширение окна, призрак.</span><span class="tile__tag">App · Arena</span></a>
+    <a class="tile tile--arena" href="design/pages/duel.html"><span class="tile__code t-plus-b">B3</span><span class="tile__name">Дуэль live</span><span class="tile__desc">Тёмная арена, таймер, код, варианты.</span><span class="tile__tag">App · Arena</span></a>
+    <a class="tile" href="design/pages/duel-result.html"><span class="tile__code">B4</span><span class="tile__name">Результат</span><span class="tile__desc">Победа/поражение/ничья, share, пейволл.</span><span class="tile__tag">App</span></a>
+    <a class="tile" href="design/pages/training.html"><span class="tile__code">B5</span><span class="tile__name">Тренировка</span><span class="tile__desc">Темы с прогрессом, сложность.</span><span class="tile__tag">App</span></a>
+    <a class="tile" href="design/pages/training-run.html"><span class="tile__code">B6</span><span class="tile__name">Тренировка · ход</span><span class="tile__desc">correct/wrong + объяснение, итог.</span><span class="tile__tag">App</span></a>
+    <a class="tile" href="design/pages/daily.html"><span class="tile__code">B7</span><span class="tile__name">Задача дня</span><span class="tile__desc">Вопрос, countdown, топ дня.</span><span class="tile__tag">App</span></a>
+    <a class="tile" href="design/pages/app-profile.html"><span class="tile__code">B8</span><span class="tile__name">Мой профиль</span><span class="tile__desc">График 90д, фильтры истории.</span><span class="tile__tag">App</span></a>
+    <a class="tile" href="design/pages/settings.html"><span class="tile__code">B9</span><span class="tile__name">Настройки</span><span class="tile__desc">Аватар-drop, OAuth, опасная зона.</span><span class="tile__tag">App</span></a>
+  </div>
+
+  <div class="sec-head"><h2>Блок C · монетизация</h2><span class="eyebrow">// Pro, оплата, AI-разбор</span></div>
+  <div class="grid">
+    <a class="tile" href="design/pages/pro.html"><span class="tile__code">C1</span><span class="tile__name">Pro</span><span class="tile__desc">Тарифы, сравнение, FAQ.</span><span class="tile__tag">Money</span></a>
+    <a class="tile" href="design/pages/checkout.html"><span class="tile__code">C2</span><span class="tile__name">Оплата</span><span class="tile__desc">Сводка, радио-карточки, CTA.</span><span class="tile__tag">Money</span></a>
+    <a class="tile" href="design/pages/billing-result.html"><span class="tile__code">C3</span><span class="tile__name">Результат оплаты</span><span class="tile__desc">Успех / отклонён.</span><span class="tile__tag">Money</span></a>
+    <a class="tile" href="design/pages/ai-review.html"><span class="tile__code">C4</span><span class="tile__name">AI-разбор</span><span class="tile__desc">Код, diff ответов, объяснение.</span><span class="tile__tag">Money</span></a>
+    <a class="tile" href="design/pages/tournament.html"><span class="tile__code">C5</span><span class="tile__name">Турнир</span><span class="tile__desc">Фонд, countdown, сетка, участники.</span><span class="tile__tag">Money</span></a>
+  </div>
+
+  <div class="sec-head"><h2>Блок D · админка</h2><span class="eyebrow">// утилитарный стиль · те же токены</span></div>
+  <div class="grid">
+    <a class="tile" href="design/pages/admin/shell.html"><span class="tile__code">D1</span><span class="tile__name">Каркас</span><span class="tile__desc">Сайдбар, топбар, контент-зона.</span><span class="tile__tag">Admin</span></a>
+    <a class="tile" href="design/pages/admin/dashboard.html"><span class="tile__code">D2</span><span class="tile__name">Дашборд</span><span class="tile__desc">KPI, спарклайны, график.</span><span class="tile__tag">Admin</span></a>
+    <a class="tile" href="design/pages/admin/tasks.html"><span class="tile__code">D3</span><span class="tile__name">Задачи</span><span class="tile__desc">Фильтры, статусы, пагинация.</span><span class="tile__tag">Admin</span></a>
+    <a class="tile" href="design/pages/admin/task-edit.html"><span class="tile__code">D4</span><span class="tile__name">Редактор задачи</span><span class="tile__desc">JSON-форма + превью как в дуэли.</span><span class="tile__tag">Admin</span></a>
+    <a class="tile" href="design/pages/admin/users.html"><span class="tile__code">D5</span><span class="tile__name">Пользователи</span><span class="tile__desc">Таблица, карточка, бан-модалка.</span><span class="tile__tag">Admin</span></a>
+    <a class="tile" href="design/pages/admin/flags.html"><span class="tile__code">D6</span><span class="tile__name">Фиче-флаги</span><span class="tile__desc">Список флагов с % раскатки.</span><span class="tile__tag">Admin</span></a>
+  </div>
+
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>DiffDuel by Rifferd · дизайн-код · собран AI-only</span>
+  <span class="mono">v0.8.2 · status: <span class="diff-plus">operational</span></span>
+</div></footer>
+</body>
+</html>

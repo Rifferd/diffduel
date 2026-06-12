@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — турнир</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="_pageshell.css">
+<style>
+  .t-hero { background: var(--arena); color: var(--arena-ink); border-radius: var(--radius-lg); border: 1px solid var(--frame); padding: 26px; position: relative; overflow: hidden; margin-top: 8px; }
+  .t-hero::after { content: ""; position: absolute; inset: -30% -8% -30% 62%; background: linear-gradient(rgb(31 157 85/.2), transparent); transform: skewX(var(--split-skew)); pointer-events: none; }
+  .t-hero__in { position: relative; z-index: 1; display: flex; gap: 28px; align-items: flex-end; flex-wrap: wrap; }
+  .t-hero h1 { font: 800 26px var(--font-display); font-stretch: 110%; }
+  .t-hero__prize b { display: block; font: 800 36px var(--font-mono); font-variant-numeric: tabular-nums; }
+  .t-hero__prize span { font: 600 11px var(--font-mono); color: var(--arena-soft); text-transform: uppercase; letter-spacing: .08em; }
+  .t-hero__cd { margin-left: auto; text-align: right; }
+  .round-on td { background: var(--plus-bg); }
+  .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--timer); }
+  .t-sub { font-size: 13px; color: var(--arena-soft); margin-top: 4px; }
+  .place { font: 800 15px var(--font-mono); width: 28px; text-align: center; }
+  .place--1 { color: var(--timer); } .place--2, .place--3 { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="appnav">
+    <div class="wrap appnav__in">
+      <a class="nav__logo" href="tournaments.html"><span class="vs">VS</span>DiffDuel</a>
+      <span class="appnav__sp"></span>
+      <a class="appnav__link" href="tournaments.html">← Все турниры</a>
+    </div>
+  </nav>
+
+  <main class="app__main">
+    <div class="wrap">
+      <div class="crumbs" style="padding-top:14px"><a href="tournaments.html">Турниры</a><span class="crumbs__sep">/</span><b>Пятничный блиц · SQL</b></div>
+
+      <div class="t-hero">
+        <div class="t-hero__in">
+          <div>
+            <span class="pill pill--live" style="margin-bottom:8px"><span class="live-dot"></span> live · раунд 3/5</span>
+            <h1>Пятничный блиц · SQL</h1>
+            <div class="mono t-sub">128 участников · взнос 0 ₽</div>
+          </div>
+          <div class="t-hero__prize"><b class="t-plus-b">10 000 ₽</b><span>призовой фонд</span></div>
+          <div class="t-hero__cd"><div class="cd"><span class="cd__num" role="timer">04:12</span></div><span class="eyebrow eyebrow--arena">// до конца раунда</span></div>
+        </div>
+      </div>
+
+      <div class="section grid-2" style="margin-top:18px">
+        <div class="surface" style="overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--line)"><strong style="font:700 15px var(--font-display);font-stretch:110%">Сетка раундов</strong></div>
+          <table class="adm-table">
+            <thead><tr><th scope="col">Раунд</th><th scope="col">Тема</th><th scope="col">Статус</th></tr></thead>
+            <tbody>
+              <tr><td>1/8 финала</td><td>SQL · JOIN</td><td><span class="pill pill--done">завершён</span></td></tr>
+              <tr><td>1/4 финала</td><td>SQL · оконные</td><td><span class="pill pill--done">завершён</span></td></tr>
+              <tr class="round-on"><td><b>1/2 финала</b></td><td>SQL · CTE</td><td><span class="pill pill--live">идёт</span></td></tr>
+              <tr><td>Финал</td><td>—</td><td><span class="pill pill--soon">скоро</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="surface" style="overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--line)"><strong style="font:700 15px var(--font-display);font-stretch:110%">Топ участников</strong></div>
+          <div style="padding:4px 12px">
+            <div class="lb"><span class="lb__pos">1</span><span class="ava ava--3 ava--sm">MP</span><div class="lb__name"><b>masha_pg</b><span>5 побед</span></div><span class="lb__elo diff-plus">+0</span></div>
+            <div class="lb"><span class="lb__pos">2</span><span class="ava ava--rival ava--sm">SN</span><div class="lb__name"><b>sql_ninja</b><span>4 победы</span></div><span class="lb__elo">·</span></div>
+            <div class="lb is-me"><span class="lb__pos">9</span><span class="ava ava--you ava--sm">ВЫ</span><div class="lb__name"><b>anton_dev</b><span>в 1/2 финала</span></div><span class="lb__elo diff-plus">live</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:4px"><a class="btn btn--duel" href="duel.html">К своему матчу</a><a class="btn btn--ghost" href="tournaments.html">Покинуть</a></div>
+
+      <!-- демо-состояние: турнир завершён -->
+      <div style="margin-top:30px">
+        <span class="eyebrow">// состояние: турнир завершён</span>
+        <div class="surface" style="overflow:hidden;margin-top:10px">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+            <strong style="font:700 15px var(--font-display);font-stretch:110%">Итоги · Пятничный блиц · SQL</strong>
+            <span class="pill pill--done">завершён</span>
+          </div>
+          <div style="padding:4px 12px 8px">
+            <div class="lb"><span class="place place--1">1</span><span class="ava ava--3 ava--sm">MP</span><div class="lb__name"><b>masha_pg</b><span>6 побед · 0 поражений</span></div><span class="lb__elo diff-plus">+6 000 ₽</span></div>
+            <div class="lb"><span class="place place--2">2</span><span class="ava ava--rival ava--sm">SN</span><div class="lb__name"><b>sql_ninja</b><span>5 побед · 1 поражение</span></div><span class="lb__elo diff-plus">+3 000 ₽</span></div>
+            <div class="lb"><span class="place place--3">3</span><span class="ava ava--4 ava--sm">KK</span><div class="lb__name"><b>kotlin_kid</b><span>4 победы · 2 поражения</span></div><span class="lb__elo diff-plus">+1 000 ₽</span></div>
+            <div class="lb is-me"><span class="place">9</span><span class="ava ava--you ava--sm">ВЫ</span><div class="lb__name"><b>anton_dev</b><span>выбыл в 1/2 финала</span></div><span class="lb__elo">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

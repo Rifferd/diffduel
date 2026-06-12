@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel Admin — фиче-флаги</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../../manifest.webmanifest">
+<link rel="stylesheet" href="../../../styles.css">
+<link rel="stylesheet" href="../_pageshell.css">
+</head>
+<body>
+<div class="adm">
+  <aside class="adm__side-wrap">
+    <nav class="adm-side">
+      <div class="adm-side__brand"><span class="vs">VS</span>Admin</div>
+      <div class="adm-side__sec">// контент</div>
+      <a class="adm-side__item" href="tasks.html">Задачи</a>
+      <a class="adm-side__item" href="task-edit.html">Редактор задачи</a>
+      <div class="adm-side__sec">// люди</div>
+      <a class="adm-side__item" href="users.html">Пользователи</a>
+      <div class="adm-side__sec">// система</div>
+      <a class="adm-side__item is-on" href="flags.html">Фиче-флаги</a>
+      <a class="adm-side__item" href="../landing.html">← К продукту</a>
+    </nav>
+  </aside>
+
+  <div class="adm__main">
+    <header class="adm__top">
+      <label class="field"><input type="search" placeholder="Поиск по ключу флага…"></label>
+      <span style="flex:1"></span>
+      <a class="btn btn--duel" href="#" style="padding:8px 14px">+ Флаг</a>
+      <span class="ava ava--3 ava--sm">AD</span>
+    </header>
+    <main class="adm__content">
+      <h1 style="font:800 24px var(--font-display);font-stretch:110%;margin-bottom:6px">Фиче-флаги</h1>
+      <p class="t-soft" style="font-size:14px;margin-bottom:18px">Постепенная раскатка фич. Процент — доля пользователей, видящих фичу.</p>
+
+      <div style="display:grid;gap:12px;max-width:720px">
+        <div class="flag"><label class="toggle"><input type="checkbox" checked><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">AI-разбор v2</div><div class="flag__key">ai_review_v2</div></div><span class="flag__pct diff-plus">35%</span></div>
+        <div class="flag"><label class="toggle"><input type="checkbox" checked><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">Призрак при долгом поиске</div><div class="flag__key">ghost_matchmaking</div></div><span class="flag__pct diff-plus">100%</span></div>
+        <div class="flag"><label class="toggle"><input type="checkbox"><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">Командные турниры</div><div class="flag__key">team_tournaments</div></div><span class="flag__pct">0%</span></div>
+        <div class="flag"><label class="toggle"><input type="checkbox" checked><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">Telegram Stars оплата</div><div class="flag__key">pay_tg_stars</div></div><span class="flag__pct diff-plus">60%</span></div>
+        <div class="flag"><label class="toggle"><input type="checkbox"><span class="toggle__track"></span></label><div class="flag__main"><div class="flag__name">Новый онбординг</div><div class="flag__key">onboarding_v3</div></div><span class="flag__pct">5%</span></div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

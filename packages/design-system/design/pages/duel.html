@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DiffDuel — дуэль</title>
+<meta name="theme-color" content="#161B22">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  html, body { height: 100%; }
+  body { background: var(--arena); color: var(--arena-ink); }
+  .arena { min-height: 100dvh; display: flex; flex-direction: column; max-width: 720px; margin: 0 auto; }
+
+  .arena__bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+  .arena__logo { font: 800 16px var(--font-display); font-stretch: 110%; display: flex; align-items: center; gap: 8px; color: var(--arena-ink); text-decoration: none; }
+  .arena__exit { color: var(--arena-soft); text-decoration: none; font: 600 13px var(--font-body); display: flex; align-items: center; gap: 6px; }
+  .arena__exit svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .arena__head { padding: 0 18px; }
+  .arena__head .duel-head { border-radius: var(--radius-lg); border: 1px solid var(--arena-line); }
+  .arena__head .duel-head__score { font-size: 24px; }
+
+  .arena__timer { padding: 4px 18px 0; }
+
+  .arena__task { flex: 1; padding: 12px 18px; display: flex; flex-direction: column; min-height: 0; }
+  .arena__task .task-label { font: 700 10px var(--font-mono); letter-spacing: .12em; color: var(--arena-soft); text-transform: uppercase; margin-bottom: 10px; }
+  .arena__task pre.code { margin-bottom: 14px; max-height: 38vh; }
+
+  .arena__feed { padding: 0 18px; }
+  .arena__feed .feed { padding: 12px 0 max(16px, env(safe-area-inset-bottom)); }
+
+  /* waiting overlay state (after you answered) */
+  .wait { display: flex; align-items: center; gap: 8px; font: 500 12px var(--font-mono); color: var(--arena-soft); padding: 6px 0; }
+  .wait__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--arena-soft); animation: dd-blink 1s infinite; }
+  @keyframes dd-blink { 50% { opacity: .3; } }
+
+  .demo-states { margin-top: 18px; border-top: 1px solid var(--arena-line); padding-top: 14px; }
+  .demo-states .eyebrow { margin-bottom: 10px; }
+  .demo-states .banner { margin-bottom: 12px; }
+
+  @media (max-width: 640px) {
+    .arena__head .duel-head { border: 0; border-radius: 0; padding: 8px 0; background:
+      linear-gradient(var(--split-angle), rgb(31 157 85/.16) 49.6%, transparent 49.6%),
+      linear-gradient(282deg, rgb(229 72 77/.16) 49.6%, transparent 49.6%); }
+    .arena__head { padding: 0 14px; }
+    .arena__timer, .arena__task, .arena__feed { padding-left: 14px; padding-right: 14px; }
+  }
+</style>
+</head>
+<body>
+<main class="arena">
+  <h1 class="sr-only">Дуэль: anton_dev против sql_ninja — задача 3 из 5</h1>
+
+  <div class="arena__bar">
+    <a class="arena__logo" href="app-home.html"><span class="vs">VS</span>DiffDuel</a>
+    <a class="arena__exit" href="app-home.html"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Сдаться</a>
+  </div>
+
+  <div class="arena__head">
+    <div class="duel-head">
+      <div class="duel-head__player">
+        <span class="ava ava--you ava--md">ВЫ</span>
+        <div><div class="duel-head__nm duel-head__nm--you">anton_dev</div><div class="duel-head__score">2</div></div>
+      </div>
+      <span class="duel-head__vs">VS</span>
+      <div class="duel-head__player duel-head__player--right">
+        <div><div class="duel-head__nm duel-head__nm--rival">sql_ninja</div><div class="duel-head__score">1</div></div>
+        <span class="ava ava--rival ava--md">SN</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arena__timer">
+    <div class="duel-timer">
+      <span class="duel-timer__num" role="timer" aria-label="Осталось 17 секунд">0:17</span>
+      <div class="tbar"><i></i></div>
+      <span class="duel-timer__step">3/5</span>
+    </div>
+  </div>
+
+  <div class="arena__task">
+    <div class="task-label">JS · найди баг</div>
+<pre class="code"><span class="c">// печатает 3, 3, 3 — почему?</span>
+<span class="k">for</span> (<span class="err"><span class="k">var</span></span> i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; log(i), 100);
+}</pre>
+    <div class="opts" role="radiogroup" aria-label="Варианты ответа">
+      <button class="opt is-selected" role="radio" aria-checked="true">var не блочная — нужна let</button>
+      <button class="opt" role="radio" aria-checked="false">setTimeout всегда async</button>
+      <button class="opt" role="radio" aria-checked="false">нужен await перед log</button>
+      <button class="opt" role="radio" aria-checked="false">замыкание невозможно</button>
+    </div>
+    <div class="wait"><span class="wait__dot"></span> ждём ответ соперника…</div>
+
+    <!-- демо-состояния (на боевом экране видно по одному) -->
+    <div class="demo-states">
+      <div class="eyebrow eyebrow--arena">// состояния после ответа</div>
+      <div class="banner banner--warn"><span class="banner__mark">!</span> Восстанавливаем дуэль… таймер приостановлен</div>
+      <div class="opts">
+        <button class="opt is-correct" disabled>var не блочная — нужна let</button>
+        <button class="opt is-wrong" disabled>нужен await перед log</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="arena__feed">
+    <div class="feed" aria-live="polite">› sql_ninja ответил за <b class="m">7.4s</b> · вы впереди <b class="p">2:1</b></div>
+  </div>
+</main>
+</body>
+</html>
