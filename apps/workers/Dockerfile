@@ -1,4 +1,6 @@
 # DiffDuel image-gen worker — prod-образ.
+# Собирается из КОРНЯ монорепо (как api/web/admin), единообразно для deploy.yml:
+#   docker build -f apps/workers/Dockerfile -t diffduel-workers .
 # Многостадийная сборка: uv ставит зависимости в venv, рантайм — slim без uv.
 
 FROM python:3.12-slim AS builder
@@ -13,12 +15,12 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /app
 
 # Сначала только манифесты — кэш слоёв при неизменных зависимостях.
-COPY pyproject.toml uv.lock* ./
+COPY apps/workers/pyproject.toml apps/workers/uv.lock* ./
 RUN uv sync --no-dev --no-install-project --frozen || uv sync --no-dev --no-install-project
 
 # Затем код и шрифты.
-COPY src ./src
-COPY assets ./assets
+COPY apps/workers/src ./src
+COPY apps/workers/assets ./assets
 RUN uv sync --no-dev --frozen || uv sync --no-dev
 
 
