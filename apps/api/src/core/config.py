@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # Заведомо известные dev-дефолты; прод с ними не стартует (см. валидатор ниже).
 _DEV_JWT_SECRET = "dev-insecure-secret-change-me-please-0123456789-0123456789-0123456789"  # noqa: S105
@@ -54,7 +54,9 @@ class Settings(BaseSettings):
     trust_proxy: bool = False
 
     # CORS — строго белый список origin'ов (credentials=True).
-    cors_origins: list[str] = Field(
+    # NoDecode: pydantic-settings иначе пытается JSON-парсить env-строку списка
+    # и падает на CSV — отдаём сырую строку валидатору _split_origins ниже.
+    cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5173", "http://localhost:5174"]
     )
 

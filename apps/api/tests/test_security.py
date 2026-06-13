@@ -164,3 +164,11 @@ class TestProdConfigGuard:
         from src.core.config import Settings
 
         assert Settings(app_env="dev").cookie_secure is False
+
+
+def test_cors_origins_parses_csv_from_env() -> None:
+    """CORS_ORIGINS как CSV-строка из env не должен падать (баг pydantic NoDecode)."""
+    from src.core.config import Settings
+
+    s = Settings(cors_origins="https://a.com,https://b.com, https://c.com")  # type: ignore[arg-type]
+    assert s.cors_origins == ["https://a.com", "https://b.com", "https://c.com"]
