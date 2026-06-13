@@ -302,3 +302,22 @@ async def test_resend_unknown_email_is_204(
     resp = await client.post("/auth/resend-code", json={"email": "ghost@example.com"})
     assert resp.status_code == 204
     assert sent == []  # письмо не уходит, существование не раскрывается
+
+
+def test_build_message_subject_roundtrips() -> None:
+    """Письмо собирается без ошибок, тема декодируется с сохранением пробелов.
+
+    Регресс: legacy email.header.Header ломал EmailMessage (500 при регистрации).
+    """
+    from email import policy
+    from email.parser import BytesParser
+
+    from src.core.email import _build_message
+
+    msg = _build_message("user@example.com", "135790", "https://diffduel.com/verify?token=t")
+    raw = msg.as_bytes()
+    parsed = BytesParser(policy=policy.default).parsebytes(raw)
+    assert str(parsed["Subject"]) == "DiffDuel — подтверждение почты"
+    # есть и текст, и HTML-альтернатива
+    assert msg.get_body(("html",)) is not None
+    assert msg.get_body(("plain",)) is not None

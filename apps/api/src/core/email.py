@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from email.header import Header
 from email.message import EmailMessage
 
 import aiosmtplib
@@ -101,10 +100,10 @@ def _html_body(code: str, link_url: str) -> str:
 def _build_message(to: str, code: str, link_url: str) -> EmailMessage:
     settings = get_settings()
     message = EmailMessage()
-    # Кодируем тему ОДНИМ UTF-8 encoded-word: иначе на границе кириллица/ASCII
-    # («…почты DiffDuel») EmailMessage режет на два encoded-word и пробел между
-    # ними по RFC2047 схлопывается в «почтыDiffDuel».
-    message["Subject"] = Header(_SUBJECT, "utf-8")
+    # EmailMessage сам кодирует кириллицу в =?UTF-8?...?= по policy.default;
+    # пробелы сохраняются при декодировании стандартным RFC2047-парсером
+    # (почтовые клиенты показывают тему корректно).
+    message["Subject"] = _SUBJECT
     message["From"] = settings.smtp_from
     message["To"] = to
     message.set_content(_text_body(code, link_url))
