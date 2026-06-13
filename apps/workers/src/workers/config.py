@@ -51,6 +51,15 @@ class Settings(BaseSettings):
     broker_connect_backoff_s: float = 1.0
     broker_connect_backoff_max_s: float = 30.0
 
+    # AI-разбор (ai-review консьюмер). Топик/group отдельные от image-gen.
+    ai_review_topic: str = "ai.review.requested"
+    ai_review_group_id: str = "ai-review"
+    # Anthropic SDK: ключ пуст → разбор недоступен (пишем failed).
+    anthropic_api_key: str = ""
+    # Точная строка без date-суффикса (claude-api справочник).
+    ai_review_model: str = "claude-opus-4-8"
+    ai_review_max_tokens: int = 4000
+
     # Observability. Пусто = выключено (no-op, нулевой оверхед в проде).
     sentry_dsn: str = ""
     otel_exporter_otlp_endpoint: str = ""

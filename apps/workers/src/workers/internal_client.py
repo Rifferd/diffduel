@@ -38,6 +38,30 @@ class DuelCard:
     share_card_key: str | None
 
 
+@dataclass(frozen=True, slots=True)
+class ReviewTask:
+    """Одна задача дуэли для AI-разбора: вопрос+эталон+ответ игрока."""
+
+    task_id: str
+    body: dict[str, object]
+    # Эталон (correct/...) — приходит только из internal-эндпоинта.
+    answer: dict[str, object]
+    explanation: str | None
+    selected: int | None
+    is_correct: bool
+    time_ms: int | None
+
+
+@dataclass(frozen=True, slots=True)
+class ReviewData:
+    """Данные для разбора игрока (отдаёт internal Core API)."""
+
+    duel_id: str
+    user_id: str
+    topic: str
+    tasks: list[ReviewTask]
+
+
 class InternalClient:
     """Тонкая async-обёртка над httpx с ретраями (как realtime internal-client)."""
 
@@ -112,6 +136,50 @@ class InternalClient:
     async def set_share_card(self, duel_id: str, key: str) -> None:
         """Записывает ключ карточки в дуэль (идемпотентно на стороне API)."""
         await self._request("POST", f"/internal/duels/{duel_id}/share-card", json={"key": key})
+
+    async def get_review_data(self, duel_id: str, user_id: str) -> ReviewData:
+        """Данные для AI-разбора (вопросы+эталоны+ответы игрока)."""
+        response = await self._request(
+            "GET", f"/internal/duels/{duel_id}/review-data?user_id={user_id}"
+        )
+        body = response.json()
+        raw_tasks = body.get("tasks", [])
+        tasks = [
+            ReviewTask(
+                task_id=str(t.get("task_id", "")),
+                body=t.get("body", {}) if isinstance(t.get("body"), dict) else {},
+                answer=t.get("answer", {}) if isinstance(t.get("answer"), dict) else {},
+                explanation=t.get("explanation"),
+                selected=t.get("selected"),
+                is_correct=bool(t.get("is_correct", False)),
+                time_ms=t.get("time_ms"),
+            )
+            for t in raw_tasks
+            if isinstance(t, dict)
+        ]
+        return ReviewData(
+            duel_id=duel_id,
+            user_id=user_id,
+            topic=str(body.get("topic", "")),
+            tasks=tasks,
+        )
+
+    async def write_ai_review(
+        self,
+        duel_id: str,
+        user_id: str,
+        *,
+        status: str,
+        content: str | None = None,
+        error: str | None = None,
+    ) -> None:
+        """Записывает результат AI-разбора (идемпотентно на стороне API)."""
+        payload: dict[str, object] = {"status": status}
+        if content is not None:
+            payload["content"] = content
+        if error is not None:
+            payload["error"] = error
+        await self._request("POST", f"/internal/ai-reviews/{duel_id}/{user_id}", json=payload)
 
 
 class _RetryableStatus(Exception):

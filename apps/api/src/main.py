@@ -11,6 +11,7 @@ from sqlalchemy import text
 from starlette.responses import JSONResponse
 
 from src.admin.router import router as admin_router
+from src.ai_review.router import router as ai_review_router
 from src.auth.router import router as auth_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine, get_sessionmaker
@@ -73,6 +74,7 @@ def create_app() -> FastAPI:
     app.include_router(tasks_router)
     app.include_router(leaderboard_router)
     app.include_router(daily_router)
+    app.include_router(ai_review_router)
     app.include_router(admin_router)
     app.include_router(internal_router)
 

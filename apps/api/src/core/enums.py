@@ -36,6 +36,12 @@ class DuelStatus(enum.StrEnum):
     aborted = "aborted"
 
 
+class AiReviewStatus(enum.StrEnum):
+    pending = "pending"
+    done = "done"
+    failed = "failed"
+
+
 class SubscriptionPlan(enum.StrEnum):
     pro = "pro"
 

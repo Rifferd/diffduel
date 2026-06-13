@@ -5,6 +5,7 @@ description = "DiffDuel background workers (image-gen share-cards)"
 requires-python = ">=3.12"
 dependencies = [
     "aiokafka>=0.12",
+    "anthropic>=0.45",
     "pillow>=11.0",
     "aioboto3>=13.0",
     "pydantic-settings>=2.6",

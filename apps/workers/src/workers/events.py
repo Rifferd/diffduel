@@ -32,6 +32,14 @@ class DuelFinished:
     scores: dict[str, int]
 
 
+@dataclass(frozen=True, slots=True)
+class AiReviewRequested:
+    """Полезная нагрузка события ``ai.review.requested``."""
+
+    duel_id: str
+    user_id: str
+
+
 def _require(mapping: object, key: str) -> object:
     if not isinstance(mapping, dict):
         raise EnvelopeError(f"ожидался объект, получено {type(mapping).__name__}")
@@ -107,3 +115,27 @@ def parse_envelope(raw: bytes | str) -> DuelFinished:
         deltas=deltas,
         scores=scores,
     )
+
+
+def parse_ai_review_envelope(raw: bytes | str) -> AiReviewRequested:
+    """Разбирает конверт ``ai.review.requested`` → :class:`AiReviewRequested`.
+
+    Бросает :class:`EnvelopeError` на любой структурной ошибке.
+    """
+    try:
+        envelope = json.loads(raw)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise EnvelopeError(f"невалидный JSON: {exc}") from exc
+
+    if not isinstance(envelope, dict):
+        raise EnvelopeError("конверт должен быть JSON-объектом")
+
+    event_type = _as_str(_require(envelope, "type"), "type")
+    if event_type != "ai.review.requested":
+        raise EnvelopeError(f"неожиданный type: {event_type!r}")
+    _require(envelope, "v")
+
+    payload = _require(envelope, "payload")
+    duel_id = _as_str(_require(payload, "duel_id"), "duel_id")
+    user_id = _as_str(_require(payload, "user_id"), "user_id")
+    return AiReviewRequested(duel_id=duel_id, user_id=user_id)

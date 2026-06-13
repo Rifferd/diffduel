@@ -7,6 +7,8 @@ import uuid
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.ai_review.schemas import AiReviewResponse, ReviewDataResponse, WriteReviewRequest
+from src.ai_review.service import AiReviewService
 from src.core.db import get_db
 from src.duels.schemas import (
     CreateDuelRequest,
@@ -81,3 +83,33 @@ async def set_duel_share_card(
     session: AsyncSession = Depends(get_db),
 ) -> None:
     await DuelService(session).set_share_card(duel_id, data.key)
+
+
+# --- AI-разбор (ai-review воркер) --------------------------------------------
+
+
+@router.get(
+    "/duels/{duel_id}/review-data",
+    response_model=ReviewDataResponse,
+    include_in_schema=False,
+)
+async def get_review_data(
+    duel_id: uuid.UUID,
+    user_id: uuid.UUID,
+    session: AsyncSession = Depends(get_db),
+) -> ReviewDataResponse:
+    return await AiReviewService(session).review_data(duel_id, user_id)
+
+
+@router.post(
+    "/ai-reviews/{duel_id}/{user_id}",
+    response_model=AiReviewResponse,
+    include_in_schema=False,
+)
+async def write_ai_review(
+    duel_id: uuid.UUID,
+    user_id: uuid.UUID,
+    data: WriteReviewRequest,
+    session: AsyncSession = Depends(get_db),
+) -> AiReviewResponse:
+    return await AiReviewService(session).write_result(duel_id, user_id, data)
