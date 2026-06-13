@@ -16,6 +16,7 @@ dependencies = [
     "redis>=5.2",
     "structlog>=24.4",
     "aioboto3>=13.0",
+    "aiokafka>=0.12",
 ]
 
 [dependency-groups]
@@ -68,6 +69,11 @@ ignore_errors = true
 module = "aioboto3.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+# у aiokafka нет стабов/py.typed; продюсер — тонкая best-effort обёртка.
+module = "aiokafka.*"
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
@@ -76,4 +82,5 @@ testpaths = ["tests"]
 pythonpath = ["."]
 markers = [
     "s3: тесты против реального MinIO (S3); пропускаются, если эндпоинт недоступен",
+    "kafka: тесты против реального брокера (Redpanda); пропускаются без брокера",
 ]

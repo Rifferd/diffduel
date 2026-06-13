@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     # Internal API.
     internal_api_token: str = _DEV_INTERNAL_TOKEN
 
+    # Kafka/Redpanda — продюсер событий (duels.finished). Best-effort.
+    kafka_brokers: str = "localhost:19092"
+
     # S3 / MinIO (presigned-аватары, см. ТЗ §3.7).
     s3_endpoint: str = "http://localhost:9000"
     s3_access_key: str = "diffduel"

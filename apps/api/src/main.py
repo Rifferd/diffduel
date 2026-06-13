@@ -13,6 +13,7 @@ from starlette.responses import JSONResponse
 from src.auth.router import router as auth_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine, get_sessionmaker
+from src.core.events import close_producer
 from src.core.exception_handlers import register_exception_handlers
 from src.core.logging import configure_logging, get_logger
 from src.core.middleware import RequestContextMiddleware, SecurityHeadersMiddleware
@@ -30,6 +31,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     logger.info("api_starting")
     yield
+    await close_producer()
     await close_redis()
     await dispose_engine()
     logger.info("api_stopped")
