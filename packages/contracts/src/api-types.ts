@@ -124,6 +124,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/{username}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Public Profile
+         * @description Публичный профиль (SEO). Забаненный/несуществующий → 404.
+         */
+        get: operations["public_profile_users__username__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/topics": {
         parameters: {
             query?: never;
@@ -175,6 +195,211 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Leaderboard */
+        get: operations["get_leaderboard_leaderboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/leaderboard/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Position */
+        get: operations["get_my_position_leaderboard_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tasks */
+        get: operations["list_tasks_admin_tasks_get"];
+        put?: never;
+        /** Create Task */
+        post: operations["create_task_admin_tasks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/tasks/{task_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Task */
+        patch: operations["update_task_admin_tasks__task_id__patch"];
+        trace?: never;
+    };
+    "/admin/tasks/{task_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Task */
+        post: operations["publish_task_admin_tasks__task_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/tasks/{task_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject Task */
+        post: operations["reject_task_admin_tasks__task_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Users */
+        get: operations["list_users_admin_users_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user_id}/ban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ban User */
+        post: operations["ban_user_admin_users__user_id__ban_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user_id}/unban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unban User */
+        post: operations["unban_user_admin_users__user_id__unban_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/metrics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Metrics Overview */
+        get: operations["metrics_overview_admin_metrics_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/feature-flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Flags */
+        get: operations["list_flags_admin_feature_flags_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/feature-flags/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Upsert Flag */
+        put: operations["upsert_flag_admin_feature_flags__key__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -199,6 +424,89 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AdminTask
+         * @description Задача в админке — с эталоном (закрытый роутер).
+         */
+        AdminTask: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Topic Id
+             * Format: uuid
+             */
+            topic_id: string;
+            /** Difficulty */
+            difficulty: number;
+            type: components["schemas"]["TaskType"];
+            /** Body */
+            body: {
+                [key: string]: unknown;
+            };
+            /** Answer */
+            answer: {
+                [key: string]: unknown;
+            };
+            /** Explanation */
+            explanation: string | null;
+            status: components["schemas"]["TaskStatus"];
+            /** Author Id */
+            author_id: string | null;
+            /** Version */
+            version: number;
+        };
+        /**
+         * AdminTaskList
+         * @description Страница задач.
+         */
+        AdminTaskList: {
+            /** Items */
+            items: components["schemas"]["AdminTask"][];
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * AdminUser
+         * @description Пользователь в админке.
+         */
+        AdminUser: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /** Username */
+            username: string;
+            /** Role */
+            role: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Banned At */
+            banned_at: string | null;
+        };
+        /** AdminUserList */
+        AdminUserList: {
+            /** Items */
+            items: components["schemas"]["AdminUser"][];
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+            /** Total */
+            total: number;
+        };
         /**
          * AnswerPayload
          * @description Полезная нагрузка ответа на quiz: индекс выбранной опции.
@@ -268,10 +576,65 @@ export interface components {
             /** Expires In */
             expires_in: number;
         };
+        /**
+         * BanRequest
+         * @description POST /admin/users/{id}/ban — причина бана (журналируется).
+         */
+        BanRequest: {
+            /** Reason */
+            reason: string;
+        };
+        /** FeatureFlagOut */
+        FeatureFlagOut: {
+            /** Key */
+            key: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * FeatureFlagUpsert
+         * @description PUT /admin/feature-flags/{key}.
+         */
+        FeatureFlagUpsert: {
+            /** Enabled */
+            enabled: boolean;
+            /** Payload */
+            payload?: {
+                [key: string]: unknown;
+            } | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * LeaderboardEntry
+         * @description Одна строка лидерборда.
+         */
+        LeaderboardEntry: {
+            /** Rank */
+            rank: number;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Username */
+            username: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /** Elo */
+            elo: number;
         };
         /** LoginRequest */
         LoginRequest: {
@@ -282,6 +645,29 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+        };
+        /** MetricsOverview */
+        MetricsOverview: {
+            /** Users */
+            users: number;
+            /** Duels 24H */
+            duels_24h: number;
+            /** Duels 7D */
+            duels_7d: number;
+            /** Published Tasks */
+            published_tasks: number;
+            /** Active Subscriptions */
+            active_subscriptions: number;
+        };
+        /**
+         * MyLeaderboardPosition
+         * @description GET /leaderboard/me — моя позиция и соседи ±2 (rank=null если меня нет).
+         */
+        MyLeaderboardPosition: {
+            /** Rank */
+            rank: number | null;
+            /** Entries */
+            entries: components["schemas"]["LeaderboardEntry"][];
         };
         /**
          * QuizBody
@@ -312,6 +698,30 @@ export interface components {
             password: string;
         };
         /**
+         * TaskCreate
+         * @description POST /admin/tasks — создание (всегда стартует в draft).
+         */
+        TaskCreate: {
+            /**
+             * Topic Id
+             * Format: uuid
+             */
+            topic_id: string;
+            /** Difficulty */
+            difficulty: number;
+            type: components["schemas"]["TaskType"];
+            /** Body */
+            body: {
+                [key: string]: unknown;
+            };
+            /** Answer */
+            answer: {
+                [key: string]: unknown;
+            };
+            /** Explanation */
+            explanation?: string | null;
+        };
+        /**
          * TaskPublic
          * @description Публичная задача для тренировки — без answer и explanation.
          */
@@ -327,10 +737,33 @@ export interface components {
             body: components["schemas"]["QuizBody"];
         };
         /**
+         * TaskStatus
+         * @enum {string}
+         */
+        TaskStatus: "draft" | "review" | "published";
+        /**
          * TaskType
          * @enum {string}
          */
         TaskType: "quiz" | "code_bug" | "sql" | "design";
+        /**
+         * TaskUpdate
+         * @description PATCH /admin/tasks/{id} — частичное обновление редактируемых полей.
+         */
+        TaskUpdate: {
+            /** Difficulty */
+            difficulty?: number | null;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Answer */
+            answer?: {
+                [key: string]: unknown;
+            } | null;
+            /** Explanation */
+            explanation?: string | null;
+        };
         /**
          * TokenResponse
          * @description Access-токен отдаётся в JSON; refresh — в httpOnly cookie.
@@ -359,6 +792,18 @@ export interface components {
             title: string;
         };
         /**
+         * TopicRating
+         * @description Эло пользователя по одной теме (для публичного профиля).
+         */
+        TopicRating: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Elo */
+            elo: number;
+        };
+        /**
          * UserMe
          * @description Профиль для самого пользователя — добавляем email.
          */
@@ -385,6 +830,31 @@ export interface components {
              * @description Публичный URL аватара: S3_PUBLIC_BASE_URL/avatars/{key}.
              */
             readonly avatar_url: string | null;
+        };
+        /**
+         * UserProfile
+         * @description Публичный профиль GET /users/{username} — без чувствительных полей.
+         */
+        UserProfile: {
+            /** Username */
+            username: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Topics */
+            topics: components["schemas"]["TopicRating"][];
+            /** Total Duels */
+            total_duels: number;
+            /** Wins */
+            wins: number;
+            /** Win Rate */
+            win_rate: number;
+            /** Streak */
+            streak: number;
         };
         /**
          * UserRole
@@ -644,6 +1114,37 @@ export interface operations {
             };
         };
     };
+    public_profile_users__username__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfile"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_topics_topics_get: {
         parameters: {
             query?: never;
@@ -717,6 +1218,409 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AnswerResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_leaderboard_leaderboard_get: {
+        parameters: {
+            query?: {
+                scope?: "global" | "weekly";
+                topic?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaderboardEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_position_leaderboard_me_get: {
+        parameters: {
+            query?: {
+                scope?: "global" | "weekly";
+                topic?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyLeaderboardPosition"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_tasks_admin_tasks_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["TaskStatus"] | null;
+                topic?: string | null;
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTaskList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_task_admin_tasks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTask"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_task_admin_tasks__task_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTask"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_task_admin_tasks__task_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTask"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_task_admin_tasks__task_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTask"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_users_admin_users_get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+                page?: number;
+                page_size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ban_user_admin_users__user_id__ban_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BanRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUser"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unban_user_admin_users__user_id__unban_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUser"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    metrics_overview_admin_metrics_overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetricsOverview"];
+                };
+            };
+        };
+    };
+    list_flags_admin_feature_flags_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeatureFlagOut"][];
+                };
+            };
+        };
+    };
+    upsert_flag_admin_feature_flags__key__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeatureFlagUpsert"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeatureFlagOut"];
                 };
             };
             /** @description Validation Error */

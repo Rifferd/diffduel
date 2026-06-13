@@ -15,6 +15,19 @@ export type AnswerSubmit = components['schemas']['AnswerSubmit'];
 export type AnswerPayload = components['schemas']['AnswerPayload'];
 export type AnswerResult = components['schemas']['AnswerResult'];
 
+// --- Админка (apps/admin), роутер /admin ---
+export type TaskStatus = components['schemas']['TaskStatus'];
+export type AdminTask = components['schemas']['AdminTask'];
+export type AdminTaskList = components['schemas']['AdminTaskList'];
+export type TaskCreate = components['schemas']['TaskCreate'];
+export type TaskUpdate = components['schemas']['TaskUpdate'];
+export type AdminUser = components['schemas']['AdminUser'];
+export type AdminUserList = components['schemas']['AdminUserList'];
+export type BanRequest = components['schemas']['BanRequest'];
+export type MetricsOverview = components['schemas']['MetricsOverview'];
+export type FeatureFlagOut = components['schemas']['FeatureFlagOut'];
+export type FeatureFlagUpsert = components['schemas']['FeatureFlagUpsert'];
+
 /** Единый формат ошибки API — контракт фронта (см. conventions.md §Python). */
 export interface ApiError {
   error: {
