@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from starlette.responses import JSONResponse
 
+from src.admin.router import router as admin_router
 from src.auth.router import router as auth_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine, get_sessionmaker
@@ -19,6 +20,7 @@ from src.core.logging import configure_logging, get_logger
 from src.core.middleware import RequestContextMiddleware, SecurityHeadersMiddleware
 from src.core.redis import close_redis, get_redis
 from src.internal_api.router import router as internal_router
+from src.leaderboard.router import router as leaderboard_router
 from src.tasks.router import router as tasks_router
 from src.topics.router import router as topics_router
 from src.users.router import router as users_router
@@ -64,6 +66,8 @@ def create_app() -> FastAPI:
     app.include_router(users_router)
     app.include_router(topics_router)
     app.include_router(tasks_router)
+    app.include_router(leaderboard_router)
+    app.include_router(admin_router)
     app.include_router(internal_router)
 
     @app.get("/healthz", tags=["health"])

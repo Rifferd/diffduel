@@ -9,7 +9,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
-from src.core.config import get_settings
+from src.core.avatars import avatar_url
 from src.core.enums import UserRole
 
 _USERNAME_RE = re.compile(r"^[a-z0-9_-]{3,30}$")
@@ -46,17 +46,34 @@ class UserPublic(BaseModel):
     @property
     def avatar_url(self) -> str | None:
         """Публичный URL аватара: S3_PUBLIC_BASE_URL/avatars/{key}."""
-        if not self.avatar_key:
-            return None
-        settings = get_settings()
-        base = settings.s3_public_base_url.rstrip("/")
-        return f"{base}/{settings.s3_bucket_avatars}/{self.avatar_key}"
+        return avatar_url(self.avatar_key)
 
 
 class UserMe(UserPublic):
     """Профиль для самого пользователя — добавляем email."""
 
     email: str
+
+
+class TopicRating(BaseModel):
+    """Эло пользователя по одной теме (для публичного профиля)."""
+
+    slug: str
+    title: str
+    elo: int
+
+
+class UserProfile(BaseModel):
+    """Публичный профиль GET /users/{username} — без чувствительных полей."""
+
+    username: str
+    avatar_url: str | None
+    created_at: datetime
+    topics: list[TopicRating]
+    total_duels: int
+    wins: int
+    win_rate: float
+    streak: int
 
 
 class AvatarPresignRequest(BaseModel):

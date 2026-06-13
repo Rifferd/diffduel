@@ -12,7 +12,8 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.db import get_db
-from src.core.errors import AuthError
+from src.core.enums import UserRole
+from src.core.errors import AuthError, ForbiddenError
 from src.core.rate_limit import check_rate_limit
 from src.core.redis import get_redis
 from src.core.security import decode_access_token
@@ -45,6 +46,22 @@ async def get_current_user(
     # Кладём в request.state для rate_limit(key="user").
     request.state.user = user
     return user
+
+
+def require_role(*roles: UserRole) -> Callable[..., Awaitable[User]]:
+    """RBAC-зависимость поверх get_current_user.
+
+    Возвращает пользователя, если его роль входит в ``roles``; иначе 403.
+    401 (нет/битый токен, бан) отдаётся раньше — это решает get_current_user.
+    """
+    allowed = set(roles)
+
+    async def _dependency(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed:
+            raise ForbiddenError("Недостаточно прав", code="forbidden")
+        return current_user
+
+    return _dependency
 
 
 def rate_limit_user(name: str, limit: int, window_s: int) -> Callable[..., Awaitable[None]]:

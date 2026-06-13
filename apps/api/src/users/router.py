@@ -13,6 +13,7 @@ from src.users.schemas import (
     AvatarPresignRequest,
     AvatarPresignResponse,
     UserMe,
+    UserProfile,
     UserUpdate,
 )
 from src.users.service import UserService
@@ -56,3 +57,12 @@ async def confirm_avatar(
 ) -> UserMe:
     user = await UserService(session).confirm_avatar(current_user, data.key)
     return UserMe.model_validate(user)
+
+
+@router.get("/users/{username}", response_model=UserProfile)
+async def public_profile(
+    username: str,
+    session: AsyncSession = Depends(get_db),
+) -> UserProfile:
+    """Публичный профиль (SEO). Забаненный/несуществующий → 404."""
+    return await UserService(session).public_profile(username)

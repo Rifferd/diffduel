@@ -25,20 +25,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.core import events
 from src.core.enums import DuelStatus
 from src.core.errors import NotFoundError, ValidationError
+from src.core.logging import get_logger
+from src.core.redis import get_redis
 from src.duels import elo
 from src.duels.models import Duel
 from src.duels.repository import DuelRepository
 from src.duels.schemas import (
     CreateDuelRequest,
     CreateDuelResponse,
+    DuelCardResponse,
     DuelTask,
     FinishDuelRequest,
     FinishDuelResponse,
     PlayerResults,
 )
+from src.leaderboard.service import update_on_finish
 from src.tasks.repository import TaskRepository
 from src.topics.models import Task
 from src.users.models import Rating
+
+logger = get_logger("duels")
 
 _DUELS_FINISHED_TOPIC = "duels.finished"
 _TASKS_PER_DUEL = 5
@@ -97,6 +103,28 @@ class DuelService:
             },
         )
 
+    # --- share-карточка (image-gen воркер) -----------------------------------
+
+    async def get_card(self, duel_id: uuid.UUID) -> DuelCardResponse:
+        """Данные для рендера share-карточки + текущий ключ (идемпотентность)."""
+        duel = await self._duels.get(duel_id)
+        if duel is None:
+            raise NotFoundError("Дуэль не найдена", code="duel_not_found")
+        usernames = await self._duels.usernames_of([duel.player_a, duel.player_b])
+        return DuelCardResponse(
+            duel_id=duel.id,
+            winner_id=duel.winner_id,
+            usernames={str(uid): name for uid, name in usernames.items()},
+            deltas=_deltas_payload(duel),
+            share_card_key=duel.share_card_key,
+        )
+
+    async def set_share_card(self, duel_id: uuid.UUID, key: str) -> None:
+        """Записывает ключ карточки идемпотентно (повторное событие — no-op)."""
+        if await self._duels.get(duel_id) is None:
+            raise NotFoundError("Дуэль не найдена", code="duel_not_found")
+        await self._duels.set_share_card_key(duel_id, key)
+
     # --- finish --------------------------------------------------------------
 
     async def finish(self, duel_id: uuid.UUID, data: FinishDuelRequest) -> FinishDuelResponse:
@@ -130,6 +158,8 @@ class DuelService:
         settled = await self._settle(duel, data)
         await self._session.commit()
         await self._emit_finished(duel, scores=settled.scores)
+        # ZSET-лидерборды обновляем ПОСЛЕ commit, вне транзакции БД (спека A).
+        await self._update_leaderboards(duel, settled.response.elo)
         return settled.response
 
     # --- внутреннее ----------------------------------------------------------
@@ -231,6 +261,23 @@ class DuelService:
             event_type="duels.finished",
             payload=payload,
         )
+
+    async def _update_leaderboards(self, duel: Duel, new_elo: dict[str, int]) -> None:
+        """ZADD обоих игроков в lb:topic/lb:weekly/lb:global. Best-effort.
+
+        Падение Redis не должно ронять уже зафиксированный finish — логируем.
+        """
+        try:
+            slug = await self._duels.topic_slug(duel.topic_id)
+            if slug is None:
+                return
+            await update_on_finish(
+                get_redis(),
+                topic_slug=slug,
+                new_elo={uuid.UUID(uid): val for uid, val in new_elo.items()},
+            )
+        except Exception:
+            logger.warning("leaderboard_update_failed", duel_id=str(duel.id))
 
 
 def _outcome_a(score_a: int, time_a: int, score_b: int, time_b: int) -> float:

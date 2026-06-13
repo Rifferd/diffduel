@@ -81,7 +81,8 @@ async def _clean_state() -> AsyncIterator[None]:
     try:
         await conn.execute(
             "TRUNCATE refresh_tokens, oauth_accounts, ratings, answers, "
-            "duels, tasks, topics, users RESTART IDENTITY CASCADE"
+            "duels, tasks, topics, feature_flags, subscriptions, users "
+            "RESTART IDENTITY CASCADE"
         )
     finally:
         await conn.close()

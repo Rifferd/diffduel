@@ -343,3 +343,52 @@ async def test_finish_requires_token(client: AsyncClient, make_duel: CreateFn) -
     }
     resp = await client.post(f"/internal/duels/{duel_id}/finish", json=payload)
     assert resp.status_code == 401
+
+
+# --- share-карточка (image-gen воркер) ---------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_get_duel_card(client: AsyncClient, make_duel: CreateFn) -> None:
+    duel_id, a, b, _ = await make_duel("carda", "cardb")
+    resp = await client.get(f"/internal/duels/{duel_id}/card", headers=_TOKEN)
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["duel_id"] == str(duel_id)
+    assert body["usernames"][str(a)] == "user_carda"
+    assert body["usernames"][str(b)] == "user_cardb"
+    assert body["share_card_key"] is None
+
+
+@pytest.mark.asyncio
+async def test_set_share_card_is_idempotent(client: AsyncClient, make_duel: CreateFn) -> None:
+    duel_id, _, _, _ = await make_duel("sca", "scb")
+    first = await client.post(
+        f"/internal/duels/{duel_id}/share-card", json={"key": "cards/first.png"}, headers=_TOKEN
+    )
+    assert first.status_code == 204, first.text
+    # Повторное событие image-gen не перезаписывает ключ (идемпотентность).
+    second = await client.post(
+        f"/internal/duels/{duel_id}/share-card", json={"key": "cards/second.png"}, headers=_TOKEN
+    )
+    assert second.status_code == 204
+    card = (await client.get(f"/internal/duels/{duel_id}/card", headers=_TOKEN)).json()
+    assert card["share_card_key"] == "cards/first.png"
+
+
+@pytest.mark.asyncio
+async def test_card_endpoints_unknown_duel(client: AsyncClient) -> None:
+    missing = uuid.uuid4()
+    assert (await client.get(f"/internal/duels/{missing}/card", headers=_TOKEN)).status_code == 404
+    resp = await client.post(
+        f"/internal/duels/{missing}/share-card", json={"key": "x.png"}, headers=_TOKEN
+    )
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_card_requires_token(client: AsyncClient) -> None:
+    duel = uuid.uuid4()
+    assert (await client.get(f"/internal/duels/{duel}/card")).status_code == 401
+    resp = await client.post(f"/internal/duels/{duel}/share-card", json={"key": "x.png"})
+    assert resp.status_code == 401

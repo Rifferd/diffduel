@@ -8,8 +8,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core import s3
+from src.core.avatars import avatar_url
 from src.core.config import get_settings
-from src.core.errors import ConflictError, ForbiddenError, ValidationError
+from src.core.errors import ConflictError, ForbiddenError, NotFoundError, ValidationError
 from src.core.logging import get_logger
 from src.users.models import User
 from src.users.repository import UserRepository
@@ -18,6 +19,8 @@ from src.users.schemas import (
     MAX_AVATAR_SIZE_BYTES,
     AvatarPresignRequest,
     AvatarPresignResponse,
+    TopicRating,
+    UserProfile,
     UserUpdate,
 )
 
@@ -42,6 +45,28 @@ class UserService:
             except IntegrityError as exc:
                 raise ConflictError("Username уже занят", code="username_taken") from exc
         return user
+
+    # --- Публичный профиль ---------------------------------------------------
+
+    async def public_profile(self, username: str) -> UserProfile:
+        """Профиль по username. Забаненный/несуществующий → 404."""
+        user = await self._users.get_by_username(username)
+        if user is None or user.banned_at is not None:
+            raise NotFoundError("Пользователь не найден", code="user_not_found")
+
+        topics = await self._users.topic_ratings(user.id)
+        stats = await self._users.profile_stats(user.id)
+        win_rate = round(stats.wins / stats.total_duels, 4) if stats.total_duels else 0.0
+        return UserProfile(
+            username=user.username,
+            avatar_url=avatar_url(user.avatar_key),
+            created_at=user.created_at,
+            topics=[TopicRating(slug=t.slug, title=t.title, elo=t.elo) for t in topics],
+            total_duels=stats.total_duels,
+            wins=stats.wins,
+            win_rate=win_rate,
+            streak=stats.streak,
+        )
 
     # --- Аватары (presigned flow, ТЗ §3.7) ----------------------------------
 

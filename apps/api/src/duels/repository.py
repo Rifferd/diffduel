@@ -10,13 +10,14 @@ import uuid
 from collections.abc import Sequence
 from datetime import datetime
 
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.enums import DuelStatus
 from src.duels.models import Answer, Duel
-from src.users.models import Rating
+from src.topics.models import Topic
+from src.users.models import Rating, User
 
 
 class DuelRepository:
@@ -44,6 +45,10 @@ class DuelRepository:
 
     async def get(self, duel_id: uuid.UUID) -> Duel | None:
         return await self._session.get(Duel, duel_id)
+
+    async def topic_slug(self, topic_id: uuid.UUID) -> str | None:
+        stmt = select(Topic.slug).where(Topic.id == topic_id)
+        return (await self._session.execute(stmt)).scalar_one_or_none()
 
     async def get_for_update(self, duel_id: uuid.UUID) -> Duel | None:
         """Берёт строку duels под блокировку (первый finish побеждает гонку)."""
@@ -77,3 +82,23 @@ class DuelRepository:
     async def insert_duel_answers(self, rows: list[dict[str, object]]) -> None:
         if rows:
             await self._session.execute(insert(Answer), rows)
+
+    async def usernames_of(self, user_ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, str]:
+        """Ники игроков по их id (для подписи share-карточки)."""
+        stmt = select(User.id, User.username).where(User.id.in_(list(user_ids)))
+        rows = (await self._session.execute(stmt)).all()
+        return {row.id: row.username for row in rows}
+
+    async def set_share_card_key(self, duel_id: uuid.UUID, key: str) -> bool:
+        """Записывает ключ карточки только если его ещё нет (идемпотентно).
+
+        Возвращает True, если ключ записан этим вызовом; False — если у дуэли
+        уже был ключ (повторное событие image-gen) либо дуэли нет.
+        """
+        stmt = (
+            update(Duel)
+            .where(Duel.id == duel_id, Duel.share_card_key.is_(None))
+            .values(share_card_key=key)
+            .returning(Duel.id)
+        )
+        return (await self._session.execute(stmt)).scalar_one_or_none() is not None

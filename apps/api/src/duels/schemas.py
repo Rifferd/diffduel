@@ -79,3 +79,21 @@ class FinishDuelResponse(BaseModel):
     winner_id: uuid.UUID | None
     deltas: dict[str, int]
     elo: dict[str, int]
+
+
+class DuelCardResponse(BaseModel):
+    """GET /internal/duels/{id}/card — данные для рендера share-карточки."""
+
+    duel_id: uuid.UUID
+    winner_id: uuid.UUID | None
+    # ник игрока по строковому uuid.
+    usernames: dict[str, str]
+    deltas: dict[str, int]
+    # уже сгенерированный ключ карточки (идемпотентность image-gen).
+    share_card_key: str | None
+
+
+class SetShareCardRequest(BaseModel):
+    """POST /internal/duels/{id}/share-card — записать ключ карточки."""
+
+    key: str = Field(min_length=1, max_length=512)

@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+from src.admin import models as admin_models
 from src.auth import models as auth_models
 from src.billing import models as billing_models
 from src.core.db import Base
@@ -15,6 +16,7 @@ from src.users import models as users_models
 
 __all__ = [
     "Base",
+    "admin_models",
     "auth_models",
     "billing_models",
     "duels_models",

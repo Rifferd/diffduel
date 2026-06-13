@@ -11,8 +11,10 @@ from src.core.db import get_db
 from src.duels.schemas import (
     CreateDuelRequest,
     CreateDuelResponse,
+    DuelCardResponse,
     FinishDuelRequest,
     FinishDuelResponse,
+    SetShareCardRequest,
 )
 from src.duels.service import DuelService
 from src.internal_api.dependencies import require_internal_token
@@ -54,3 +56,28 @@ async def finish_duel(
     session: AsyncSession = Depends(get_db),
 ) -> FinishDuelResponse:
     return await DuelService(session).finish(duel_id, data)
+
+
+@router.get(
+    "/duels/{duel_id}/card",
+    response_model=DuelCardResponse,
+    include_in_schema=False,
+)
+async def get_duel_card(
+    duel_id: uuid.UUID,
+    session: AsyncSession = Depends(get_db),
+) -> DuelCardResponse:
+    return await DuelService(session).get_card(duel_id)
+
+
+@router.post(
+    "/duels/{duel_id}/share-card",
+    status_code=204,
+    include_in_schema=False,
+)
+async def set_duel_share_card(
+    duel_id: uuid.UUID,
+    data: SetShareCardRequest,
+    session: AsyncSession = Depends(get_db),
+) -> None:
+    await DuelService(session).set_share_card(duel_id, data.key)
