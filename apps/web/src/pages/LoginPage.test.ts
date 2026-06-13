@@ -61,6 +61,23 @@ describe('LoginPage', () => {
     expect(wrapper.find('.field--error').exists()).toBe(true);
   });
 
+  it('на 403 email_not_verified уводит на /verify-email с email и подсказкой', async () => {
+    vi.spyOn(authApi, 'login').mockRejectedValue(
+      new ApiRequestError(403, 'email_not_verified', 'not verified'),
+    );
+
+    const wrapper = mount(LoginPage);
+    await wrapper.find('input[type="email"]').setValue('anton@team.dev');
+    await wrapper.find('input[type="password"]').setValue('secret');
+    await wrapper.find('form').trigger('submit.prevent');
+    await flushPromises();
+
+    expect(pushMock).toHaveBeenCalledWith({
+      path: '/verify-email',
+      query: { email: 'anton@team.dev', notice: 'Подтвердите почту, чтобы войти.' },
+    });
+  });
+
   it('maps a 429 rate-limit to a human-readable message', async () => {
     vi.spyOn(authApi, 'login').mockRejectedValue(
       new ApiRequestError(429, 'rate_limited', 'too many'),

@@ -16,6 +16,18 @@ const routes: RouteRecordRaw[] = [
     meta: { public: true, title: 'DiffDuel — регистрация' },
   },
   {
+    path: '/verify-email',
+    name: 'verify-email',
+    component: () => import('@/pages/VerifyEmailPage.vue'),
+    meta: { public: true, title: 'DiffDuel — подтверждение почты' },
+  },
+  {
+    path: '/verify',
+    name: 'verify-link',
+    component: () => import('@/pages/VerifyLinkPage.vue'),
+    meta: { public: true, title: 'DiffDuel — подтверждение почты' },
+  },
+  {
     path: '/',
     name: 'landing',
     component: () => import('@/pages/LandingPage.vue'),

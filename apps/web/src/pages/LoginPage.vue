@@ -47,6 +47,14 @@ async function onSubmit(): Promise<void> {
     await router.push(redirect);
   } catch (err) {
     if (err instanceof ApiRequestError) {
+      // Почта не подтверждена — уводим на ввод кода с подсказкой.
+      if (err.status === 403 && err.code === 'email_not_verified') {
+        await router.push({
+          path: '/verify-email',
+          query: { email: parsed.data.email, notice: 'Подтвердите почту, чтобы войти.' },
+        });
+        return;
+      }
       formError.value = mapApiError(err);
     } else {
       formError.value = 'Не удалось войти. Попробуйте позже.';

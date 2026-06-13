@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint, text
+from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -24,6 +24,9 @@ class User(Base):
     # password_hash NULL — для пользователей, заведённых только через OAuth.
     password_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     avatar_key: Mapped[str | None] = mapped_column(String, nullable=True)
+    email_verified: Mapped[bool] = mapped_column(
+        Boolean, server_default=text("false"), nullable=False
+    )
     role: Mapped[UserRole] = mapped_column(
         user_role_enum, server_default=text("'user'"), nullable=False
     )

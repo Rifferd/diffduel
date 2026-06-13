@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import type { LoginRequest, RegisterRequest, TokenResponse, UserMe } from '@diffduel/contracts';
 import { api } from '@/shared/api/client';
 import { authApi, meApi } from '@/shared/api/endpoints';
+import type { RegisterResponse, VerifyLinkResponse } from '@/shared/api/endpoints';
 
 interface AuthState {
   /** Access-токен живёт ТОЛЬКО в памяти, никакого localStorage. */
@@ -55,10 +56,34 @@ export const useAuthStore = defineStore('auth', {
       await this.fetchMe();
     },
 
-    async register(payload: RegisterRequest): Promise<void> {
-      const token = await authApi.register(payload);
+    /**
+     * Регистрация. Режим OFF (verification_required:false) — авто-логин.
+     * Режим ON (true) — токенов нет, сессия НЕ создаётся; ветвление наверху.
+     */
+    async register(payload: RegisterRequest): Promise<RegisterResponse> {
+      const res = await authApi.register(payload);
+      if (res.verification_required === false) {
+        this.setSession(res);
+        await this.fetchMe();
+      }
+      return res;
+    },
+
+    /** Подтверждение кодом — при успехе логинит. */
+    async verifyEmail(email: string, code: string): Promise<void> {
+      const token = await authApi.verifyEmail({ email, code });
       this.setSession(token);
       await this.fetchMe();
+    },
+
+    /** Подтверждение по ссылке. logged_in:true → логинит; иначе сессия не создаётся. */
+    async verifyLink(token: string): Promise<VerifyLinkResponse> {
+      const res = await authApi.verifyLink({ token });
+      if (res.logged_in) {
+        this.setSession(res);
+        await this.fetchMe();
+      }
+      return res;
     },
 
     async logout(): Promise<void> {

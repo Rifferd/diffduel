@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import ForeignKey, String, UniqueConstraint, text
+from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -46,3 +46,22 @@ class RefreshToken(Base):
     rotated_at: Mapped[timestamptz | None] = mapped_column(nullable=True)
     revoked_at: Mapped[timestamptz | None] = mapped_column(nullable=True)
     created_at: Mapped[timestamptz_now]
+
+
+class EmailVerification(Base):
+    """Незавершённая верификация email. Хранит только хэши, не сам код/токен.
+
+    PK = user_id (одна активная верификация на пользователя; resend перезаписывает).
+    """
+
+    __tablename__ = "email_verifications"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    code_hash: Mapped[str] = mapped_column(String, nullable=False)
+    link_token_hash: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    sid_hash: Mapped[str] = mapped_column(String, nullable=False)
+    expires_at: Mapped[timestamptz]
+    attempts: Mapped[int] = mapped_column(Integer, server_default=text("0"), nullable=False)
+    sent_at: Mapped[timestamptz | None] = mapped_column(nullable=True)

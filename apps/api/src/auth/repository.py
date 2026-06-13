@@ -5,10 +5,10 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.models import RefreshToken
+from src.auth.models import EmailVerification, RefreshToken
 
 
 class RefreshTokenRepository:
@@ -69,3 +69,60 @@ class RefreshTokenRepository:
             .values(revoked_at=now)
         )
         await self._session.execute(stmt)
+
+
+class EmailVerificationRepository:
+    """Доступ к данным незавершённых верификаций email (хранятся только хэши)."""
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def upsert(
+        self,
+        *,
+        user_id: uuid.UUID,
+        code_hash: str,
+        link_token_hash: str,
+        sid_hash: str,
+        expires_at: datetime,
+        sent_at: datetime,
+    ) -> None:
+        """Создаёт/перезаписывает верификацию (resend сбрасывает attempts)."""
+        await self._session.execute(
+            delete(EmailVerification).where(EmailVerification.user_id == user_id)
+        )
+        await self._session.flush()
+        self._session.add(
+            EmailVerification(
+                user_id=user_id,
+                code_hash=code_hash,
+                link_token_hash=link_token_hash,
+                sid_hash=sid_hash,
+                expires_at=expires_at,
+                attempts=0,
+                sent_at=sent_at,
+            )
+        )
+        await self._session.flush()
+
+    async def get_by_user_id(self, user_id: uuid.UUID) -> EmailVerification | None:
+        return await self._session.get(EmailVerification, user_id)
+
+    async def get_by_link_token_hash(self, link_token_hash: str) -> EmailVerification | None:
+        stmt = select(EmailVerification).where(EmailVerification.link_token_hash == link_token_hash)
+        return (await self._session.execute(stmt)).scalar_one_or_none()
+
+    async def increment_attempts(self, user_id: uuid.UUID) -> int:
+        """Атомарно +1 к attempts, возвращает новое значение."""
+        stmt = (
+            update(EmailVerification)
+            .where(EmailVerification.user_id == user_id)
+            .values(attempts=EmailVerification.attempts + 1)
+            .returning(EmailVerification.attempts)
+        )
+        return (await self._session.execute(stmt)).scalar_one()
+
+    async def delete(self, user_id: uuid.UUID) -> None:
+        await self._session.execute(
+            delete(EmailVerification).where(EmailVerification.user_id == user_id)
+        )

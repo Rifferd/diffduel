@@ -88,6 +88,11 @@ def hash_refresh_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
+def sha256_hex(value: str) -> str:
+    """sha256-hex произвольной строки (код/link_token/sid email-верификации)."""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
 # --- Constant-time сравнение -------------------------------------------------
 
 

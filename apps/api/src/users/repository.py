@@ -52,11 +52,27 @@ class UserRepository:
         stmt = select(User.id).where(User.username == username)
         return (await self._session.execute(stmt)).first() is not None
 
-    async def create(self, *, email: str, username: str, password_hash: str) -> User:
-        user = User(email=email, username=username, password_hash=password_hash)
+    async def create(
+        self,
+        *,
+        email: str,
+        username: str,
+        password_hash: str,
+        email_verified: bool = True,
+    ) -> User:
+        user = User(
+            email=email,
+            username=username,
+            password_hash=password_hash,
+            email_verified=email_verified,
+        )
         self._session.add(user)
         await self._session.flush()
         return user
+
+    async def mark_email_verified(self, user: User) -> None:
+        user.email_verified = True
+        await self._session.flush()
 
     async def update_username(self, user: User, username: str) -> User:
         user.username = username

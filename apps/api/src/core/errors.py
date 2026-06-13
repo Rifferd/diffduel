@@ -41,6 +41,11 @@ class ValidationError(APIError):
     code = "validation_error"
 
 
+class BadRequestError(APIError):
+    status_code = 400
+    code = "bad_request"
+
+
 class AuthError(APIError):
     status_code = 401
     code = "unauthorized"

@@ -14,11 +14,59 @@ import type {
 export type LeaderboardEntry = components['schemas']['LeaderboardEntry'];
 import { api } from './client';
 
+/**
+ * Контракт подтверждения email (docs/specs/email-verification.md).
+ * TODO(contracts): убрать локальные типы и перегенерить `@diffduel/contracts`
+ * (`npm exec -y pnpm@9 -- -C packages/contracts generate` против localhost:8000),
+ * как только API-агент опубликует эндпоинты verify-email/verify-link/resend-code
+ * и обновит RegisterRequest/register-response в OpenAPI.
+ */
+
+/** Ответ register: либо авто-логин (OFF), либо требование подтверждения (ON). */
+export type RegisterResponse =
+  | ({ verification_required: false } & TokenResponse)
+  | { verification_required: true };
+
+export interface VerifyEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface VerifyLinkRequest {
+  token: string;
+}
+
+/** Ответ verify-link: то же устройство (logged_in+токены) или другое (без логина). */
+export type VerifyLinkResponse =
+  | ({ logged_in: true } & TokenResponse)
+  | { logged_in: false; code?: string };
+
 export const authApi = {
-  register(payload: RegisterRequest): Promise<TokenResponse> {
-    return api.request<TokenResponse>('/auth/register', {
+  register(payload: RegisterRequest): Promise<RegisterResponse> {
+    return api.request<RegisterResponse>('/auth/register', {
       method: 'POST',
       body: payload,
+      skipAuthRefresh: true,
+    });
+  },
+  verifyEmail(payload: VerifyEmailRequest): Promise<TokenResponse> {
+    return api.request<TokenResponse>('/auth/verify-email', {
+      method: 'POST',
+      body: payload,
+      skipAuthRefresh: true,
+    });
+  },
+  verifyLink(payload: VerifyLinkRequest): Promise<VerifyLinkResponse> {
+    return api.request<VerifyLinkResponse>('/auth/verify-link', {
+      method: 'POST',
+      body: payload,
+      skipAuthRefresh: true,
+    });
+  },
+  resendCode(email: string): Promise<void> {
+    return api.request<void>('/auth/resend-code', {
+      method: 'POST',
+      body: { email },
       skipAuthRefresh: true,
     });
   },

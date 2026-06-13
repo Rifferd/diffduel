@@ -31,8 +31,8 @@ async def _make_user(
     conn = await asyncpg.connect(**_DB)
     try:
         row = await conn.fetchval(
-            "INSERT INTO users (email, username, role, password_hash) "
-            "VALUES ($1,$2,$3,$4) RETURNING id",
+            "INSERT INTO users (email, username, role, password_hash, email_verified) "
+            "VALUES ($1,$2,$3,$4,true) RETURNING id",
             f"{username}@example.com",
             username,
             role,

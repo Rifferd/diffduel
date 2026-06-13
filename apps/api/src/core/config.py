@@ -62,6 +62,21 @@ class Settings(BaseSettings):
 
     sentry_dsn: str = ""
 
+    # --- Подтверждение email -------------------------------------------------
+    # Фиче-флаг: OFF — регистрация авто-логинит (email_verified=true), писем нет;
+    # ON — регистрация шлёт код, логин до подтверждения запрещён.
+    email_verification_enabled: bool = False
+    email_backend: Literal["console", "smtp"] = "console"
+    smtp_host: str = ""
+    smtp_port: int = 465
+    smtp_ssl: bool = True
+    smtp_starttls: bool = False
+    smtp_user: str = ""
+    smtp_password: str = ""  # только в .env.prod / секретах, не в репо
+    smtp_from: str = "DiffDuel <verification@diffduel.com>"
+    # Базовый URL SPA — для ссылки-подтверждения в письме.
+    public_web_url: str = "http://localhost:5173"
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:
@@ -92,6 +107,13 @@ class Settings(BaseSettings):
             problems.append("CORS_ORIGINS: в проде допускаются только https-origin'ы")
         if self.s3_secret_key == _DEV_S3_SECRET:
             problems.append("S3_SECRET_KEY: в проде обязателен собственный секрет MinIO")
+        if self.email_verification_enabled and self.email_backend == "smtp":
+            if not self.smtp_host:
+                problems.append("SMTP_HOST: обязателен при включённой smtp-верификации")
+            if not self.smtp_user:
+                problems.append("SMTP_USER: обязателен при включённой smtp-верификации")
+            if not self.smtp_password:
+                problems.append("SMTP_PASSWORD: обязателен при включённой smtp-верификации")
         if problems:
             raise ValueError("; ".join(problems))
         return self

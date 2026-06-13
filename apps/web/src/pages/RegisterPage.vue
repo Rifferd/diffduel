@@ -59,12 +59,16 @@ async function onSubmit(): Promise<void> {
 
   submitting.value = true;
   try {
-    await auth.register({
+    const res = await auth.register({
       username: parsed.data.username,
       email: parsed.data.email,
       password: parsed.data.password,
     });
-    await router.push('/app');
+    if (res.verification_required) {
+      await router.push({ path: '/verify-email', query: { email: parsed.data.email } });
+    } else {
+      await router.push('/app');
+    }
   } catch (err) {
     if (err instanceof ApiRequestError) {
       formError.value = mapApiError(err);
