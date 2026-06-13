@@ -53,9 +53,7 @@ def record_answer_check(duration_s: float, *, mode: str, correct: bool) -> None:
     No-op при выключенной телеметрии: meter без SDK-провайдера ничего не пишет.
     ``mode`` — "solo" | "duel"; ``correct`` — вердикт (для разбивки).
     """
-    _get_answer_check_histogram().record(
-        duration_s, attributes={"mode": mode, "correct": correct}
-    )
+    _get_answer_check_histogram().record(duration_s, attributes={"mode": mode, "correct": correct})
 
 
 def init_sentry(settings: Settings) -> None:

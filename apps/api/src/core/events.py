@@ -77,9 +77,7 @@ async def produce(topic: str, *, key: str, event_type: str, payload: dict[str, A
     envelope = _envelope(event_type, payload)
     try:
         producer = await _get_producer()
-        await producer.send_and_wait(
-            topic, value=envelope, key=key, headers=_trace_headers()
-        )
+        await producer.send_and_wait(topic, value=envelope, key=key, headers=_trace_headers())
     except Exception:
         # Брокер недоступен — дуэль/запрос не должны падать (спека duels.md).
         logger.warning("event_produce_failed", topic=topic, event_type=event_type, key=key)
