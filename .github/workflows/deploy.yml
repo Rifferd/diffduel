@@ -1,0 +1,96 @@
+name: deploy
+
+# Деплой на прод-VPS после зелёных CI. Требует секретов окружения `production`:
+#   SSH_HOST, SSH_USER, SSH_KEY (приватный ключ), GHCR_OWNER.
+# Пока секреты не заданы (VPS ещё не куплен) — job no-op'ит на шаге guard.
+# Активируется автоматически, как только секреты появятся.
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [api-ci, web-ci, realtime-ci, workers-ci]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        run: |
+          # Деплоим только при успешном CI (или ручном запуске) И наличии секрета хоста.
+          if [ "${{ github.event_name }}" = "workflow_run" ] && \
+             [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "::notice::SSH_HOST не задан — VPS ещё не подключён, деплой пропущен."
+            echo "ready=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+  build-and-deploy:
+    needs: guard
+    if: needs.guard.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & push images
+        env:
+          OWNER: ${{ secrets.GHCR_OWNER }}
+          TAG: ${{ github.sha }}
+        run: |
+          for svc in api realtime workers web admin; do
+            docker buildx build \
+              -f "apps/$svc/Dockerfile" \
+              -t "ghcr.io/$OWNER/diffduel-$svc:$TAG" \
+              -t "ghcr.io/$OWNER/diffduel-$svc:latest" \
+              --push .
+          done
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/diffduel
+            export IMAGE_TAG=${{ github.sha }}
+            docker compose -f infra/compose/docker-compose.prod.yml --env-file .env.prod pull
+            # Прогон миграций до перезапуска api (release-шаг).
+            docker compose -f infra/compose/docker-compose.prod.yml --env-file .env.prod \
+              run --rm api alembic upgrade head
+            docker compose -f infra/compose/docker-compose.prod.yml --env-file .env.prod up -d
+            # Smoke: api здоров; иначе откат на latest.
+            sleep 10
+            if ! docker compose -f infra/compose/docker-compose.prod.yml exec -T api \
+                 python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/healthz').status==200 else 1)"; then
+              echo "smoke failed — rolling back"
+              export IMAGE_TAG=latest
+              docker compose -f infra/compose/docker-compose.prod.yml --env-file .env.prod up -d
+              exit 1
+            fi

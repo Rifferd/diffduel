@@ -19,7 +19,7 @@ packages/
   ui-tokens/      Дизайн-токены — единый источник для web/admin/share-карточек
   design-system/  Дизайн-код (read-only контракт): стайлгайд + 25 свёрстанных страниц
 infra/
-  compose/    docker compose: dev-стек (PG, Redis, Redpanda, MinIO, observability)
+  compose/    docker-compose.yml (dev) + docker-compose.prod.yml (VPS, memory-limits, Traefik)
   deploy/     Traefik, скрипты деплоя на VPS
   grafana/    дашборды как код
 docs/

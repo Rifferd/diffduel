@@ -1,0 +1,285 @@
+# DiffDuel — ПРОДАКШЕН-стек (VPS 2 vCPU / 4 GB, только diffduel.com).
+#
+# Отдельный сервер, никак не связанный с dev-compose. Наружу торчит ТОЛЬКО
+# Traefik (80/443); все сервисы — во внутренней сети без проброса портов.
+# Образы тянутся из GHCR (тег по умолчанию latest, деплой переопределяет IMAGE_TAG).
+# Память каждого контейнера ограничена — суммарно ~3.3 GB с запасом под ОС.
+#
+# Запуск на сервере:
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+# Миграции (release-шаг, до старта api или сразу после):
+#   docker compose -f docker-compose.prod.yml run --rm api alembic upgrade head
+
+name: diffduel-prod
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  traefik:
+    image: traefik:v3.1
+    <<: *restart
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # HTTP → HTTPS глобальный редирект.
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-acme:/letsencrypt
+    networks: [edge]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  api:
+    image: ghcr.io/${GHCR_OWNER}/diffduel-api:${IMAGE_TAG:-latest}
+    <<: *restart
+    env_file: .env.prod
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    networks: [edge, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=diffduel-prod_edge
+      # /api/* → Core API (StripPrefix, чтобы маршруты совпадали с локальными).
+      - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.tls.certresolver=le
+      - traefik.http.routers.api.middlewares=api-strip,sec-headers
+      - traefik.http.middlewares.api-strip.stripprefix.prefixes=/api
+      - traefik.http.services.api.loadbalancer.server.port=8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/healthz').status==200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  realtime:
+    image: ghcr.io/${GHCR_OWNER}/diffduel-realtime:${IMAGE_TAG:-latest}
+    <<: *restart
+    env_file: .env.prod
+    depends_on:
+      redis: {condition: service_healthy}
+    networks: [edge, internal]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=diffduel-prod_edge
+      # Socket.IO на /socket; sticky sessions обязателен для WS при масштабировании.
+      - traefik.http.routers.rt.rule=Host(`${DOMAIN}`) && PathPrefix(`/socket`)
+      - traefik.http.routers.rt.entrypoints=websecure
+      - traefik.http.routers.rt.tls.certresolver=le
+      - traefik.http.services.rt.loadbalancer.server.port=8100
+      - traefik.http.services.rt.loadbalancer.sticky.cookie=true
+      - traefik.http.services.rt.loadbalancer.sticky.cookie.name=dd_rt
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8100/healthz',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  workers:
+    image: ghcr.io/${GHCR_OWNER}/diffduel-workers:${IMAGE_TAG:-latest}
+    <<: *restart
+    env_file: .env.prod
+    depends_on:
+      redpanda: {condition: service_healthy}
+      minio: {condition: service_healthy}
+    networks: [internal]
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  web:
+    image: ghcr.io/${GHCR_OWNER}/diffduel-web:${IMAGE_TAG:-latest}
+    <<: *restart
+    networks: [edge]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=diffduel-prod_edge
+      # Корень и www → web SPA (последний приоритет — ловит всё, что не /api,/socket).
+      - traefik.http.routers.web.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
+      - traefik.http.routers.web.entrypoints=websecure
+      - traefik.http.routers.web.tls.certresolver=le
+      - traefik.http.routers.web.priority=1
+      - traefik.http.routers.web.middlewares=sec-headers
+      - traefik.http.services.web.loadbalancer.server.port=80
+      # Общий security-заголовочный middleware (HSTS, CSP-каркас).
+      - traefik.http.middlewares.sec-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.sec-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.sec-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.sec-headers.headers.frameDeny=true
+      - traefik.http.middlewares.sec-headers.headers.referrerPolicy=strict-origin-when-cross-origin
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  admin:
+    image: ghcr.io/${GHCR_OWNER}/diffduel-admin:${IMAGE_TAG:-latest}
+    <<: *restart
+    networks: [edge]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=diffduel-prod_edge
+      - traefik.http.routers.admin.rule=Host(`admin.${DOMAIN}`)
+      - traefik.http.routers.admin.entrypoints=websecure
+      - traefik.http.routers.admin.tls.certresolver=le
+      - traefik.http.routers.admin.middlewares=sec-headers
+      - traefik.http.services.admin.loadbalancer.server.port=80
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  postgres:
+    image: postgres:16-alpine
+    <<: *restart
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+
+  redis:
+    image: redis:7-alpine
+    <<: *restart
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "200mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis-data:/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.2.7
+    <<: *restart
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --node-id=0
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 600M
+
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    <<: *restart
+    command: ["server", "/data"]
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    networks: [internal, edge]
+    labels:
+      # share-карточки раздаются публично по cdn.diffduel.com/share-cards/...
+      - traefik.enable=true
+      - traefik.docker.network=diffduel-prod_edge
+      - traefik.http.routers.cdn.rule=Host(`cdn.${DOMAIN}`)
+      - traefik.http.routers.cdn.entrypoints=websecure
+      - traefik.http.routers.cdn.tls.certresolver=le
+      - traefik.http.services.cdn.loadbalancer.server.port=9000
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    depends_on:
+      minio: {condition: service_healthy}
+    networks: [internal]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        mc alias set local http://minio:9000 "$$S3_ACCESS_KEY" "$$S3_SECRET_KEY"
+        mc mb --ignore-existing local/avatars
+        mc mb --ignore-existing local/share-cards
+        mc mb --ignore-existing local/exports
+        mc anonymous set none local/avatars
+        mc anonymous set download local/share-cards
+        mc anonymous set none local/exports
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+    restart: "no"
+
+volumes:
+  pg-data:
+  redis-data:
+  redpanda-data:
+  minio-data:
+  traefik-acme:
+
+networks:
+  # edge — то, что Traefik маршрутизирует наружу.
+  edge:
+  # internal — БД/брокер/кэш, наружу не доступны.
+  internal:
