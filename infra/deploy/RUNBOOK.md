@@ -15,11 +15,30 @@
 ```bash
 # Docker + compose-plugin
 curl -fsSL https://get.docker.com | sh
-# деплой-пользователь (не root) в группе docker
-adduser --disabled-password deploy && usermod -aG docker deploy
-# публичный ключ деплоя — в ~deploy/.ssh/authorized_keys
-mkdir -p /opt/diffduel && chown deploy:deploy /opt/diffduel
+
+# ОБЯЗАТЕЛЬНО для Docker 29+: Traefik-клиент шлёт API 1.24, а демон по умолчанию
+# требует >= 1.40 и отвергает запросы провайдера. Разрешаем старый API демону:
+mkdir -p /etc/systemd/system/docker.service.d
+cat > /etc/systemd/system/docker.service.d/api-compat.conf <<'EOF'
+[Service]
+Environment=DOCKER_MIN_API_VERSION=1.24
+EOF
+systemctl daemon-reload && systemctl restart docker
+
+# swap (на 4 ГБ RAM — для сборки образов и пиков)
+fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo "/swapfile none swap sw 0 0" >> /etc/fstab
+
+# firewall: наружу только SSH + HTTP/HTTPS
+ufw allow 22/tcp && ufw allow 80/tcp && ufw allow 443/tcp && ufw --force enable
+
+mkdir -p /opt/diffduel
 ```
+
+> На стартовом VPS первый деплой выполнен сборкой образов прямо на сервере
+> (`docker build -f apps/<svc>/Dockerfile -t ghcr.io/rifferd/diffduel-<svc>:latest .`
+> для каждого из api/realtime/workers/web/admin), а `compose up` берёт локальные
+> образы. CI-путь через GHCR (ниже) включается после настройки секретов.
 
 ## 2. Код и секреты на сервере
 
