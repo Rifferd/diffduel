@@ -34,10 +34,22 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'DiffDuel — тренировка' },
   },
   {
+    path: '/queue',
+    name: 'queue',
+    component: () => import('@/pages/QueuePage.vue'),
+    meta: { title: 'DiffDuel — поиск соперника' },
+  },
+  {
     path: '/duel',
     name: 'duel',
     component: () => import('@/pages/DuelPage.vue'),
     meta: { title: 'DiffDuel — дуэль' },
+  },
+  {
+    path: '/duel/result',
+    name: 'duel-result',
+    component: () => import('@/pages/DuelResultPage.vue'),
+    meta: { title: 'DiffDuel — результат дуэли' },
   },
   {
     path: '/profile',

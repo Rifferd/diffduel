@@ -18,11 +18,13 @@ const { data: topics } = useQuery({
 });
 
 const selectedTopic = ref<string | null>(null);
-const activeTopicTitle = computed(() => {
+const activeTopic = computed(() => {
   const list = topics.value ?? [];
-  const found = list.find((t) => t.slug === selectedTopic.value);
-  return found?.title ?? list[0]?.title ?? 'SQL';
+  return list.find((t) => t.slug === selectedTopic.value) ?? list[0] ?? null;
 });
+const activeTopicTitle = computed(() => activeTopic.value?.title ?? 'SQL');
+/** Slug темы для перехода в очередь («В бой»). */
+const activeTopicSlug = computed(() => activeTopic.value?.slug ?? 'sql');
 
 function selectTopic(slug: string): void {
   selectedTopic.value = slug;
@@ -61,7 +63,9 @@ function selectTopic(slug: string): void {
                   {{ topic.title }}
                 </button>
               </div>
-              <RouterLink class="btn btn--duel btn--block" to="/duel"
+              <RouterLink
+                class="btn btn--duel btn--block"
+                :to="{ path: '/queue', query: { topic: activeTopicSlug } }"
                 >В бой · {{ activeTopicTitle }}</RouterLink
               >
             </div>
@@ -88,7 +92,11 @@ function selectTopic(slug: string): void {
                 <div class="empty__text">
                   Сыграйте первую — соперник найдётся примерно за 20 секунд.
                 </div>
-                <RouterLink class="btn btn--duel" to="/duel">В бой</RouterLink>
+                <RouterLink
+                  class="btn btn--duel"
+                  :to="{ path: '/queue', query: { topic: activeTopicSlug } }"
+                  >В бой</RouterLink
+                >
               </div>
             </div>
           </div>
