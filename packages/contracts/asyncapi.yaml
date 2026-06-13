@@ -1,0 +1,540 @@
+asyncapi: 3.0.0
+
+info:
+  title: DiffDuel Realtime & Events API
+  version: '1.0.0'
+  description: |
+    Асинхронные контракты DiffDuel:
+
+    1. **WebSocket / Socket.IO** namespace `/duel` (сервис Realtime, NestJS, порт 8100) —
+       матчмейкинг и игровой цикл дуэли 1×1. Транспорт — Socket.IO v4 поверх engine.io;
+       аутентификация — access-JWT (HS256, тот же `JWT_SECRET`, что у Core API) в
+       Socket.IO handshake `auth.token` (фолбэк — заголовок `Authorization: Bearer`).
+    2. **Kafka / Redpanda** — доменные события `answers.submitted` и `duels.finished`
+       в общем конверте `{v, type, occurred_at, payload}`.
+
+    Источники: docs/specs/duels.md, docs/specs/conventions.md, ТЗ §6/§8.
+
+    Безопасность (инвариант): эталонные ответы (`tasks.answer`, `correctOption`)
+    НИКОГДА не уходят клиенту до его ответа/дедлайна. `duel.verdict` отдаётся только
+    автору ответа и только ПОСЛЕ ответа/дедлайна.
+  contact:
+    name: DiffDuel
+  license:
+    name: Proprietary
+
+defaultContentType: application/json
+
+servers:
+  realtime-dev:
+    host: localhost:8100
+    pathname: /duel
+    protocol: ws
+    description: |
+      Realtime WebSocket (Socket.IO namespace `/duel`), dev-стек.
+      Подключение: `ws://localhost:8100/duel/?EIO=4&transport=websocket`.
+    security:
+      - $ref: '#/components/securitySchemes/accessJwt'
+  kafka-dev:
+    host: localhost:19092
+    protocol: kafka
+    description: Redpanda (host-листенер), dev-стек.
+
+channels:
+  # ──────────────────────────── WebSocket /duel ────────────────────────────
+  duel:
+    address: /duel
+    description: |
+      Socket.IO namespace `/duel`. Все сообщения — Socket.IO EVENT
+      (`emit('<name>', <payload>)`). Один активный queue/duel на пользователя.
+    bindings:
+      ws:
+        bindingVersion: '0.1.0'
+        headers:
+          type: object
+          properties:
+            Authorization:
+              type: string
+              description: 'Bearer <access JWT> (фолбэк для не-браузерных клиентов).'
+        query:
+          type: object
+          properties:
+            EIO:
+              type: string
+              const: '4'
+            transport:
+              type: string
+              const: websocket
+    messages:
+      queue.join: { $ref: '#/components/messages/QueueJoin' }
+      queue.leave: { $ref: '#/components/messages/QueueLeave' }
+      duel.answer: { $ref: '#/components/messages/DuelAnswer' }
+      queue.searching: { $ref: '#/components/messages/QueueSearching' }
+      duel.matched: { $ref: '#/components/messages/DuelMatched' }
+      duel.countdown: { $ref: '#/components/messages/DuelCountdown' }
+      duel.task: { $ref: '#/components/messages/DuelTask' }
+      duel.opponent_answered: { $ref: '#/components/messages/DuelOpponentAnswered' }
+      duel.verdict: { $ref: '#/components/messages/DuelVerdict' }
+      duel.finished: { $ref: '#/components/messages/DuelFinished' }
+      system.reconnect_state: { $ref: '#/components/messages/SystemReconnectState' }
+      system.error: { $ref: '#/components/messages/SystemError' }
+
+  # ──────────────────────────── Kafka topics ────────────────────────────
+  answersSubmitted:
+    address: answers.submitted
+    description: |
+      Продюсирует Realtime на КАЖДЫЙ ответ в дуэли. Ключ партиционирования = `user_id`
+      (гарантирует порядок событий одного игрока). Best-effort: недоступность брокера
+      не ломает дуэль.
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+    messages:
+      answers.submitted: { $ref: '#/components/messages/AnswersSubmittedEvent' }
+
+  duelsFinished:
+    address: duels.finished
+    description: |
+      Продюсирует Core API из finish-транзакции (ТОЛЬКО после commit). Ключ
+      партиционирования = `duel_id`. Best-effort.
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+    messages:
+      duels.finished: { $ref: '#/components/messages/DuelsFinishedEvent' }
+
+operations:
+  # ── client → server (send) ──
+  QueueJoin:
+    action: send
+    channel: { $ref: '#/channels/duel' }
+    summary: Встать в очередь матчмейкинга по теме.
+    messages:
+      - $ref: '#/channels/duel/messages/queue.join'
+  QueueLeave:
+    action: send
+    channel: { $ref: '#/channels/duel' }
+    summary: Покинуть очередь.
+    messages:
+      - $ref: '#/channels/duel/messages/queue.leave'
+  DuelAnswer:
+    action: send
+    channel: { $ref: '#/channels/duel' }
+    summary: Отправить ответ на текущую задачу (время меряет сервер от duel.task).
+    messages:
+      - $ref: '#/channels/duel/messages/duel.answer'
+
+  # ── server → client (receive) ──
+  QueueSearching:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Окно поиска расширено (раз в 5с при ожидании).
+    messages:
+      - $ref: '#/channels/duel/messages/queue.searching'
+  DuelMatched:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Найден соперник, дуэль создана.
+    messages:
+      - $ref: '#/channels/duel/messages/duel.matched'
+  DuelCountdown:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Обратный отсчёт перед задачей (3→2→1).
+    messages:
+      - $ref: '#/channels/duel/messages/duel.countdown'
+  DuelTask:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Очередная задача (БЕЗ эталона).
+    messages:
+      - $ref: '#/channels/duel/messages/duel.task'
+  DuelOpponentAnswered:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Соперник ответил (без содержимого ответа).
+    messages:
+      - $ref: '#/channels/duel/messages/duel.opponent_answered'
+  DuelVerdict:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Вердикт по моему ответу (только автору, после ответа/дедлайна).
+    messages:
+      - $ref: '#/channels/duel/messages/duel.verdict'
+  DuelFinished:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Дуэль завершена — итог, дельты Эло, счёт.
+    messages:
+      - $ref: '#/channels/duel/messages/duel.finished'
+  SystemReconnectState:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Снапшот состояния при реконнекте в активную дуэль.
+    messages:
+      - $ref: '#/channels/duel/messages/system.reconnect_state'
+  SystemError:
+    action: receive
+    channel: { $ref: '#/channels/duel' }
+    summary: Ошибка протокола/авторизации/состояния.
+    messages:
+      - $ref: '#/channels/duel/messages/system.error'
+
+  # ── Kafka ──
+  ProduceAnswersSubmitted:
+    action: send
+    channel: { $ref: '#/channels/answersSubmitted' }
+    summary: Realtime → answers.submitted (key=user_id).
+    messages:
+      - $ref: '#/channels/answersSubmitted/messages/answers.submitted'
+  ProduceDuelsFinished:
+    action: send
+    channel: { $ref: '#/channels/duelsFinished' }
+    summary: Core API → duels.finished (key=duel_id).
+    messages:
+      - $ref: '#/channels/duelsFinished/messages/duels.finished'
+
+components:
+  securitySchemes:
+    accessJwt:
+      type: httpApiKey
+      in: query
+      name: token
+      description: |
+        Access-JWT (HS256). В Socket.IO передаётся в handshake `auth.token`;
+        для не-браузерных клиентов допустим заголовок `Authorization: Bearer <jwt>`.
+
+  messages:
+    # ── client → server ──
+    QueueJoin:
+      name: queue.join
+      title: 'client → server: queue.join'
+      payload: { $ref: '#/components/schemas/QueueJoinPayload' }
+    QueueLeave:
+      name: queue.leave
+      title: 'client → server: queue.leave'
+      payload: { $ref: '#/components/schemas/EmptyPayload' }
+    DuelAnswer:
+      name: duel.answer
+      title: 'client → server: duel.answer'
+      payload: { $ref: '#/components/schemas/DuelAnswerPayload' }
+
+    # ── server → client ──
+    QueueSearching:
+      name: queue.searching
+      title: 'server → client: queue.searching'
+      payload: { $ref: '#/components/schemas/QueueSearchingPayload' }
+    DuelMatched:
+      name: duel.matched
+      title: 'server → client: duel.matched'
+      payload: { $ref: '#/components/schemas/DuelMatchedPayload' }
+    DuelCountdown:
+      name: duel.countdown
+      title: 'server → client: duel.countdown'
+      payload: { $ref: '#/components/schemas/DuelCountdownPayload' }
+    DuelTask:
+      name: duel.task
+      title: 'server → client: duel.task'
+      payload: { $ref: '#/components/schemas/DuelTaskPayload' }
+    DuelOpponentAnswered:
+      name: duel.opponent_answered
+      title: 'server → client: duel.opponent_answered'
+      payload: { $ref: '#/components/schemas/DuelOpponentAnsweredPayload' }
+    DuelVerdict:
+      name: duel.verdict
+      title: 'server → client: duel.verdict'
+      payload: { $ref: '#/components/schemas/DuelVerdictPayload' }
+    DuelFinished:
+      name: duel.finished
+      title: 'server → client: duel.finished'
+      payload: { $ref: '#/components/schemas/DuelFinishedPayload' }
+    SystemReconnectState:
+      name: system.reconnect_state
+      title: 'server → client: system.reconnect_state'
+      payload: { $ref: '#/components/schemas/SystemReconnectStatePayload' }
+    SystemError:
+      name: system.error
+      title: 'server → client: system.error'
+      payload: { $ref: '#/components/schemas/SystemErrorPayload' }
+
+    # ── Kafka ──
+    AnswersSubmittedEvent:
+      name: answers.submitted
+      title: 'Kafka: answers.submitted'
+      bindings:
+        kafka:
+          bindingVersion: '0.5.0'
+          key:
+            type: string
+            format: uuid
+            description: user_id — ключ партиционирования (порядок событий игрока).
+      payload: { $ref: '#/components/schemas/AnswersSubmittedEnvelope' }
+    DuelsFinishedEvent:
+      name: duels.finished
+      title: 'Kafka: duels.finished'
+      bindings:
+        kafka:
+          bindingVersion: '0.5.0'
+          key:
+            type: string
+            format: uuid
+            description: duel_id — ключ партиционирования.
+      payload: { $ref: '#/components/schemas/DuelsFinishedEnvelope' }
+
+  schemas:
+    EmptyPayload:
+      type: object
+      additionalProperties: false
+      description: Пустой payload.
+
+    QueueJoinPayload:
+      type: object
+      required: [topic]
+      additionalProperties: false
+      properties:
+        topic:
+          type: string
+          minLength: 1
+          maxLength: 64
+          examples: ['sql', 'javascript', 'python']
+
+    DuelAnswerPayload:
+      type: object
+      required: [idx, selected]
+      additionalProperties: false
+      properties:
+        idx:
+          type: integer
+          minimum: 0
+          description: Индекс задачи в дуэли (0-based).
+        selected:
+          type: integer
+          description: Индекс выбранной опции quiz.
+
+    QueueSearchingPayload:
+      type: object
+      required: [widening]
+      properties:
+        widening:
+          type: integer
+          minimum: 0
+          description: На сколько шагов расширено окно поиска (по +150 Эло).
+
+    DuelMatchedPayload:
+      type: object
+      required: [duelId, topic, opponent, tasksCount]
+      properties:
+        duelId: { type: string, format: uuid }
+        topic: { type: string }
+        opponent:
+          type: object
+          required: [username, elo]
+          properties:
+            username: { type: string }
+            elo: { type: integer }
+        tasksCount:
+          type: integer
+          description: Число задач в дуэли (по умолчанию 5; env DUEL_TASKS_COUNT).
+          examples: [5]
+
+    DuelCountdownPayload:
+      type: object
+      required: [n]
+      properties:
+        n:
+          type: integer
+          enum: [3, 2, 1]
+
+    DuelTaskPayload:
+      type: object
+      required: [idx, body, deadline_ts]
+      description: Задача без эталона. `body` — как в соло-режиме (TaskPublic.body).
+      properties:
+        idx: { type: integer, minimum: 0 }
+        body: { $ref: '#/components/schemas/QuizBody' }
+        deadline_ts:
+          type: integer
+          description: Unix-время (мс) дедлайна ответа; сервер меряет время от отправки.
+
+    DuelOpponentAnsweredPayload:
+      type: object
+      required: [idx, timeMs, correct]
+      description: Факт ответа соперника — БЕЗ самого ответа.
+      properties:
+        idx: { type: integer, minimum: 0 }
+        timeMs: { type: integer, minimum: 0 }
+        correct: { type: boolean }
+
+    DuelVerdictPayload:
+      type: object
+      required: [idx, correct, correctOption, timeMs]
+      description: |
+        Вердикт по ответу — ТОЛЬКО автору и ТОЛЬКО после его ответа/дедлайна.
+        Единственное место в WS, где клиент узнаёт правильную опцию.
+      properties:
+        idx: { type: integer, minimum: 0 }
+        correct: { type: boolean }
+        correctOption: { type: integer, description: Индекс верной опции. }
+        timeMs:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: Время ответа (null, если ответа не было — автопереход по дедлайну).
+
+    DuelFinishedPayload:
+      type: object
+      required: [winnerId, deltas, elo, score, reason]
+      properties:
+        winnerId:
+          type: string
+          format: uuid
+          nullable: true
+          description: null при ничьей/aborted.
+        deltas:
+          type: object
+          description: 'Дельты Эло по user_id (map: uuid → int).'
+          additionalProperties: { type: integer }
+        elo:
+          type: object
+          description: 'Новый Эло по user_id (map: uuid → int).'
+          additionalProperties: { type: integer }
+        score:
+          type: object
+          required: [mine, opp]
+          properties:
+            mine: { type: integer, minimum: 0 }
+            opp: { type: integer, minimum: 0 }
+        reason:
+          type: string
+          enum: [completed, opponent_left, aborted]
+
+    SystemReconnectStatePayload:
+      type: object
+      required: [duelId, idx, deadline_ts, progress, opponent, score]
+      description: Снапшот для восстановления дуэли после обрыва (≤3с, §8).
+      properties:
+        duelId: { type: string, format: uuid }
+        idx: { type: integer, minimum: 0 }
+        deadline_ts: { type: integer }
+        progress:
+          type: object
+          description: Текущий прогресс ответов обоих игроков (внутренний снапшот).
+          additionalProperties: true
+        opponent:
+          type: object
+          properties:
+            username: { type: string }
+            elo: { type: integer }
+        score:
+          type: object
+          properties:
+            mine: { type: integer }
+            opp: { type: integer }
+
+    SystemErrorPayload:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          examples: [unauthorized, bad_request, no_active_duel, rate_limited]
+        message: { type: string }
+
+    QuizBody:
+      type: object
+      required: [question, options]
+      description: 'body для type=quiz (как в TaskPublic; БЕЗ answer/explanation).'
+      properties:
+        question: { type: string }
+        options:
+          type: array
+          items: { type: string }
+        code:
+          type: string
+          nullable: true
+        language:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items: { type: string }
+
+    # ── Kafka envelope ──
+    EventEnvelope:
+      type: object
+      required: [v, type, occurred_at, payload]
+      description: 'Общий конверт событий (conventions.md): {v, type, occurred_at, payload}.'
+      properties:
+        v:
+          type: integer
+          const: 1
+        type: { type: string }
+        occurred_at:
+          type: string
+          format: date-time
+        payload:
+          type: object
+
+    AnswersSubmittedEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          properties:
+            type:
+              const: answers.submitted
+            payload:
+              $ref: '#/components/schemas/AnswersSubmittedPayload'
+
+    AnswersSubmittedPayload:
+      type: object
+      required: [duel_id, user_id, task_id, selected, correct, time_ms, idx]
+      properties:
+        duel_id: { type: string, format: uuid }
+        user_id: { type: string, format: uuid }
+        task_id: { type: string, format: uuid }
+        selected:
+          type: integer
+          nullable: true
+          description: null — ответа не было (автопереход по дедлайну).
+        correct: { type: boolean }
+        time_ms:
+          type: integer
+          nullable: true
+        idx: { type: integer, minimum: 0 }
+
+    DuelsFinishedEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          properties:
+            type:
+              const: duels.finished
+            payload:
+              $ref: '#/components/schemas/DuelsFinishedPayload'
+
+    DuelsFinishedPayload:
+      type: object
+      required: [duel_id, topic, players, winner_id, deltas, scores]
+      properties:
+        duel_id: { type: string, format: uuid }
+        topic:
+          type: string
+          description: topic_id дуэли (UUID темы).
+        players:
+          type: array
+          description: '[player_a, player_b] (user_id).'
+          items: { type: string, format: uuid }
+          minItems: 2
+          maxItems: 2
+        winner_id:
+          type: string
+          format: uuid
+          nullable: true
+        deltas:
+          type: object
+          description: 'Дельты Эло по user_id (пусто для aborted).'
+          additionalProperties: { type: integer }
+        scores:
+          type: object
+          description: 'Счёт по user_id (число верных).'
+          additionalProperties: { type: integer }
