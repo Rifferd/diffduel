@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+from email.header import Header
 from email.message import EmailMessage
 
 import aiosmtplib
@@ -21,7 +22,7 @@ from src.core.logging import get_logger
 
 logger = get_logger("email")
 
-_SUBJECT = "Подтверждение почты DiffDuel"
+_SUBJECT = "DiffDuel — подтверждение почты"
 _SMTP_TIMEOUT_S = 10.0
 
 # Брендинг из packages/ui-tokens/tokens.css.
@@ -100,7 +101,10 @@ def _html_body(code: str, link_url: str) -> str:
 def _build_message(to: str, code: str, link_url: str) -> EmailMessage:
     settings = get_settings()
     message = EmailMessage()
-    message["Subject"] = _SUBJECT  # EmailMessage сам кодирует кириллицу в =?UTF-8?B?
+    # Кодируем тему ОДНИМ UTF-8 encoded-word: иначе на границе кириллица/ASCII
+    # («…почты DiffDuel») EmailMessage режет на два encoded-word и пробел между
+    # ними по RFC2047 схлопывается в «почтыDiffDuel».
+    message["Subject"] = Header(_SUBJECT, "utf-8")
     message["From"] = settings.smtp_from
     message["To"] = to
     message.set_content(_text_body(code, link_url))
