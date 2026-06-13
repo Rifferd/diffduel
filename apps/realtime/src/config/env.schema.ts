@@ -25,6 +25,11 @@ export const envSchema = z.object({
   // Duel format — configurable for fast e2e tests; defaults per spec (5 × 30s).
   DUEL_TASKS_COUNT: z.coerce.number().int().positive().default(5),
   DUEL_TASK_SECONDS: z.coerce.number().int().positive().default(30),
+
+  // Observability (ТЗ §3.12). Empty endpoint/DSN = disabled (no-op).
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default(''),
+  OTEL_SERVICE_NAME: z.string().default('diffduel-realtime'),
+  SENTRY_DSN: z.string().default(''),
 });
 
 export type Env = z.infer<typeof envSchema>;

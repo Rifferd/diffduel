@@ -18,6 +18,14 @@ dependencies = [
     "aioboto3>=13.0",
     "aiokafka>=0.12",
     "aiosmtplib>=5.1.1",
+    "sentry-sdk>=2.18",
+    "opentelemetry-sdk>=1.29",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.29",
+    "opentelemetry-instrumentation-fastapi>=0.50b0",
+    "opentelemetry-instrumentation-sqlalchemy>=0.50b0",
+    "opentelemetry-instrumentation-redis>=0.50b0",
+    "opentelemetry-instrumentation-aiokafka>=0.50b0",
+    "opentelemetry-instrumentation-httpx>=0.50b0",
 ]
 
 [dependency-groups]

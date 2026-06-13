@@ -27,6 +27,7 @@ from src.core.enums import DuelStatus
 from src.core.errors import NotFoundError, ValidationError
 from src.core.logging import get_logger
 from src.core.redis import get_redis
+from src.core.telemetry import measure_answer_check
 from src.duels import elo
 from src.duels.models import Duel
 from src.duels.repository import DuelRepository
@@ -169,9 +170,11 @@ class DuelService:
         res_a = data.results[str(a)]
         res_b = data.results[str(b)]
 
-        score_a, time_a = _score(res_a)
-        score_b, time_b = _score(res_b)
-        outcome_a = _outcome_a(score_a, time_a, score_b, time_b)
+        with measure_answer_check(mode="duel") as _m:
+            score_a, time_a = _score(res_a)
+            score_b, time_b = _score(res_b)
+            outcome_a = _outcome_a(score_a, time_a, score_b, time_b)
+            _m.correct = outcome_a == 1.0
 
         # Строки рейтингов под блокировкой (порядок user_id ASC внутри репозитория).
         await self._duels.ensure_rating_rows(user_ids=[a, b], topic_id=duel.topic_id)

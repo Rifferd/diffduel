@@ -15,6 +15,7 @@ import { DuelEngineService } from '../duel/duel-engine.service';
 import { DUEL_EMITTER, type IDuelEmitter } from '../duel/duel-emitter.interface';
 import { INTERNAL_CLIENT, type IInternalClient } from '../internal-client/internal-client.interface';
 import type { DuelProgress, DuelState, DuelTask } from '../common/types';
+import { duelMatchTime } from '../telemetry';
 
 const TICK_MS = 1_000;
 const BASE_WINDOW = 150;
@@ -233,6 +234,14 @@ export class MatchmakingService implements OnModuleInit, OnModuleDestroy {
       player_b: bUserId,
     });
     const duelId = created.duel_id;
+
+    // Product metric (ТЗ §3.12): time from queue.join to duel.matched, per
+    // player. No-op until the OTel SDK installs a real MeterProvider.
+    const matchedAt = Date.now();
+    duelMatchTime.record((matchedAt - aMeta.joined_at) / 1000, { topic });
+    if (bMeta) {
+      duelMatchTime.record((matchedAt - bMeta.joined_at) / 1000, { topic });
+    }
 
     const usernames: Record<string, string> = {
       [a.userId]: aMeta.username,

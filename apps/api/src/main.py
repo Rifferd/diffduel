@@ -19,6 +19,7 @@ from src.core.exception_handlers import register_exception_handlers
 from src.core.logging import configure_logging, get_logger
 from src.core.middleware import RequestContextMiddleware, SecurityHeadersMiddleware
 from src.core.redis import close_redis, get_redis
+from src.core.telemetry import init_telemetry
 from src.internal_api.router import router as internal_router
 from src.leaderboard.router import router as leaderboard_router
 from src.tasks.router import router as tasks_router
@@ -61,6 +62,9 @@ def create_app() -> FastAPI:
     )
 
     register_exception_handlers(app)
+
+    # Observability: Sentry + OTel (traces/metrics). No-op без OTLP endpoint/DSN.
+    init_telemetry(app)
 
     app.include_router(auth_router)
     app.include_router(users_router)

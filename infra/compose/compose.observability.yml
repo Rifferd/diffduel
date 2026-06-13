@@ -1,0 +1,67 @@
+# DiffDuel — DEV observability-стек (оверлей к docker-compose.yml).
+# ТОЛЬКО для разработки/демо. В ПРОД (4GB) не входит — там Sentry + structured logs
+# (см. docs/adr/0004-observability.md). Сервисы экспортируют OTLP на коллектор:
+#   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+#
+# Запуск всего вместе:
+#   docker compose -f docker-compose.yml -f compose.observability.yml up -d
+#
+# ВАЖНО (Docker Desktop на macOS): сервисы bind-mount'ят конфиги из репозитория.
+# Если репо лежит в ~/Desktop или ~/Documents, добавьте путь в Docker Desktop →
+# Settings → Resources → File sharing (иначе mount упадёт «operation not permitted»).
+# На Linux ограничения нет.
+
+name: diffduel
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    restart: unless-stopped
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC (приём от сервисов на host)
+      - "4318:4318"   # OTLP HTTP
+    depends_on: [tempo, loki]
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    restart: unless-stopped
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml:ro
+      - tempo-data:/var/tempo
+
+  loki:
+    image: grafana/loki:3.2.1
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - loki-data:/loki
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    restart: unless-stopped
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on: [prometheus, tempo, loki]
+
+volumes:
+  tempo-data:
+  loki-data:
+  prometheus-data:

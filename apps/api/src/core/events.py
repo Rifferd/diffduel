@@ -18,6 +18,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from aiokafka import AIOKafkaProducer
+from opentelemetry import propagate
 
 from src.core.config import get_settings
 from src.core.logging import get_logger
@@ -60,12 +61,25 @@ def _envelope(event_type: str, payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _trace_headers() -> list[tuple[str, bytes]]:
+    """Инжектит W3C trace-context (``traceparent``) в заголовки Kafka.
+
+    Ключевая демонстрация ТЗ §3.12: трейс продолжается API → Kafka → воркер.
+    Если телеметрия выключена (нет активного span) — заголовки пустые (no-op).
+    """
+    carrier: dict[str, str] = {}
+    propagate.inject(carrier)
+    return [(k, v.encode("utf-8")) for k, v in carrier.items()]
+
+
 async def produce(topic: str, *, key: str, event_type: str, payload: dict[str, Any]) -> None:
     """Best-effort отправка события. Ошибки брокера логируются, не пробрасываются."""
     envelope = _envelope(event_type, payload)
     try:
         producer = await _get_producer()
-        await producer.send_and_wait(topic, value=envelope, key=key)
+        await producer.send_and_wait(
+            topic, value=envelope, key=key, headers=_trace_headers()
+        )
     except Exception:
         # Брокер недоступен — дуэль/запрос не должны падать (спека duels.md).
         logger.warning("event_produce_failed", topic=topic, event_type=event_type, key=key)

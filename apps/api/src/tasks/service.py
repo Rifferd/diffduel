@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.errors import NotFoundError
+from src.core.telemetry import measure_answer_check
 from src.tasks.checker import check_answer
 from src.tasks.repository import TaskRepository
 from src.tasks.schemas import AnswerResult, AnswerSubmit
@@ -41,7 +42,9 @@ class TaskService:
         if task is None:
             raise NotFoundError("Задача не найдена", code="task_not_found")
 
-        result = check_answer(task.type, task.answer, data.answer.model_dump())
+        with measure_answer_check(mode="solo") as m:
+            result = check_answer(task.type, task.answer, data.answer.model_dump())
+            m.correct = result.correct
 
         # already_solved считаем ДО записи текущего ответа: решал ли верно РАНЬШЕ.
         already_solved = await self._tasks.has_solved_correctly(user_id=user_id, task_id=task.id)

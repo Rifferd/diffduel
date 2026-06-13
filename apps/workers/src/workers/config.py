@@ -51,6 +51,11 @@ class Settings(BaseSettings):
     broker_connect_backoff_s: float = 1.0
     broker_connect_backoff_max_s: float = 30.0
 
+    # Observability. Пусто = выключено (no-op, нулевой оверхед в проде).
+    sentry_dsn: str = ""
+    otel_exporter_otlp_endpoint: str = ""
+    otel_service_name: str = "diffduel-workers"
+
     @field_validator("kafka_brokers")
     @classmethod
     def _non_empty_brokers(cls, value: str, /) -> str:

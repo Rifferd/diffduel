@@ -1,4 +1,10 @@
 import 'reflect-metadata';
+import { startTelemetry } from './telemetry';
+
+// Start OTel/Sentry BEFORE any instrumented module is imported (no-op when
+// OTEL_EXPORTER_OTLP_ENDPOINT / SENTRY_DSN are unset). See telemetry.ts.
+startTelemetry();
+
 import { NestFactory } from '@nestjs/core';
 import { ConsoleLogger, Logger } from '@nestjs/common';
 import { JsonLogger } from './common/json.logger';

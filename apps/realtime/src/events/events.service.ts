@@ -1,5 +1,6 @@
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
-import { Kafka, type Producer } from 'kafkajs';
+import { Kafka, type IHeaders, type Producer } from 'kafkajs';
+import { context, propagation } from '@opentelemetry/api';
 import { AppConfigService } from '../config/app-config.service';
 
 export interface AnswerSubmittedPayload {
@@ -13,6 +14,13 @@ export interface AnswerSubmittedPayload {
 }
 
 const TOPIC = 'answers.submitted';
+
+/** Inject the active trace-context (traceparent) into Kafka message headers. */
+function injectTraceHeaders(): IHeaders {
+  const carrier: Record<string, string> = {};
+  propagation.inject(context.active(), carrier);
+  return carrier;
+}
 
 /**
  * kafkajs producer for `answers.submitted`. Best-effort per spec: broker
@@ -81,7 +89,15 @@ export class EventsService implements OnModuleInit, OnModuleDestroy {
       }
       await this.producer.send({
         topic: TOPIC,
-        messages: [{ key: payload.user_id, value: JSON.stringify(envelope) }],
+        messages: [
+          {
+            key: payload.user_id,
+            value: JSON.stringify(envelope),
+            // W3C trace-context into Kafka headers (ТЗ §3.12). Empty when
+            // telemetry is off (no active span) — harmless no-op.
+            headers: injectTraceHeaders(),
+          },
+        ],
       });
     } catch (err) {
       this.connected = false;

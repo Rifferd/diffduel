@@ -30,6 +30,7 @@ from src.workers.internal_client import InternalClient
 from src.workers.logging import configure_logging, get_logger
 from src.workers.render import CardData, PlayerCard, render_card
 from src.workers.storage import CardStorage
+from src.workers.telemetry import KafkaHeaders, consume_span, init_telemetry, measure_render
 
 logger = get_logger("image_gen")
 
@@ -67,7 +68,8 @@ class ImageGenProcessor:
                 logger.info("share_card_skip_exists", duel_id=duel_id, key=card.share_card_key)
                 return ProcessResult(duel_id, "skipped", card.share_card_key)
 
-            png = render_card(_build_card_data(event, card.usernames))
+            with measure_render():
+                png = render_card(_build_card_data(event, card.usernames))
             key = await self._storage.upload_card(duel_id, png)
             await self._internal.set_share_card(duel_id, key)
             logger.info("share_card_done", duel_id=duel_id, key=key)
@@ -174,7 +176,7 @@ class ImageGenConsumer:
                     batches = await consumer.getmany(timeout_ms=1000, max_records=10)
                     for _tp, messages in batches.items():
                         for message in messages:
-                            await self._handle(processor, message.value)
+                            await self._handle(processor, message.value, message.headers)
                     if batches:
                         # Коммит ТОЛЬКО после успешной обработки/пропуска батча.
                         await consumer.commit()
@@ -182,8 +184,17 @@ class ImageGenConsumer:
                 await consumer.stop()
                 logger.info("consumer_stopped")
 
-    async def _handle(self, processor: ImageGenProcessor, raw: bytes | None) -> None:
-        """Разбирает конверт и обрабатывает; не бросает (offset коммитится дальше)."""
+    async def _handle(
+        self,
+        processor: ImageGenProcessor,
+        raw: bytes | None,
+        headers: KafkaHeaders | None = None,
+    ) -> None:
+        """Разбирает конверт и обрабатывает; не бросает (offset коммитится дальше).
+
+        Продолжает трейс из заголовков Kafka (traceparent от Core API) — span
+        ``image_gen.process`` становится потомком span'а продюсера дуэли.
+        """
         if raw is None:
             logger.warning("empty_message_skipped")
             return
@@ -193,12 +204,14 @@ class ImageGenConsumer:
             # Битый конверт — повтор разбора бесполезен: лог и пропуск.
             logger.error("envelope_parse_failed", error=str(exc))
             return
-        await processor.process_with_retries(event)
+        with consume_span("image_gen.process", headers):
+            await processor.process_with_retries(event)
 
 
 async def _amain() -> None:
     configure_logging()
     settings = get_settings()
+    init_telemetry(settings)
     consumer = ImageGenConsumer(settings)
 
     loop = asyncio.get_running_loop()

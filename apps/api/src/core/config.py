@@ -62,6 +62,11 @@ class Settings(BaseSettings):
 
     sentry_dsn: str = ""
 
+    # OpenTelemetry: если endpoint пуст — телеметрия НЕ экспортируется (no-op,
+    # нулевой оверхед в проде на 4GB). Иначе OTLP/gRPC на collector.
+    otel_exporter_otlp_endpoint: str = ""
+    otel_service_name: str = "diffduel-api"
+
     # --- Подтверждение email -------------------------------------------------
     # Фиче-флаг: OFF — регистрация авто-логинит (email_verified=true), писем нет;
     # ON — регистрация шлёт код, логин до подтверждения запрещён.

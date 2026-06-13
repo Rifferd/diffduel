@@ -17,7 +17,10 @@ import { DuelEngineService } from '../duel/duel-engine.service';
 import { SocketEmitterService } from './socket-emitter.service';
 import { Rooms } from '../common/keys';
 import { queueJoinSchema } from '../matchmaking/matchmaking.dto';
+import { setWsConnections } from '../telemetry';
 import { z } from 'zod';
+
+const DUEL_NAMESPACE = '/duel';
 
 interface SocketData {
   userId: string;
@@ -75,6 +78,7 @@ export class DuelGateway
 
     await client.join(Rooms.user(verified.userId));
     this.logger.log(`connected user=${verified.userId} socket=${client.id}`);
+    this.reportConnections();
 
     // Reconnect into a running duel if any.
     await this.duel.tryReconnect(verified.userId);
@@ -92,6 +96,15 @@ export class DuelGateway
       await this.matchmaking.leaveAll(data.userId);
     }
     this.logger.log(`disconnected user=${data.userId} socket=${client.id}`);
+    this.reportConnections();
+  }
+
+  /** Update the ws_connections gauge with the live socket count in /duel. */
+  private reportConnections(): void {
+    // For a namespaced gateway, the injected `server` is the /duel Namespace at
+    // runtime (typed as Server); its `sockets` is a Map<id, Socket>.
+    const ns = this.server as unknown as { sockets?: Map<string, unknown> };
+    setWsConnections(DUEL_NAMESPACE, ns.sockets?.size ?? 0);
   }
 
   @SubscribeMessage('queue.join')

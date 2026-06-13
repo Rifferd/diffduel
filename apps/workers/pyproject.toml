@@ -11,6 +11,10 @@ dependencies = [
     "pydantic>=2.9",
     "structlog>=24.4",
     "httpx>=0.28",
+    "sentry-sdk>=2.18",
+    "opentelemetry-sdk>=1.29",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.29",
+    "opentelemetry-instrumentation-httpx>=0.50b0",
 ]
 
 [dependency-groups]
