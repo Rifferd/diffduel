@@ -43,7 +43,7 @@ async function onSubmit(): Promise<void> {
   submitting.value = true;
   try {
     await auth.login(parsed.data);
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/';
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/app';
     await router.push(redirect);
   } catch (err) {
     if (err instanceof ApiRequestError) {

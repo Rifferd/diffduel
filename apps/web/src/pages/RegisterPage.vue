@@ -64,7 +64,7 @@ async function onSubmit(): Promise<void> {
       email: parsed.data.email,
       password: parsed.data.password,
     });
-    await router.push('/');
+    await router.push('/app');
   } catch (err) {
     if (err instanceof ApiRequestError) {
       formError.value = mapApiError(err);

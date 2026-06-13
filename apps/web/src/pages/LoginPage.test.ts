@@ -45,7 +45,7 @@ describe('LoginPage', () => {
     const auth = useAuthStore();
     expect(auth.accessToken).toBe('abc123');
     expect(auth.user?.username).toBe('anton_dev');
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/app');
   });
 
   it('shows a field error for an invalid email without calling the API', async () => {

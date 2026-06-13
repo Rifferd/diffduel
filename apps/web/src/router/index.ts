@@ -17,6 +17,12 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/',
+    name: 'landing',
+    component: () => import('@/pages/LandingPage.vue'),
+    meta: { public: true, title: 'DiffDuel — арена дуэлей для разработчиков' },
+  },
+  {
+    path: '/app',
     name: 'home',
     component: () => import('@/pages/HomePage.vue'),
     meta: { title: 'DiffDuel — главная' },
@@ -88,10 +94,14 @@ router.beforeEach(async (to) => {
   const isPublic = to.meta.public === true;
 
   if (!auth.isAuthenticated && !isPublic) {
-    return { name: 'login', query: to.fullPath !== '/' ? { redirect: to.fullPath } : undefined };
+    return { name: 'login', query: { redirect: to.fullPath } };
   }
 
-  if (auth.isAuthenticated && (to.name === 'login' || to.name === 'register')) {
+  // Авторизованному незачем видеть лендинг/формы входа — отправляем в приложение.
+  if (
+    auth.isAuthenticated &&
+    (to.name === 'landing' || to.name === 'login' || to.name === 'register')
+  ) {
     return { name: 'home' };
   }
 

@@ -6,7 +6,7 @@ defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
 
 <template>
   <nav class="tabbar">
-    <RouterLink class="tabbar__tab" :class="{ 'is-on': active === 'home' }" to="/">
+    <RouterLink class="tabbar__tab" :class="{ 'is-on': active === 'home' }" to="/app">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z" /></svg>
       Дуэль
     </RouterLink>

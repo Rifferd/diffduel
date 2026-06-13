@@ -7,9 +7,9 @@ defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
 <template>
   <nav class="appnav">
     <div class="wrap appnav__in">
-      <RouterLink class="nav__logo" to="/"><span class="vs">VS</span>DiffDuel</RouterLink>
+      <RouterLink class="nav__logo" to="/app"><span class="vs">VS</span>DiffDuel</RouterLink>
       <span class="appnav__sp"></span>
-      <RouterLink class="appnav__link" :class="{ 'is-on': active === 'home' }" to="/"
+      <RouterLink class="appnav__link" :class="{ 'is-on': active === 'home' }" to="/app"
         >Дуэль</RouterLink
       >
       <RouterLink class="appnav__link" :class="{ 'is-on': active === 'training' }" to="/training"

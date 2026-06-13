@@ -1,6 +1,7 @@
 import type {
   AnswerResult,
   AnswerSubmit,
+  components,
   LoginRequest,
   RegisterRequest,
   TaskPublic,
@@ -9,6 +10,8 @@ import type {
   UserMe,
   UserUpdate,
 } from '@diffduel/contracts';
+
+export type LeaderboardEntry = components['schemas']['LeaderboardEntry'];
 import { api } from './client';
 
 export const authApi = {
@@ -41,6 +44,24 @@ export const meApi = {
   },
   update(payload: UserUpdate): Promise<UserMe> {
     return api.request<UserMe>('/me', { method: 'PATCH', body: payload });
+  },
+};
+
+export interface PublicLeaderboardParams {
+  scope?: 'global' | 'weekly';
+  limit?: number;
+}
+
+export const leaderboardApi = {
+  /** Публичный лидерборд (без auth) — используется лендингом. */
+  public({ scope, limit }: PublicLeaderboardParams = {}): Promise<LeaderboardEntry[]> {
+    const params = new URLSearchParams();
+    if (scope !== undefined) params.set('scope', scope);
+    if (limit !== undefined) params.set('limit', String(limit));
+    const qs = params.toString();
+    return api.request<LeaderboardEntry[]>(`/leaderboard${qs ? `?${qs}` : ''}`, {
+      skipAuthRefresh: true,
+    });
   },
 };
 

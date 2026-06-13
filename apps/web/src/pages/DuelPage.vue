@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
 function surrender(): void {
   duel.leaveQueue();
   socket.disconnect();
-  void router.push('/');
+  void router.push('/app');
 }
 </script>
 
@@ -117,7 +117,7 @@ function surrender(): void {
     </h1>
 
     <div class="arena__bar">
-      <RouterLink class="arena__logo" to="/"><span class="vs">VS</span>DiffDuel</RouterLink>
+      <RouterLink class="arena__logo" to="/app"><span class="vs">VS</span>DiffDuel</RouterLink>
       <button class="arena__exit" type="button" @click="surrender">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />

@@ -45,7 +45,7 @@ const isFound = computed(() => phase.value === 'matched' || phase.value === 'cou
 
 function cancel(): void {
   duel.leaveQueue();
-  void router.push('/');
+  void router.push('/app');
 }
 
 // Когда пришёл первый duel.task — дуэль началась, уходим на боевой экран,
@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
   <body class="arena-screen">
     <h1 class="sr-only">Поиск соперника для дуэли по {{ topic.toUpperCase() }}</h1>
     <div class="arena-screen__bar">
-      <RouterLink class="arena-screen__logo" to="/"><span class="vs">VS</span>DiffDuel</RouterLink>
+      <RouterLink class="arena-screen__logo" to="/app"><span class="vs">VS</span>DiffDuel</RouterLink>
       <span class="eyebrow eyebrow--arena">// {{ topic.toUpperCase() }} · рейтинговая</span>
     </div>
 

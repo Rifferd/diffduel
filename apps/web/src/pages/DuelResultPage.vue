@@ -12,7 +12,7 @@ const result = computed(() => resultStore.result);
 
 // Зашли без данных (перезагрузка) — редирект на главную.
 onMounted(() => {
-  if (!result.value) void router.replace('/');
+  if (!result.value) void router.replace('/app');
 });
 
 const myUsername = computed(() => auth.user?.username ?? 'вы');
@@ -89,7 +89,7 @@ const shareClass = computed(
 
 function goHome(): void {
   resultStore.clear();
-  void router.push('/');
+  void router.push('/app');
 }
 </script>
 

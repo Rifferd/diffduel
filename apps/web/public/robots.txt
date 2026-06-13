@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Приватные/авторизованные разделы краулить незачем.
+Disallow: /app
+Disallow: /queue
+Disallow: /duel
+Disallow: /profile
+Disallow: /settings
+
+Sitemap: https://diffduel.com/sitemap.xml
