@@ -9,7 +9,11 @@ from fastapi import Response
 from src.core.config import get_settings
 
 REFRESH_COOKIE_NAME = "dd_refresh"
-_COOKIE_PATH = "/auth"
+# path=/ — куки должна слаться и когда фронт ходит на /api/auth/* (в проде Traefik
+# срезает префикс /api, а браузер хранит куку по реальному пути запроса). При path=/auth
+# куки не доходили до /api/auth/refresh и refresh ломался. httpOnly+Secure+SameSite=Lax
+# остаются — компрометация области минимальна.
+_COOKIE_PATH = "/"
 
 
 def set_refresh_cookie(response: Response, token: str, *, expires_at: datetime) -> None:

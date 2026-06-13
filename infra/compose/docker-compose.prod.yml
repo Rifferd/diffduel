@@ -57,8 +57,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=diffduel-prod_edge
-      # /api/* → Core API (StripPrefix, чтобы маршруты совпадали с локальными).
-      - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      # /api/* → Core API (StripPrefix). Доступен и на основном домене, и на поддомене
+      # админки — admin SPA ходит на свой same-origin /api (иначе ломается из-за SameSite-cookie).
+      - traefik.http.routers.api.rule=(Host(`${DOMAIN}`) || Host(`admin.${DOMAIN}`)) && PathPrefix(`/api`)
       - traefik.http.routers.api.entrypoints=websecure
       - traefik.http.routers.api.tls.certresolver=le
       - traefik.http.routers.api.middlewares=api-strip,sec-headers
