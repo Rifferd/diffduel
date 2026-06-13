@@ -50,9 +50,10 @@ class UserPublic(BaseModel):
 
 
 class UserMe(UserPublic):
-    """Профиль для самого пользователя — добавляем email."""
+    """Профиль для самого пользователя — добавляем email и Pro-статус."""
 
     email: str
+    is_pro: bool = False
 
 
 class TopicRating(BaseModel):
@@ -69,11 +70,38 @@ class UserProfile(BaseModel):
     username: str
     avatar_url: str | None
     created_at: datetime
+    is_pro: bool
     topics: list[TopicRating]
     total_duels: int
     wins: int
     win_rate: float
     streak: int
+
+
+class TopicAccuracy(BaseModel):
+    """Точность пользователя по одной теме за период (расширенная статистика)."""
+
+    slug: str
+    title: str
+    answered: int
+    correct: int
+    accuracy: float
+    avg_time_ms: int
+
+
+class UserStats(BaseModel):
+    """Расширенная статистика профиля (GET /me/stats) — Pro-функция.
+
+    Полная версия (Pro): агрегаты точности по темам за period + total.
+    Решение по не-Pro: пейволл 402 pro_required (см. router), урезанной версии
+    не отдаём — это явная Pro-ценность (см. release2.md §A).
+    """
+
+    period_days: int
+    total_answered: int
+    total_correct: int
+    overall_accuracy: float
+    topics: list[TopicAccuracy]
 
 
 class AvatarPresignRequest(BaseModel):

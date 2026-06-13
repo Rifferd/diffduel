@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import uuid
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.billing.service import is_pro
 from src.core import s3
 from src.core.avatars import avatar_url
 from src.core.config import get_settings
@@ -19,8 +21,10 @@ from src.users.schemas import (
     MAX_AVATAR_SIZE_BYTES,
     AvatarPresignRequest,
     AvatarPresignResponse,
+    TopicAccuracy,
     TopicRating,
     UserProfile,
+    UserStats,
     UserUpdate,
 )
 
@@ -61,11 +65,40 @@ class UserService:
             username=user.username,
             avatar_url=avatar_url(user.avatar_key),
             created_at=user.created_at,
+            is_pro=await is_pro(self._session, user),
             topics=[TopicRating(slug=t.slug, title=t.title, elo=t.elo) for t in topics],
             total_duels=stats.total_duels,
             wins=stats.wins,
             win_rate=win_rate,
             streak=stats.streak,
+        )
+
+    # --- Расширенная статистика (Pro-функция) --------------------------------
+
+    async def extended_stats(self, user: User, *, period_days: int) -> UserStats:
+        """Полная статистика точности по темам за period (только Pro — гейт в роутере)."""
+        since = datetime.now(tz=UTC) - timedelta(days=period_days)
+        rows = await self._users.topic_accuracy_since(user.id, since=since)
+        topics = [
+            TopicAccuracy(
+                slug=r.slug,
+                title=r.title,
+                answered=r.answered,
+                correct=r.correct,
+                accuracy=round(r.correct / r.answered, 4) if r.answered else 0.0,
+                avg_time_ms=r.avg_time_ms,
+            )
+            for r in rows
+        ]
+        total_answered = sum(r.answered for r in rows)
+        total_correct = sum(r.correct for r in rows)
+        overall = round(total_correct / total_answered, 4) if total_answered else 0.0
+        return UserStats(
+            period_days=period_days,
+            total_answered=total_answered,
+            total_correct=total_correct,
+            overall_accuracy=overall,
+            topics=topics,
         )
 
     # --- Аватары (presigned flow, ТЗ §3.7) ----------------------------------

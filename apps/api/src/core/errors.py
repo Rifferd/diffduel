@@ -66,6 +66,11 @@ class ConflictError(APIError):
     code = "conflict"
 
 
+class PaymentRequiredError(APIError):
+    status_code = 402
+    code = "pro_required"
+
+
 class RateLimitedError(APIError):
     status_code = 429
     code = "rate_limited"

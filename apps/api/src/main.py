@@ -20,6 +20,7 @@ from src.core.logging import configure_logging, get_logger
 from src.core.middleware import RequestContextMiddleware, SecurityHeadersMiddleware
 from src.core.redis import close_redis, get_redis
 from src.core.telemetry import init_telemetry
+from src.daily.router import router as daily_router
 from src.internal_api.router import router as internal_router
 from src.leaderboard.router import router as leaderboard_router
 from src.tasks.router import router as tasks_router
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(topics_router)
     app.include_router(tasks_router)
     app.include_router(leaderboard_router)
+    app.include_router(daily_router)
     app.include_router(admin_router)
     app.include_router(internal_router)
 

@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
+from datetime import datetime
 
-from sqlalchemy import bindparam, select, text
+from sqlalchemy import bindparam, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.enums import DuelStatus
-from src.topics.models import Topic
+from src.duels.models import Answer
+from src.topics.models import Task, Topic
 from src.users.models import Rating, User
 
 
@@ -25,6 +27,15 @@ class ProfileStats:
     total_duels: int
     wins: int
     streak: int
+
+
+@dataclass(slots=True, frozen=True)
+class TopicAccuracyRow:
+    slug: str
+    title: str
+    answered: int
+    correct: int
+    avg_time_ms: int
 
 
 class UserRepository:
@@ -138,3 +149,41 @@ class UserRepository:
             wins=int(row.wins),
             streak=int(row.streak),
         )
+
+    async def topic_accuracy_since(
+        self, user_id: uuid.UUID, *, since: datetime
+    ) -> list[TopicAccuracyRow]:
+        """Точность ответов по темам за период [since, now] (расширенная статистика).
+
+        ORM-агрегат: answers JOIN tasks JOIN topics, GROUP BY теме. Фильтр по
+        submitted_at использует ключ партиционирования answers (партиции по месяцам).
+        """
+        answered = func.count(Answer.id)
+        correct = func.count().filter(Answer.is_correct.is_(True))
+        avg_time = func.coalesce(func.avg(Answer.time_ms), 0)
+        stmt = (
+            select(
+                Topic.slug,
+                Topic.title,
+                answered.label("answered"),
+                correct.label("correct"),
+                avg_time.label("avg_time_ms"),
+            )
+            .select_from(Answer)
+            .join(Task, Task.id == Answer.task_id)
+            .join(Topic, Topic.id == Task.topic_id)
+            .where(Answer.user_id == user_id, Answer.submitted_at >= since)
+            .group_by(Topic.slug, Topic.title)
+            .order_by(answered.desc())
+        )
+        rows = (await self._session.execute(stmt)).all()
+        return [
+            TopicAccuracyRow(
+                slug=r.slug,
+                title=r.title,
+                answered=int(r.answered),
+                correct=int(r.correct),
+                avg_time_ms=int(r.avg_time_ms),
+            )
+            for r in rows
+        ]

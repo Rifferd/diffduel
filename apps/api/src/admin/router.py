@@ -27,6 +27,8 @@ from src.admin.schemas import (
 )
 from src.admin.service import AdminService
 from src.auth.dependencies import require_role
+from src.billing.schemas import GrantProRequest, ProStatus
+from src.billing.service import BillingService
 from src.core.db import get_db
 from src.core.enums import TaskStatus, UserRole
 from src.core.redis import get_redis
@@ -130,6 +132,32 @@ async def unban_user(
     redis: Redis = Depends(get_redis),
 ) -> AdminUser:
     return await AdminService(session, redis).unban_user(user_id)
+
+
+# --- Pro-подписка (admin only) ----------------------------------------------
+
+
+@router.post(
+    "/users/{user_id}/grant-pro", response_model=ProStatus, dependencies=[Depends(_admin_only)]
+)
+async def grant_pro(
+    user_id: uuid.UUID,
+    data: GrantProRequest,
+    session: AsyncSession = Depends(get_db),
+) -> ProStatus:
+    """Выдать/продлить Pro на N дней (только admin). Идемпотентно-безопасно."""
+    return await BillingService(session).grant_pro(user_id, days=data.days)
+
+
+@router.post(
+    "/users/{user_id}/revoke-pro", response_model=ProStatus, dependencies=[Depends(_admin_only)]
+)
+async def revoke_pro(
+    user_id: uuid.UUID,
+    session: AsyncSession = Depends(get_db),
+) -> ProStatus:
+    """Отозвать Pro (только admin). Идемпотентно."""
+    return await BillingService(session).revoke_pro(user_id)
 
 
 # --- Metrics (moderator + admin) --------------------------------------------

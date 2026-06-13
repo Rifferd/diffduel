@@ -9,6 +9,7 @@ from src.admin import models as admin_models
 from src.auth import models as auth_models
 from src.billing import models as billing_models
 from src.core.db import Base
+from src.daily import models as daily_models
 from src.duels import models as duels_models
 from src.topics import models as topics_models
 from src.tournaments import models as tournaments_models
@@ -19,6 +20,7 @@ __all__ = [
     "admin_models",
     "auth_models",
     "billing_models",
+    "daily_models",
     "duels_models",
     "topics_models",
     "tournaments_models",
