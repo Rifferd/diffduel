@@ -17,9 +17,9 @@ WORKDIR /repo
 COPY --from=deps /repo /repo
 COPY apps/realtime/ apps/realtime/
 RUN pnpm -C apps/realtime build
-# pnpm deploy собирает каталог с РЕАЛЬНЫМ плоским node_modules (без symlink в pnpm-store),
-# безопасным для копирования в runtime. --legacy — стабильный режим deploy в pnpm 9.
-RUN pnpm --filter @diffduel/realtime --prod --legacy deploy /app-deploy
+# pnpm deploy собирает самодостаточный node_modules с локальным .pnpm-store
+# (symlink'и относительные, внутри каталога) — безопасно копировать в runtime.
+RUN pnpm --filter @diffduel/realtime --prod deploy /app-deploy
 
 # ---------- runtime: slim prod image ----------
 FROM node:22-alpine AS runtime
