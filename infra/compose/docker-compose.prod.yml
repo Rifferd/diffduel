@@ -19,6 +19,9 @@ services:
   traefik:
     image: traefik:v3.1
     <<: *restart
+    # Docker 29+ требует API >= 1.40; docker-клиент Traefik иначе шлёт 1.24 и падает.
+    environment:
+      DOCKER_API_VERSION: "1.44"
     command:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
