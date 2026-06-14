@@ -15,6 +15,21 @@ export type AnswerSubmit = components['schemas']['AnswerSubmit'];
 export type AnswerPayload = components['schemas']['AnswerPayload'];
 export type AnswerResult = components['schemas']['AnswerResult'];
 
+// --- Релиз 2: Pro, статистика, дневной челлендж, AI-разбор ---
+export type UserProfile = components['schemas']['UserProfile'];
+export type UserStats = components['schemas']['UserStats'];
+export type TopicAccuracy = components['schemas']['TopicAccuracy'];
+export type TopicRating = components['schemas']['TopicRating'];
+export type DailyTask = components['schemas']['DailyTask'];
+export type DailyAnswerSubmit = components['schemas']['DailyAnswerSubmit'];
+export type DailyAnswerResult = components['schemas']['DailyAnswerResult'];
+export type DailyLeaderboardEntry = components['schemas']['DailyLeaderboardEntry'];
+export type DailyMyPosition = components['schemas']['DailyMyPosition'];
+export type AiReviewResponse = components['schemas']['AiReviewResponse'];
+export type AiReviewStatus = components['schemas']['AiReviewStatus'];
+export type GrantProRequest = components['schemas']['GrantProRequest'];
+export type ProStatus = components['schemas']['ProStatus'];
+
 // --- Админка (apps/admin), роутер /admin ---
 export type TaskStatus = components['schemas']['TaskStatus'];
 export type AdminTask = components['schemas']['AdminTask'];

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useDuelResultStore } from '@/stores/duelResult';
 
@@ -31,6 +31,7 @@ const titleClass = computed(
 );
 
 const myUserId = computed(() => auth.user?.id ?? null);
+const duelId = computed(() => result.value?.duelId ?? null);
 
 /** Дельта Эло по моему user_id. */
 const myDelta = computed<number>(() => {
@@ -121,7 +122,14 @@ function goHome(): void {
           <div class="share__bottom"><span>{{ fmtDelta(myDelta) }}</span><span>diffduel.com</span></div>
         </div>
         <div class="btn-row">
-          <button class="btn btn--duel" type="button" disabled title="Скоро">Реванш</button>
+          <RouterLink
+            v-if="duelId"
+            class="btn btn--duel"
+            :to="`/ai-review/${duelId}`"
+            data-test="ai-review"
+            >AI-разбор</RouterLink
+          >
+          <button v-else class="btn btn--duel" type="button" disabled title="Скоро">Реванш</button>
           <button class="btn btn--ghost" type="button" @click="goHome">На главную</button>
         </div>
       </div>

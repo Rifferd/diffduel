@@ -49,6 +49,8 @@ export interface MyVerdict {
 
 /** Данные для экрана результата (наполняются на duel.finished). */
 export interface DuelResultData {
+  /** Идентификатор дуэли — для запроса AI-разбора (Pro). */
+  duelId: string | null;
   winnerId: string | null;
   deltas: Record<string, number>;
   elo: Record<string, number>;
@@ -128,6 +130,8 @@ export function useDuel(options: UseDuelOptions): UseDuel {
   const opponent = shallowRef<OpponentInfo | null>(null);
   const tasksCount = ref(0);
   const countdown = ref<number | null>(null);
+  /** Запоминаем duelId из duel.matched — нужен для AI-разбора на экране результата. */
+  let currentDuelId: string | null = null;
 
   const taskIndex = ref<number | null>(null);
   const taskBody = shallowRef<TaskBody | null>(null);
@@ -206,6 +210,7 @@ export function useDuel(options: UseDuelOptions): UseDuel {
   };
 
   const onMatched = (e: DuelMatchedEvent): void => {
+    currentDuelId = e.duelId;
     topic.value = e.topic;
     opponent.value = e.opponent;
     tasksCount.value = e.tasksCount;
@@ -258,6 +263,7 @@ export function useDuel(options: UseDuelOptions): UseDuel {
     myScore.value = e.score.mine;
     oppScore.value = e.score.opp;
     result.value = {
+      duelId: currentDuelId,
       winnerId: e.winnerId,
       deltas: e.deltas,
       elo: e.elo,
@@ -271,6 +277,7 @@ export function useDuel(options: UseDuelOptions): UseDuel {
   };
 
   const onReconnectState = (e: SystemReconnectStateEvent): void => {
+    currentDuelId = e.duelId;
     topic.value = topic.value ?? null;
     opponent.value = e.opponent;
     myScore.value = e.score.mine;

@@ -18,9 +18,21 @@ import { TopBar } from '@/shared/ui/Shell';
 import { TableStateRow } from '@/shared/ui/TableState';
 import { useToast } from '@/shared/ui/ToastContext';
 import { useDocumentTitle } from '@/shared/ui/useDocumentTitle';
+import { useUsersPro } from './useUsersPro';
 
 const USERS_PAGE_SIZE = 20;
+const GRANT_PRO_DAYS = 30;
 const dateFmt = new Intl.DateTimeFormat('ru-RU');
+
+/** Ячейка «План»: Pro/Free, либо «—», если статус ещё не известен в этой сессии. */
+function ProCell({ value }: { value: boolean | undefined }): React.JSX.Element {
+  if (value === undefined) return <span className="pill">—</span>;
+  return value ? (
+    <span className="pill pill--up">Pro</span>
+  ) : (
+    <span className="pill">Free</span>
+  );
+}
 
 const columnHelper = createColumnHelper<AdminUser>();
 
@@ -68,6 +80,19 @@ export function UsersPage(): React.JSX.Element {
     onError: notifyError,
   });
 
+  const { proMap, grant: grantPro, revoke: revokePro } = useUsersPro(notifyError);
+
+  function onGrantPro(id: string): void {
+    grantPro.mutate(
+      { id, days: GRANT_PRO_DAYS },
+      { onSuccess: () => notify(`Pro выдан на ${GRANT_PRO_DAYS} дней.`) },
+    );
+  }
+  function onRevokePro(id: string): void {
+    revokePro.mutate({ id }, { onSuccess: () => notify('Pro снят.') });
+  }
+  const proPending = grantPro.isPending || revokePro.isPending;
+
   const columns = useMemo(
     () => [
       columnHelper.accessor('username', {
@@ -78,6 +103,11 @@ export function UsersPage(): React.JSX.Element {
       columnHelper.accessor('role', {
         header: 'Роль',
         cell: (info) => <span className="pill">{info.getValue()}</span>,
+      }),
+      columnHelper.display({
+        id: 'plan',
+        header: 'План',
+        cell: ({ row }) => <ProCell value={proMap[row.original.id]} />,
       }),
       columnHelper.accessor('banned_at', {
         header: 'Статус',
@@ -93,6 +123,7 @@ export function UsersPage(): React.JSX.Element {
         header: 'Действия',
         cell: ({ row }) => {
           const u = row.original;
+          const isProNow = proMap[u.id] === true;
           return (
             <span style={{ display: 'flex', gap: 6 }}>
               <button
@@ -103,6 +134,29 @@ export function UsersPage(): React.JSX.Element {
               >
                 Карточка
               </button>
+              {isProNow ? (
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  style={{ padding: '4px 10px' }}
+                  disabled={!isAdmin || proPending}
+                  title={isAdmin ? undefined : 'Доступно только администратору'}
+                  onClick={() => onRevokePro(u.id)}
+                >
+                  Снять Pro
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  style={{ padding: '4px 10px' }}
+                  disabled={!isAdmin || proPending}
+                  title={isAdmin ? undefined : 'Доступно только администратору'}
+                  onClick={() => onGrantPro(u.id)}
+                >
+                  Выдать Pro
+                </button>
+              )}
               {u.banned_at ? (
                 <button
                   type="button"
@@ -132,7 +186,7 @@ export function UsersPage(): React.JSX.Element {
       }),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isAdmin, unbanMutation.isPending],
+    [isAdmin, unbanMutation.isPending, proMap, proPending],
   );
 
   const rows = users.data?.items ?? [];
@@ -252,6 +306,33 @@ export function UsersPage(): React.JSX.Element {
                   <span className="t-soft">Статус</span>
                   <span className="mono">{selected.banned_at ? 'banned' : 'active'}</span>
                 </div>
+                <div className="ucard__row">
+                  <span className="t-soft">План</span>
+                  <ProCell value={proMap[selected.id]} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {proMap[selected.id] === true ? (
+                  <button
+                    type="button"
+                    className="btn btn--ghost"
+                    style={{ flex: 1, padding: 8 }}
+                    disabled={!isAdmin || proPending}
+                    onClick={() => onRevokePro(selected.id)}
+                  >
+                    Снять Pro
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn--ghost"
+                    style={{ flex: 1, padding: 8 }}
+                    disabled={!isAdmin || proPending}
+                    onClick={() => onGrantPro(selected.id)}
+                  >
+                    Выдать Pro
+                  </button>
+                )}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button

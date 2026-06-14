@@ -18,6 +18,7 @@ watch(
 );
 
 const email = computed(() => auth.user?.email ?? '');
+const isPro = computed(() => auth.user?.is_pro === true);
 const saving = ref(false);
 const error = ref<string | null>(null);
 const okMsg = ref<string | null>(null);
@@ -95,6 +96,20 @@ async function logout(): Promise<void> {
         </div>
 
         <div class="surface set-card">
+          <h2>Подписка</h2>
+          <div class="set-row">
+            <span class="t-soft">Статус</span>
+            <span v-if="isPro" class="pill pill--pro" data-test="pro-badge">PRO активен</span>
+            <span v-else class="t-soft mono" style="font-size: 13px">Free</span>
+          </div>
+          <div style="display: flex; justify-content: flex-end">
+            <RouterLink class="btn" :class="isPro ? 'btn--ghost' : 'btn--duel'" to="/pro">
+              {{ isPro ? 'Управление Pro' : 'Оформить Pro' }}
+            </RouterLink>
+          </div>
+        </div>
+
+        <div class="surface set-card">
           <h2>Сессия</h2>
           <div style="display: flex; justify-content: flex-end">
             <button class="btn btn--ghost" type="button" @click="logout">Выйти</button>
@@ -121,5 +136,16 @@ async function logout(): Promise<void> {
 .set-card h2 {
   font: 700 16px var(--font-display);
   font-stretch: 110%;
+}
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pill--pro {
+  background: var(--plus-bg, rgb(31 157 85 / 0.12));
+  color: var(--plus);
+  font: 700 11px var(--font-mono);
+  letter-spacing: 0.08em;
 }
 </style>

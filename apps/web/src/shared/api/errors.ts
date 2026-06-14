@@ -22,6 +22,11 @@ function isApiErrorShape(value: unknown): value is ApiError {
   return typeof (err as { code?: unknown }).code === 'string';
 }
 
+/** Признак пейволла: 402 с кодом pro_required (см. docs/specs/release2.md §A). */
+export function isProRequired(err: unknown): boolean {
+  return err instanceof ApiRequestError && err.status === 402 && err.code === 'pro_required';
+}
+
 /** Строит ApiRequestError из тела ответа, мягко переживая нестандартные ответы. */
 export function toApiError(status: number, body: unknown): ApiRequestError {
   if (isApiErrorShape(body)) {

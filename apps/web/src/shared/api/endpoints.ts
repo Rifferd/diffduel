@@ -1,13 +1,20 @@
 import type {
+  AiReviewResponse,
   AnswerResult,
   AnswerSubmit,
   components,
+  DailyAnswerResult,
+  DailyAnswerSubmit,
+  DailyLeaderboardEntry,
+  DailyMyPosition,
+  DailyTask,
   LoginRequest,
   RegisterRequest,
   TaskPublic,
   TokenResponse,
   TopicPublic,
   UserMe,
+  UserStats,
   UserUpdate,
 } from '@diffduel/contracts';
 
@@ -92,6 +99,38 @@ export const meApi = {
   },
   update(payload: UserUpdate): Promise<UserMe> {
     return api.request<UserMe>('/me', { method: 'PATCH', body: payload });
+  },
+  /** Расширенная статистика профиля — Pro-функция (402 pro_required без Pro). */
+  stats(period?: number): Promise<UserStats> {
+    const qs = period !== undefined ? `?period=${period}` : '';
+    return api.request<UserStats>(`/me/stats${qs}`);
+  },
+};
+
+/** Дневной челлендж (не Pro-гейтед). */
+export const dailyApi = {
+  get(): Promise<DailyTask> {
+    return api.request<DailyTask>('/daily');
+  },
+  answer(payload: DailyAnswerSubmit): Promise<DailyAnswerResult> {
+    return api.request<DailyAnswerResult>('/daily/answer', { method: 'POST', body: payload });
+  },
+  leaderboard(limit?: number): Promise<DailyLeaderboardEntry[]> {
+    const qs = limit !== undefined ? `?limit=${limit}` : '';
+    return api.request<DailyLeaderboardEntry[]>(`/daily/leaderboard${qs}`);
+  },
+  me(): Promise<DailyMyPosition> {
+    return api.request<DailyMyPosition>('/daily/me');
+  },
+};
+
+/** AI-разбор дуэли — Pro-функция (POST даёт 402 pro_required без Pro). */
+export const aiReviewApi = {
+  start(duelId: string): Promise<AiReviewResponse> {
+    return api.request<AiReviewResponse>(`/ai/review/${duelId}`, { method: 'POST' });
+  },
+  get(duelId: string): Promise<AiReviewResponse> {
+    return api.request<AiReviewResponse>(`/ai/review/${duelId}`);
   },
 };
 

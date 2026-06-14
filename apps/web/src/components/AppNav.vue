@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 
-defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
+defineProps<{ active: 'home' | 'training' | 'daily' | 'leaderboard' | 'profile' | 'pro' }>();
 </script>
 
 <template>
@@ -15,7 +15,13 @@ defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
       <RouterLink class="appnav__link" :class="{ 'is-on': active === 'training' }" to="/training"
         >Тренировка</RouterLink
       >
+      <RouterLink class="appnav__link" :class="{ 'is-on': active === 'daily' }" to="/daily"
+        >Задача дня</RouterLink
+      >
       <a class="appnav__link" href="#" @click.prevent>Рейтинг</a>
+      <RouterLink class="appnav__link" :class="{ 'is-on': active === 'pro' }" to="/pro"
+        >Pro</RouterLink
+      >
       <RouterLink class="appnav__link" :class="{ 'is-on': active === 'profile' }" to="/profile"
         >Профиль</RouterLink
       >

@@ -34,6 +34,7 @@ describe('VerifyEmailPage', () => {
       role: 'user',
       created_at: '2026-03-01T00:00:00Z',
       email: 'anton@team.dev',
+      is_pro: false,
     });
 
     const wrapper = mount(VerifyEmailPage);

@@ -38,6 +38,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify Email */
+        post: operations["verify_email_auth_verify_email_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify Link */
+        post: operations["verify_link_auth_verify_link_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/resend-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resend Code */
+        post: operations["resend_code_auth_resend_code_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -88,6 +139,29 @@ export interface paths {
         head?: never;
         /** Update Me */
         patch: operations["update_me_me_patch"];
+        trace?: never;
+    };
+    "/me/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Stats
+         * @description Расширенная статистика точности по темам (Pro-функция, иначе 402).
+         *
+         *     Решение по не-Pro: пейволл 402 pro_required — урезанную версию не отдаём,
+         *     т.к. это явная Pro-ценность (release2.md §A).
+         */
+        get: operations["my_stats_me_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/me/avatar/presign": {
@@ -229,6 +303,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/daily": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Daily */
+        get: operations["get_daily_daily_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/daily/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer Daily */
+        post: operations["answer_daily_daily_answer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/daily/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daily Leaderboard */
+        get: operations["daily_leaderboard_daily_leaderboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/daily/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daily Me */
+        get: operations["daily_me_daily_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/review/{duel_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Review */
+        get: operations["get_review_ai_review__duel_id__get"];
+        put?: never;
+        /** Request Review */
+        post: operations["request_review_ai_review__duel_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/tasks": {
         parameters: {
             query?: never;
@@ -343,6 +503,46 @@ export interface paths {
         put?: never;
         /** Unban User */
         post: operations["unban_user_admin_users__user_id__unban_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user_id}/grant-pro": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant Pro
+         * @description Выдать/продлить Pro на N дней (только admin). Идемпотентно-безопасно.
+         */
+        post: operations["grant_pro_admin_users__user_id__grant_pro_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user_id}/revoke-pro": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke Pro
+         * @description Отозвать Pro (только admin). Идемпотентно.
+         */
+        post: operations["revoke_pro_admin_users__user_id__revoke_pro_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -508,6 +708,22 @@ export interface components {
             total: number;
         };
         /**
+         * AiReviewResponse
+         * @description Публичный статус разбора (POST/GET /ai/review/{duel_id}).
+         */
+        AiReviewResponse: {
+            status: components["schemas"]["AiReviewStatus"];
+            /** Content */
+            content?: string | null;
+            /** Error */
+            error?: string | null;
+        };
+        /**
+         * AiReviewStatus
+         * @enum {string}
+         */
+        AiReviewStatus: "pending" | "done" | "failed";
+        /**
          * AnswerPayload
          * @description Полезная нагрузка ответа на quiz: индекс выбранной опции.
          */
@@ -584,6 +800,75 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /**
+         * DailyAnswerResult
+         * @description Результат проверки дневного ответа.
+         *
+         *     ``scored`` — учтён ли ответ в лидерборде (только первый зачётный за день).
+         *     ``already_answered`` — был ли зачётный ответ ранее сегодня.
+         */
+        DailyAnswerResult: {
+            /** Correct */
+            correct: boolean;
+            /** Correct Option */
+            correct_option: number;
+            /** Explanation */
+            explanation: string;
+            /** Scored */
+            scored: boolean;
+            /** Already Answered */
+            already_answered: boolean;
+        };
+        /**
+         * DailyAnswerSubmit
+         * @description POST /daily/answer — ответ на задачу дня.
+         */
+        DailyAnswerSubmit: {
+            answer: components["schemas"]["AnswerPayload"];
+            /** Time Ms */
+            time_ms: number;
+        };
+        /**
+         * DailyLeaderboardEntry
+         * @description Строка дневного лидерборда (обогащена ником/аватаром).
+         */
+        DailyLeaderboardEntry: {
+            /** Rank */
+            rank: number;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Username */
+            username: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /** Score */
+            score: number;
+        };
+        /**
+         * DailyMyPosition
+         * @description GET /daily/me — моя позиция в дневном лидерборде.
+         */
+        DailyMyPosition: {
+            /** Rank */
+            rank: number | null;
+            /** Score */
+            score: number | null;
+        };
+        /**
+         * DailyTask
+         * @description GET /daily — задача дня (без эталона).
+         */
+        DailyTask: {
+            /**
+             * Challenge Date
+             * Format: date
+             */
+            challenge_date: string;
+            task: components["schemas"]["TaskPublic"];
+        };
         /** FeatureFlagOut */
         FeatureFlagOut: {
             /** Key */
@@ -611,6 +896,14 @@ export interface components {
             payload?: {
                 [key: string]: unknown;
             } | null;
+        };
+        /**
+         * GrantProRequest
+         * @description POST /admin/users/{id}/grant-pro — продлить Pro на N дней.
+         */
+        GrantProRequest: {
+            /** Days */
+            days: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -670,6 +963,16 @@ export interface components {
             entries: components["schemas"]["LeaderboardEntry"][];
         };
         /**
+         * ProStatus
+         * @description Результат grant/revoke: текущее состояние подписки пользователя.
+         */
+        ProStatus: {
+            /** Is Pro */
+            is_pro: boolean;
+            /** Current Period End */
+            current_period_end: string | null;
+        };
+        /**
          * QuizBody
          * @description body для type=quiz (включая код-вопросы: сниппет в code).
          */
@@ -696,6 +999,31 @@ export interface components {
             username: string;
             /** Password */
             password: string;
+        };
+        /**
+         * RegisterResponse
+         * @description Единый ответ register для обоих режимов.
+         *
+         *     OFF: verification_required=false + токены (авто-логин).
+         *     ON: verification_required=true (код отправлен, токенов нет).
+         */
+        RegisterResponse: {
+            /** Verification Required */
+            verification_required: boolean;
+            /** Access Token */
+            access_token?: string | null;
+            /** Token Type */
+            token_type?: string | null;
+            /** Expires In */
+            expires_in?: number | null;
+        };
+        /** ResendCodeRequest */
+        ResendCodeRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
         };
         /**
          * TaskCreate
@@ -779,6 +1107,24 @@ export interface components {
             /** Expires In */
             expires_in: number;
         };
+        /**
+         * TopicAccuracy
+         * @description Точность пользователя по одной теме за период (расширенная статистика).
+         */
+        TopicAccuracy: {
+            /** Slug */
+            slug: string;
+            /** Title */
+            title: string;
+            /** Answered */
+            answered: number;
+            /** Correct */
+            correct: number;
+            /** Accuracy */
+            accuracy: number;
+            /** Avg Time Ms */
+            avg_time_ms: number;
+        };
         /** TopicPublic */
         TopicPublic: {
             /**
@@ -805,7 +1151,7 @@ export interface components {
         };
         /**
          * UserMe
-         * @description Профиль для самого пользователя — добавляем email.
+         * @description Профиль для самого пользователя — добавляем email и Pro-статус.
          */
         UserMe: {
             /**
@@ -826,6 +1172,11 @@ export interface components {
             /** Email */
             email: string;
             /**
+             * Is Pro
+             * @default false
+             */
+            is_pro: boolean;
+            /**
              * Avatar Url
              * @description Публичный URL аватара: S3_PUBLIC_BASE_URL/avatars/{key}.
              */
@@ -845,6 +1196,8 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Is Pro */
+            is_pro: boolean;
             /** Topics */
             topics: components["schemas"]["TopicRating"][];
             /** Total Duels */
@@ -861,6 +1214,26 @@ export interface components {
          * @enum {string}
          */
         UserRole: "user" | "moderator" | "admin";
+        /**
+         * UserStats
+         * @description Расширенная статистика профиля (GET /me/stats) — Pro-функция.
+         *
+         *     Полная версия (Pro): агрегаты точности по темам за period + total.
+         *     Решение по не-Pro: пейволл 402 pro_required (см. router), урезанной версии
+         *     не отдаём — это явная Pro-ценность (см. release2.md §A).
+         */
+        UserStats: {
+            /** Period Days */
+            period_days: number;
+            /** Total Answered */
+            total_answered: number;
+            /** Total Correct */
+            total_correct: number;
+            /** Overall Accuracy */
+            overall_accuracy: number;
+            /** Topics */
+            topics: components["schemas"]["TopicAccuracy"][];
+        };
         /**
          * UserUpdate
          * @description PATCH /me — изменяемые поля.
@@ -881,6 +1254,39 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** VerifyEmailRequest */
+        VerifyEmailRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Code */
+            code: string;
+        };
+        /** VerifyLinkRequest */
+        VerifyLinkRequest: {
+            /** Token */
+            token: string;
+        };
+        /**
+         * VerifyLinkResponse
+         * @description verify-link: на том же устройстве — авто-логин; на другом — только подтверждение.
+         *
+         *     Код в БД лежит только хэшем, в открытом виде его взять неоткуда. На другом
+         *     устройстве пользователь берёт код из своего же письма и вводит на устройстве
+         *     регистрации — поэтому здесь код не возвращается.
+         */
+        VerifyLinkResponse: {
+            /** Logged In */
+            logged_in: boolean;
+            /** Access Token */
+            access_token?: string | null;
+            /** Token Type */
+            token_type?: string | null;
+            /** Expires In */
+            expires_in?: number | null;
         };
     };
     responses: never;
@@ -910,7 +1316,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserMe"];
+                    "application/json": components["schemas"]["RegisterResponse"];
                 };
             };
             /** @description Validation Error */
@@ -945,6 +1351,103 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TokenResponse"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_email_auth_verify_email_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyEmailRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_link_auth_verify_link_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyLinkResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resend_code_auth_resend_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResendCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
@@ -1035,6 +1538,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserMe"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_stats_me_stats_get: {
+        parameters: {
+            query?: {
+                /** @description Период в днях */
+                period?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserStats"];
                 };
             };
             /** @description Validation Error */
@@ -1283,6 +1818,172 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MyLeaderboardPosition"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_daily_daily_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyTask"];
+                };
+            };
+        };
+    };
+    answer_daily_daily_answer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyAnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyAnswerResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    daily_leaderboard_daily_leaderboard_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyLeaderboardEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    daily_me_daily_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyMyPosition"];
+                };
+            };
+        };
+    };
+    get_review_ai_review__duel_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                duel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiReviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_review_ai_review__duel_id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                duel_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiReviewResponse"];
                 };
             };
             /** @description Validation Error */
@@ -1546,6 +2247,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminUser"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grant_pro_admin_users__user_id__grant_pro_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantProRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_pro_admin_users__user_id__revoke_pro_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProStatus"];
                 };
             };
             /** @description Validation Error */

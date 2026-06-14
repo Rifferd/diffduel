@@ -194,6 +194,7 @@ describe('useDuel', () => {
     expect(duel.phase.value).toBe('finished');
     const r = duel.result.value!;
     expect(r.outcome).toBe('win');
+    expect(r.duelId).toBe('d1');
     expect(r.deltas.me).toBe(24);
     expect(r.score).toEqual({ mine: 4, opp: 2 });
     expect(r.topic).toBe('sql');

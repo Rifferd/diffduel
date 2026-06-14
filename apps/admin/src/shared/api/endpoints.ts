@@ -6,8 +6,10 @@ import type {
   BanRequest,
   FeatureFlagOut,
   FeatureFlagUpsert,
+  GrantProRequest,
   LoginRequest,
   MetricsOverview,
+  ProStatus,
   TaskCreate,
   TaskStatus,
   TaskUpdate,
@@ -103,6 +105,12 @@ export const adminUsersApi = {
   },
   unban(id: string): Promise<AdminUser> {
     return api.request<AdminUser>(`/admin/users/${id}/unban`, { method: 'POST' });
+  },
+  grantPro(id: string, payload: GrantProRequest): Promise<ProStatus> {
+    return api.request<ProStatus>(`/admin/users/${id}/grant-pro`, { method: 'POST', body: payload });
+  },
+  revokePro(id: string): Promise<ProStatus> {
+    return api.request<ProStatus>(`/admin/users/${id}/revoke-pro`, { method: 'POST' });
   },
 };
 

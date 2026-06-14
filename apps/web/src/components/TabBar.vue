@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 
-defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
+defineProps<{ active: 'home' | 'training' | 'daily' | 'leaderboard' | 'profile' }>();
 </script>
 
 <template>
@@ -13,6 +13,13 @@ defineProps<{ active: 'home' | 'training' | 'leaderboard' | 'profile' }>();
     <RouterLink class="tabbar__tab" :class="{ 'is-on': active === 'training' }" to="/training">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 20V10M6 20V4M18 20v-7" /></svg>
       Тренировка
+    </RouterLink>
+    <RouterLink class="tabbar__tab" :class="{ 'is-on': active === 'daily' }" to="/daily">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+      День
     </RouterLink>
     <a class="tabbar__tab" href="#" @click.prevent>
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V5m6 14V9m6 10v-7" /></svg>

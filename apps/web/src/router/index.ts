@@ -70,6 +70,30 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'DiffDuel — результат дуэли' },
   },
   {
+    path: '/daily',
+    name: 'daily',
+    component: () => import('@/pages/DailyPage.vue'),
+    meta: { title: 'DiffDuel — задача дня' },
+  },
+  {
+    path: '/pro',
+    name: 'pro',
+    component: () => import('@/pages/ProPage.vue'),
+    meta: { title: 'DiffDuel — Pro' },
+  },
+  {
+    path: '/checkout',
+    name: 'checkout',
+    component: () => import('@/pages/CheckoutPage.vue'),
+    meta: { title: 'DiffDuel — оплата Pro' },
+  },
+  {
+    path: '/ai-review/:duelId',
+    name: 'ai-review',
+    component: () => import('@/pages/AiReviewPage.vue'),
+    meta: { title: 'DiffDuel — AI-разбор дуэли' },
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import('@/pages/ProfilePage.vue'),
