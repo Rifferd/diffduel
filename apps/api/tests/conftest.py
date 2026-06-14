@@ -83,6 +83,7 @@ async def _clean_state() -> AsyncIterator[None]:
             "TRUNCATE email_verifications, refresh_tokens, oauth_accounts, ratings, "
             "answers, ai_reviews, daily_challenges, duels, "
             "tournament_answers, tournament_entries, tournaments, "
+            "telegram_accounts, "
             "tasks, topics, feature_flags, "
             "payments, subscriptions, users "
             "RESTART IDENTITY CASCADE"

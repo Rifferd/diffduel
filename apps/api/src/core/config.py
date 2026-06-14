@@ -82,6 +82,11 @@ class Settings(BaseSettings):
     # Базовый URL SPA — для ссылки-подтверждения в письме.
     public_web_url: str = "http://localhost:5173"
 
+    # --- Telegram ------------------------------------------------------------
+    # Username бота (без @) для deep-link `https://t.me/<bot>?start=<code>`.
+    # Пусто → link-code отдаёт только код, без bot_url.
+    telegram_bot_username: str = ""
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:

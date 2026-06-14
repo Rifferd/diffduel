@@ -5,11 +5,13 @@ from __future__ import annotations
 import uuid
 
 from fastapi import APIRouter, Depends
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.ai_review.schemas import AiReviewResponse, ReviewDataResponse, WriteReviewRequest
 from src.ai_review.service import AiReviewService
 from src.core.db import get_db
+from src.core.redis import get_redis
 from src.duels.schemas import (
     CreateDuelRequest,
     CreateDuelResponse,
@@ -20,6 +22,8 @@ from src.duels.schemas import (
 )
 from src.duels.service import DuelService
 from src.internal_api.dependencies import require_internal_token
+from src.telegram.schemas import RedeemRequest, RedeemResponse, ResolveResponse
+from src.telegram.service import TelegramService
 
 # include_in_schema=False на каждом маршруте — чтобы не попасть в публичный OpenAPI.
 router = APIRouter(
@@ -113,3 +117,32 @@ async def write_ai_review(
     session: AsyncSession = Depends(get_db),
 ) -> AiReviewResponse:
     return await AiReviewService(session).write_result(duel_id, user_id, data)
+
+
+# --- Telegram (бот) ----------------------------------------------------------
+
+
+@router.post(
+    "/telegram/redeem",
+    response_model=RedeemResponse,
+    include_in_schema=False,
+)
+async def telegram_redeem(
+    data: RedeemRequest,
+    session: AsyncSession = Depends(get_db),
+    redis: Redis = Depends(get_redis),
+) -> RedeemResponse:
+    return await TelegramService(session, redis).redeem(data)
+
+
+@router.get(
+    "/telegram/user/{telegram_user_id}",
+    response_model=ResolveResponse,
+    include_in_schema=False,
+)
+async def telegram_resolve(
+    telegram_user_id: int,
+    session: AsyncSession = Depends(get_db),
+    redis: Redis = Depends(get_redis),
+) -> ResolveResponse:
+    return await TelegramService(session, redis).resolve(telegram_user_id)

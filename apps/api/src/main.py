@@ -25,6 +25,7 @@ from src.daily.router import router as daily_router
 from src.internal_api.router import router as internal_router
 from src.leaderboard.router import router as leaderboard_router
 from src.tasks.router import router as tasks_router
+from src.telegram.router import router as telegram_router
 from src.topics.router import router as topics_router
 from src.tournaments.admin_router import router as tournaments_admin_router
 from src.tournaments.router import router as tournaments_router
@@ -80,6 +81,7 @@ def create_app() -> FastAPI:
     app.include_router(tournaments_router)
     app.include_router(admin_router)
     app.include_router(tournaments_admin_router)
+    app.include_router(telegram_router)
     app.include_router(internal_router)
 
     @app.get("/healthz", tags=["health"])

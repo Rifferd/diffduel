@@ -12,6 +12,7 @@ from src.billing import models as billing_models
 from src.core.db import Base
 from src.daily import models as daily_models
 from src.duels import models as duels_models
+from src.telegram import models as telegram_models
 from src.topics import models as topics_models
 from src.tournaments import models as tournaments_models
 from src.users import models as users_models
@@ -24,6 +25,7 @@ __all__ = [
     "billing_models",
     "daily_models",
     "duels_models",
+    "telegram_models",
     "topics_models",
     "tournaments_models",
     "users_models",
