@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>DiffDuel — нет соединения</title>
+    <meta name="theme-color" content="#161B22" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,500..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <style>
+      :root {
+        --arena: #161b22;
+        --arena-ink: #eef1f5;
+        --arena-soft: #8b949e;
+        --timer: #e3b341;
+        --font-display: 'Archivo', sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+        --font-body: 'Inter', sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--arena);
+        color: var(--arena-ink);
+        font-family: var(--font-body);
+        text-align: center;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 22px;
+        border-bottom: 1px solid rgb(255 255 255 / 0.08);
+      }
+      .logo {
+        font: 800 18px var(--font-display);
+        color: var(--arena-ink);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .vs {
+        font: 800 12px var(--font-mono);
+        background: var(--timer);
+        color: var(--arena);
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+      .status {
+        font: 500 12px var(--font-mono);
+        color: var(--arena-soft);
+      }
+      .status b {
+        color: var(--timer);
+        font-weight: 500;
+      }
+      .body {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .line {
+        font: 500 14px var(--font-mono);
+        color: var(--arena-soft);
+        margin: 8px 0 4px;
+      }
+      .code {
+        font: 700 clamp(48px, 10vw, 92px) / 1 var(--font-mono);
+        color: var(--timer);
+      }
+      .title {
+        font: 800 26px var(--font-display);
+        margin-bottom: 8px;
+      }
+      .text {
+        color: var(--arena-soft);
+        font-size: 15px;
+        max-width: 40ch;
+        margin: 0 auto;
+      }
+      .banner {
+        max-width: 340px;
+        margin: 22px auto 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font: 500 13px var(--font-mono);
+        background: rgb(227 179 65 / 0.12);
+        color: var(--timer);
+      }
+      .actions {
+        margin-top: 18px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 1px solid rgb(255 255 255 / 0.18);
+        color: var(--arena-ink);
+        text-decoration: none;
+        font: 600 14px var(--font-body);
+        cursor: pointer;
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <a class="logo" href="/"><span class="vs">VS</span>DiffDuel</a>
+      <span class="status">status: <b>offline</b></span>
+    </div>
+    <main class="body">
+      <div style="max-width: 460px">
+        <div class="line">// network unreachable</div>
+        <div class="code" aria-hidden="true">− offline</div>
+        <div class="title">Нет соединения</div>
+        <p class="text">
+          Дуэли требуют сети. Как только соединение вернётся, страница обновится автоматически. Пока
+          можно посмотреть сохранённый профиль.
+        </p>
+        <div class="banner"><span>!</span> Переподключаемся автоматически…</div>
+        <div class="actions"><a class="btn" href="/app">Повторить сейчас</a></div>
+      </div>
+    </main>
+    <script>
+      // Авто-обновление при возврате сети (как в дизайне offline.html).
+      window.addEventListener('online', () => location.reload());
+    </script>
+  </body>
+</html>

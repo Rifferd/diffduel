@@ -43,6 +43,20 @@ export type MetricsOverview = components['schemas']['MetricsOverview'];
 export type FeatureFlagOut = components['schemas']['FeatureFlagOut'];
 export type FeatureFlagUpsert = components['schemas']['FeatureFlagUpsert'];
 
+// --- Релиз 3: турниры ---
+export type TournamentStatus = components['schemas']['TournamentStatus'];
+export type TournamentSummary = components['schemas']['TournamentSummary'];
+export type TournamentDetail = components['schemas']['TournamentDetail'];
+export type TournamentLeaderboardEntry = components['schemas']['TournamentLeaderboardEntry'];
+export type TournamentTasks = components['schemas']['TournamentTasks'];
+export type EnterResult = components['schemas']['EnterResult'];
+export type TournamentAnswerSubmit = components['schemas']['TournamentAnswerSubmit'];
+export type TournamentAnswerResult = components['schemas']['TournamentAnswerResult'];
+export type AdminTournament = components['schemas']['AdminTournament'];
+export type TournamentCreate = components['schemas']['TournamentCreate'];
+export type TournamentUpdate = components['schemas']['TournamentUpdate'];
+export type GrantEntryRequest = components['schemas']['GrantEntryRequest'];
+
 /** Единый формат ошибки API — контракт фронта (см. conventions.md §Python). */
 export interface ApiError {
   error: {

@@ -389,6 +389,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/tournaments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tournaments */
+        get: operations["list_tournaments_tournaments_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tournaments/{tournament_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tournament Detail */
+        get: operations["tournament_detail_tournaments__tournament_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tournaments/{tournament_id}/enter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enter Tournament */
+        post: operations["enter_tournament_tournaments__tournament_id__enter_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tournaments/{tournament_id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tournament Tasks */
+        get: operations["tournament_tasks_tournaments__tournament_id__tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tournaments/{tournament_id}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer Tournament */
+        post: operations["answer_tournament_tournaments__tournament_id__answer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/tasks": {
         parameters: {
             query?: never;
@@ -600,6 +685,81 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/tournaments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Tournament */
+        post: operations["create_tournament_admin_tournaments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/tournaments/{tournament_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Tournament */
+        get: operations["get_tournament_admin_tournaments__tournament_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Tournament */
+        patch: operations["update_tournament_admin_tournaments__tournament_id__patch"];
+        trace?: never;
+    };
+    "/admin/tournaments/{tournament_id}/grant-entry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Grant Entry
+         * @description Ручная выдача входа (заглушка оплаты).
+         */
+        post: operations["grant_entry_admin_tournaments__tournament_id__grant_entry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/tournaments/{tournament_id}/recompute-places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Recompute Places
+         * @description Пересчёт мест RANK() по запросу (помимо авто-пересчёта при finished).
+         */
+        post: operations["recompute_places_admin_tournaments__tournament_id__recompute_places_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -671,6 +831,35 @@ export interface components {
             page_size: number;
             /** Total */
             total: number;
+        };
+        /**
+         * AdminTournament
+         * @description Полное представление турнира для админки.
+         */
+        AdminTournament: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string | null;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at: string | null;
+            /** Entry Fee */
+            entry_fee: string;
+            /** Prize Pool */
+            prize_pool: string;
+            status: components["schemas"]["TournamentStatus"];
+            /** Task Ids */
+            task_ids: string[];
         };
         /**
          * AdminUser
@@ -869,6 +1058,16 @@ export interface components {
             challenge_date: string;
             task: components["schemas"]["TaskPublic"];
         };
+        /**
+         * EnterResult
+         * @description POST /tournaments/{id}/enter — результат входа.
+         */
+        EnterResult: {
+            /** Joined */
+            joined: boolean;
+            /** Already Entered */
+            already_entered: boolean;
+        };
         /** FeatureFlagOut */
         FeatureFlagOut: {
             /** Key */
@@ -896,6 +1095,17 @@ export interface components {
             payload?: {
                 [key: string]: unknown;
             } | null;
+        };
+        /**
+         * GrantEntryRequest
+         * @description POST /admin/tournaments/{id}/grant-entry — ручная выдача входа.
+         */
+        GrantEntryRequest: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
         };
         /**
          * GrantProRequest
@@ -1148,6 +1358,195 @@ export interface components {
             title: string;
             /** Elo */
             elo: number;
+        };
+        /**
+         * TournamentAnswerResult
+         * @description Результат проверки ответа турнира.
+         *
+         *     ``scored`` — учтён ли ответ (один зачётный ответ на задачу).
+         *     ``finished`` — закрыта ли вся entry (ответы на все задачи).
+         */
+        TournamentAnswerResult: {
+            /** Correct */
+            correct: boolean;
+            /** Correct Option */
+            correct_option: number;
+            /** Explanation */
+            explanation: string;
+            /** Scored */
+            scored: boolean;
+            /** Already Answered */
+            already_answered: boolean;
+            /** Score */
+            score: number;
+            /** Finished */
+            finished: boolean;
+        };
+        /**
+         * TournamentAnswerSubmit
+         * @description POST /tournaments/{id}/answer — ответ на задачу турнира.
+         */
+        TournamentAnswerSubmit: {
+            /**
+             * Task Id
+             * Format: uuid
+             */
+            task_id: string;
+            answer: components["schemas"]["AnswerPayload"];
+            /** Time Ms */
+            time_ms: number;
+        };
+        /**
+         * TournamentCreate
+         * @description POST /admin/tournaments — создание турнира.
+         *
+         *     Набор задач: либо явный список published-задач темы (``task_ids``), либо
+         *     случайные ``task_count`` published-задач темы (если task_ids не задан).
+         */
+        TournamentCreate: {
+            /** Title */
+            title: string;
+            /**
+             * Topic Id
+             * Format: uuid
+             */
+            topic_id: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at?: string | null;
+            /**
+             * Entry Fee
+             * @default 0
+             */
+            entry_fee: number | string;
+            /**
+             * Prize Pool
+             * @default 0
+             */
+            prize_pool: number | string;
+            /** Task Count */
+            task_count?: number | null;
+            /** Task Ids */
+            task_ids?: string[] | null;
+            /** @default upcoming */
+            status: components["schemas"]["TournamentStatus"];
+        };
+        /**
+         * TournamentDetail
+         * @description GET /tournaments/{id} — детали + лидерборд.
+         */
+        TournamentDetail: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string | null;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at: string | null;
+            /** Entry Fee */
+            entry_fee: string;
+            /** Prize Pool */
+            prize_pool: string;
+            status: components["schemas"]["TournamentStatus"];
+            /** Tasks Count */
+            tasks_count: number;
+            /** Entries Count */
+            entries_count: number;
+            /** Leaderboard */
+            leaderboard: components["schemas"]["TournamentLeaderboardEntry"][];
+        };
+        /**
+         * TournamentLeaderboardEntry
+         * @description Строка лидерборда турнира (обогащена ником/аватаром).
+         */
+        TournamentLeaderboardEntry: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Username */
+            username: string;
+            /** Avatar Url */
+            avatar_url: string | null;
+            /** Score */
+            score: number;
+            /** Time Ms */
+            time_ms: number;
+            /** Place */
+            place: number | null;
+        };
+        /**
+         * TournamentStatus
+         * @enum {string}
+         */
+        TournamentStatus: "upcoming" | "active" | "finished";
+        /**
+         * TournamentSummary
+         * @description Строка списка турниров.
+         */
+        TournamentSummary: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            /** Topic Id */
+            topic_id: string | null;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at: string | null;
+            /** Entry Fee */
+            entry_fee: string;
+            /** Prize Pool */
+            prize_pool: string;
+            status: components["schemas"]["TournamentStatus"];
+            /** Entries Count */
+            entries_count: number;
+        };
+        /**
+         * TournamentTasks
+         * @description GET /tournaments/{id}/tasks — задачи турнира без эталонов.
+         */
+        TournamentTasks: {
+            /** Tasks */
+            tasks: components["schemas"]["TaskPublic"][];
+        };
+        /**
+         * TournamentUpdate
+         * @description PATCH /admin/tournaments/{id} — частичное обновление.
+         */
+        TournamentUpdate: {
+            /** Title */
+            title?: string | null;
+            /** Starts At */
+            starts_at?: string | null;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Entry Fee */
+            entry_fee?: number | string | null;
+            /** Prize Pool */
+            prize_pool?: number | string | null;
+            status?: components["schemas"]["TournamentStatus"] | null;
         };
         /**
          * UserMe
@@ -1997,6 +2396,165 @@ export interface operations {
             };
         };
     };
+    list_tournaments_tournaments_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["TournamentStatus"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TournamentSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tournament_detail_tournaments__tournament_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TournamentDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    enter_tournament_tournaments__tournament_id__enter_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tournament_tasks_tournaments__tournament_id__tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TournamentTasks"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    answer_tournament_tournaments__tournament_id__answer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TournamentAnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TournamentAnswerResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_tasks_admin_tasks_get: {
         parameters: {
             query?: {
@@ -2389,6 +2947,169 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["FeatureFlagOut"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_tournament_admin_tournaments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TournamentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTournament"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_tournament_admin_tournaments__tournament_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTournament"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_tournament_admin_tournaments__tournament_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TournamentUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTournament"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    grant_entry_admin_tournaments__tournament_id__grant_entry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnterResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    recompute_places_admin_tournaments__tournament_id__recompute_places_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tournament_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

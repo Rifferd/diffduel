@@ -8,11 +8,18 @@ import type {
   DailyLeaderboardEntry,
   DailyMyPosition,
   DailyTask,
+  EnterResult,
   LoginRequest,
   RegisterRequest,
   TaskPublic,
   TokenResponse,
   TopicPublic,
+  TournamentAnswerResult,
+  TournamentAnswerSubmit,
+  TournamentDetail,
+  TournamentStatus,
+  TournamentSummary,
+  TournamentTasks,
   UserMe,
   UserStats,
   UserUpdate,
@@ -174,5 +181,31 @@ export const tasksApi = {
   },
   submitAnswer(payload: AnswerSubmit): Promise<AnswerResult> {
     return api.request<AnswerResult>('/answers', { method: 'POST', body: payload });
+  },
+};
+
+export const tournamentsApi = {
+  /** Список турниров; необязательный фильтр по статусу. Публичный (без auth). */
+  list(status?: TournamentStatus): Promise<TournamentSummary[]> {
+    const qs = status ? `?status=${status}` : '';
+    return api.request<TournamentSummary[]>(`/tournaments${qs}`, { skipAuthRefresh: true });
+  },
+  /** Детали + лидерборд. Публичный. */
+  detail(id: string): Promise<TournamentDetail> {
+    return api.request<TournamentDetail>(`/tournaments/${id}`, { skipAuthRefresh: true });
+  },
+  /** Вход в турнир (auth). 402 entry_payment_unavailable — платёж недоступен. */
+  enter(id: string): Promise<EnterResult> {
+    return api.request<EnterResult>(`/tournaments/${id}/enter`, { method: 'POST' });
+  },
+  /** Задачи турнира без эталонов (auth, участник, active). */
+  tasks(id: string): Promise<TournamentTasks> {
+    return api.request<TournamentTasks>(`/tournaments/${id}/tasks`);
+  },
+  submitAnswer(id: string, payload: TournamentAnswerSubmit): Promise<TournamentAnswerResult> {
+    return api.request<TournamentAnswerResult>(`/tournaments/${id}/answer`, {
+      method: 'POST',
+      body: payload,
+    });
   },
 };

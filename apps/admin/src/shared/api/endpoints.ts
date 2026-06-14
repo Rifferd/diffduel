@@ -1,9 +1,11 @@
 import type {
   AdminTask,
   AdminTaskList,
+  AdminTournament,
   AdminUser,
   AdminUserList,
   BanRequest,
+  EnterResult,
   FeatureFlagOut,
   FeatureFlagUpsert,
   GrantProRequest,
@@ -15,6 +17,10 @@ import type {
   TaskUpdate,
   TokenResponse,
   TopicPublic,
+  TournamentCreate,
+  TournamentStatus,
+  TournamentSummary,
+  TournamentUpdate,
   UserMe,
 } from '@diffduel/contracts';
 import { api } from './client';
@@ -111,6 +117,29 @@ export const adminUsersApi = {
   },
   revokePro(id: string): Promise<ProStatus> {
     return api.request<ProStatus>(`/admin/users/${id}/revoke-pro`, { method: 'POST' });
+  },
+};
+
+export const adminTournamentsApi = {
+  /** Список — публичный GET /tournaments (фильтр по статусу). */
+  list(status?: TournamentStatus): Promise<TournamentSummary[]> {
+    const qs = status ? `?status=${status}` : '';
+    return api.request<TournamentSummary[]>(`/tournaments${qs}`);
+  },
+  create(payload: TournamentCreate): Promise<AdminTournament> {
+    return api.request<AdminTournament>('/admin/tournaments', { method: 'POST', body: payload });
+  },
+  update(id: string, payload: TournamentUpdate): Promise<AdminTournament> {
+    return api.request<AdminTournament>(`/admin/tournaments/${id}`, {
+      method: 'PATCH',
+      body: payload,
+    });
+  },
+  grantEntry(id: string, userId: string): Promise<EnterResult> {
+    return api.request<EnterResult>(`/admin/tournaments/${id}/grant-entry`, {
+      method: 'POST',
+      body: { user_id: userId },
+    });
   },
 };
 

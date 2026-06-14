@@ -76,6 +76,18 @@ const routes: RouteRecordRaw[] = [
     meta: { title: 'DiffDuel — задача дня' },
   },
   {
+    path: '/tournaments',
+    name: 'tournaments',
+    component: () => import('@/pages/TournamentsPage.vue'),
+    meta: { title: 'DiffDuel — турниры' },
+  },
+  {
+    path: '/tournaments/:id',
+    name: 'tournament',
+    component: () => import('@/pages/TournamentPage.vue'),
+    meta: { title: 'DiffDuel — турнир' },
+  },
+  {
     path: '/pro',
     name: 'pro',
     component: () => import('@/pages/ProPage.vue'),

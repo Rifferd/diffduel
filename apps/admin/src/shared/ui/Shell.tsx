@@ -33,6 +33,10 @@ const SECTIONS: NavSection[] = [
     items: [{ to: '/users', label: 'Пользователи' }],
   },
   {
+    title: '// соревнования',
+    items: [{ to: '/tournaments', label: 'Турниры' }],
+  },
+  {
     title: '// система',
     items: [{ to: '/flags', label: 'Фиче-флаги' }],
   },
