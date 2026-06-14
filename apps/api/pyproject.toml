@@ -56,6 +56,7 @@ select = ["E", "F", "I", "UP", "B", "S", "ASYNC"]
 [tool.ruff.lint.per-file-ignores]
 # B008: вызов Depends()/Header() в дефолтах аргументов — штатный паттерн FastAPI.
 "src/**/router.py" = ["B008"]
+"src/**/admin_router.py" = ["B008"]
 "src/**/dependencies.py" = ["B008"]
 "src/core/rate_limit.py" = ["B008"]
 # Тесты используют assert (S101) и поднимают тестовые секреты (S105/S106/S311).

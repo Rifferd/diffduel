@@ -42,6 +42,12 @@ class AiReviewStatus(enum.StrEnum):
     failed = "failed"
 
 
+class TournamentStatus(enum.StrEnum):
+    upcoming = "upcoming"
+    active = "active"
+    finished = "finished"
+
+
 class SubscriptionPlan(enum.StrEnum):
     pro = "pro"
 
